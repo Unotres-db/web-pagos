@@ -53,7 +53,6 @@ export default function Update () {
     totalLiab: "",
     totalStockholderEquity: "",
     treasuryStock: "",
-
     capitalExpenditures: "",
     changeInCash: "",
     changeToAccountReceivables: "",
