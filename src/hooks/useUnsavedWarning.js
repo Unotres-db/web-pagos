@@ -10,7 +10,7 @@ const useUnsavedWarning = (message = "Do you want to leave the form without fina
         window.onbeforeunload = isDirty && (() => message);
 
         return () => {
-           window.onbeforeunload = null;
+          window.onbeforeunload = null;
         };
     }, [isDirty]);
 

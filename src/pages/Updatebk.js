@@ -190,7 +190,7 @@ export default function Update () {
     
     // for (let i = 0; i < financialData.length; i++) {
       
-       alert("entrou em handlefinancials" + financialQtrData[i].companyId+financialQtrData[i].endDate);
+      //  alert("entrou em handlefinancials" + financialQtrData[i].companyId+financialQtrData[i].endDate);
     // verifica se a informacao dos dados financeiros ja esta no banco de dados
     try {
       const response = await api.get ('/financials', { headers: { Authorization: financialData[i].financialsId }})
@@ -219,7 +219,7 @@ export default function Update () {
             // se nao conseguiu, ve a msg de erro....
           } catch (err) {
               const errorMsg = Object.values(err.response.data);
-              alert("Error en inclusión de datos financieros");
+              // alert("Error en inclusión de datos financieros");
               // return { valid: false, message:"Error en inclusión de datos financieros" };
             }
         } else {
@@ -268,13 +268,13 @@ export default function Update () {
             // se nao conseguiu, ve a msg de erro
           } catch (err) {
               const errorMsg = Object.values(err.response.data);
-              alert("Error en inclusión de datos financieros");
+              // alert("Error en inclusión de datos financieros");
               // return { valid: false, message:"Error en inclusión de datos financieros" };
             }
         } else {
           // se...
             const errorMsg = Object.values(err.response.data);
-            alert("Error en inicio de sessión");
+            // alert("Error en inicio de sessión");
             // return { valid: false, message:"Error en actualización de datos financieros" };
           }
         }
@@ -286,12 +286,12 @@ export default function Update () {
     
     // busca a empresa na base de dados 
     try {
-    alert(companyData.companyId);
+    // alert(companyData.companyId);
     const response = await api.get ('/companies', { headers: { Authorization: companyData.companyId }})
       try {
         const data =  companyData  ;
         const response = await api.put ('/companies', data);
-        alert("--alteracao deu certo");
+        // alert("--alteracao deu certo");
         return { valid: true, message:"Éxito en actualización de empresa" };
       } catch (err) {
           const errorMsg = Object.values(err.response.data);
@@ -311,25 +311,25 @@ export default function Update () {
 
           const data =  companyData  ;
           const response = await api.post('/companies', data );
-          alert("--inclusao deu certo");
+          // alert("--inclusao deu certo");
           return { valid: true, message:"Éxito en inclusión de la empresa" };
           // se nao conseguiu, ve a msg de erro
         } catch (err) {
             const errorMsg = Object.values(err.response.data);
-            alert("Error en inclusión de solcitud-Empresa");
+            // alert("Error en inclusión de solcitud-Empresa");
             return { valid: false, message:"Error en inclusión de empresa" };
           }
       } else {
         // se...
           const errorMsg = Object.values(err.response.data);
-          alert("Error en inicio de sessión");
+          // alert("Error en inicio de sessión");
           return { valid: false, message:"Error en actualización de empresa" };
         }
       }
   }
 
   function handleCreate() {
-    alert("entrou em handleCreate");
+    // alert("entrou em handleCreate");
     const result = handleCompany();
     if (result) {   // DEVERIA RETORNAR O OK DO BACKEND.....
       for (let i = 0; i < financialData.length; i++){
@@ -339,12 +339,12 @@ export default function Update () {
         handleFinancialsQtr(i);
       }  
     } else{
-      alert("--handleCompany no devolvio valid = true");
+      // alert("--handleCompany no devolvio valid = true");
     };
   }
 
   async function getYFData(){
-    const companiesList = ['JPM','BAC','TSLA'];
+    const companiesList = ['MMM','AOS','ABT','ABBV','AFL','APD','ALB','AMCR','ADM','T','ATO','ADP','BDX','CAH','CAT','CB','CINF','CTAS','CLX','CL','ED','DOV','ECL','EMR','ESS','EXPD','FRT','BEN','GD','GPC','HRL','ITW','IBM','KMB','LEG','LIN','LOW','MKC','MCD','MDT','NEE','NUE','PNR','PBCT','PPG','PG','ROP','SPGI','SHW','SWK','SYY','TROW','TGT','VFC','GWW','WBA','WMT','WST'];
     for (let i = 0; i < companiesList.length; i++) {
       var companySymbol = companiesList[i];
       var options = {

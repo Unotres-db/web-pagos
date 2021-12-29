@@ -18,18 +18,18 @@ const mainTheme = createTheme ({
         size:'small',
       }
     },
-    MuiInputLabel: {   // Name of the component / style sheet
-      root: {              // Name of the rule
+    MuiInputLabel: {
+      root: {
         color: '#808080',
-        "&$focused": {    // increase the specificity for the pseudo class
+        "&$focused": {
           color: "#1C1C49"
         },
         fontSize:'12px',
       },
-    },   //MuiInputLabel
+    },  
     MuiFilledInput:{
-      root: { // Name of the rule
-        color: "#1C1C49", //#1C1C49
+      root: { 
+        color: "#1C1C49", 
         fontSize:'14px',
         backgroundColor: "white",
         "&:hover": {
@@ -40,14 +40,14 @@ const mainTheme = createTheme ({
           color:"blue",
           backgroundColor: "white"
         },
-        "&$disabled": { // increase the specificity for the pseudo class
+        "&$disabled": {
           color:"#1C1C49",
           backgroundColor: "white"
         },  
       }
-      }, // MuiFilledInput
+      },
       MuiInput:{
-        root: { // Name of the rule
+        root: { 
           color: "344955", //#1C1C49
           backgroundColor: "white",
          
@@ -55,11 +55,11 @@ const mainTheme = createTheme ({
             color:"#1C1C49",
             backgroundColor:"#D3D3D3",
           },
-          "&$focused": { // increase the specificity for the pseudo class
+          "&$focused": { 
             color:"blue",
             backgroundColor: "white"
           },
-          "&$disabled": { // increase the specificity for the pseudo class
+          "&$disabled": { 
             color:"#1C1C49",
             backgroundColor: "white"
           },  
@@ -78,6 +78,43 @@ const mainTheme = createTheme ({
         fontSize:11
       },
     },
+    MuiTableCell:{
+      root:{
+        MuiTableCell:{
+          body:{
+            fontsize:10
+          }
+        }
+      }
+    },
+    MuiTableSortLabel: {
+      root: {
+        color: "white",
+        // if you want to have icons visible permanently
+        '& $icon': {
+          opacity: 1,
+          color: "gray"
+        },
+
+        "&:hover": {
+          color: "#F9AA33",
+
+          '&& $icon': {
+            opacity: 1,
+            color: "white"
+          },
+        },
+        "&$active": {
+          color: "#F9AA33",
+
+          // && instead of & is a workaround for https://github.com/cssinjs/jss/issues/1045
+          '&& $icon': {
+            opacity: 1,
+            color: "#F9AA33"
+          },
+        },
+      },
+    }
     },   //overrides
 });
 
