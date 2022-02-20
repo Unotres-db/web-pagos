@@ -1,17 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { CssBaseline } from '@material-ui/core';
-
 import App from './App';
 
-{/* <React.StrictMode>
-</React.StrictMode>  */}
 ReactDOM.render(
- 
- 
-
-    // <CssBaseline />
+  <React.StrictMode>  
+    <CssBaseline />
     <App />,
+  </React.StrictMode>,
   document.getElementById('root')
- 
 );

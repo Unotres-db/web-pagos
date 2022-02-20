@@ -82,40 +82,36 @@ export default function DividendYield (){
       { value: 9, label: '9%'},
       { value: 10, label: '10%'},
     ];
-    const [ companiesList, setCompaniesList ] = useState([]); 
-    const [ minimumYield, setMinimumYield] = useState(1.55);
+    const companiesListForState =[
+      {companyId:"VALE", shortName:"Vale",dividendRate:10,regularMarketPrice: 50,dividendYield:0.50},
+      {companyId:"PBR", shortName:"Petrobras",dividendRate:8,regularMarketPrice: 100,dividendYield:0.08},
+      {companyId:"IBM", shortName:"Intl Biz Machs",dividendRate:5,regularMarketPrice: 100,dividendYield:0.05},
+      {companyId:"XOM", shortName:"Exxon",dividendRate:2,regularMarketPrice: 100,dividendYield:0.03},
+      {companyId:"CVX", shortName:"Chevron",dividendRate:2,regularMarketPrice: 200,dividendYield:0.01},
+    ]
+
+    // let companiesList = []; 
+    const [ minimumYield, setMinimumYield] = useState(1.78);
+    const [ companiesList, setCompaniesList] = useState([]);
 
     useEffect ( ()=> {
-      api.get('dividendyield').then (response => {
-        setCompaniesList(response.data);
-        // console.log(response.data);
-      }).catch (function (err){
-        if (err.response) {
-          const errorMsg = Object.values(err.response.data);
-          alert("warning - Error en acceso a base de datos" + errorMsg)
-        } else if(err.request) {
-            alert("warning - Error en acceso a servidor")
-          } else {
-              alert("warning - Error en acceso a servidor")
-            }
-      });
-    },[])
+      setCompaniesList(companiesListForState);
+      console.log(companiesList);
 
-    useEffect ( ()=> {
-      api.get('dividendyield').then (response => {
-        var allCompanies = response.data;
-        var filteredList = allCompanies.filter(company => (company.dividendYield*100) > minimumYield)
-        setCompaniesList(filteredList);
-      }).catch (function (err){
-        if (err.response) {
-          const errorMsg = Object.values(err.response.data);
-          alert("warning - Error en acceso a base de datos" + errorMsg)
-        } else if(err.request) {
-            alert("warning - Error en acceso a servidor")
-          } else {
-              alert("warning - Error en acceso a servidor")
-            }
-      });
+    //   api.get('dividendyield').then (response => {
+    //     const allCompanies = response.data;
+    //     setCompaniesList(allCompanies.filter(company => (company.dividendYield * 100) > minimumYield));
+    //   }).catch (function (err){
+    //     if (err.response) {
+    //       const errorMsg = Object.values(err.response.data);
+    //       alert("warning - Error en acceso a base de datos" + errorMsg)
+    //     } else if(err.request) {
+    //         alert("warning - Error en acceso a servidor")
+    //       } else {
+    //           alert("warning - Error en acceso a servidor")
+    //         }
+    //   });
+
     },[minimumYield])
 
     return (
@@ -124,12 +120,6 @@ export default function DividendYield (){
     <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}}  className={classes.container}>
 
       <Grid item xs={12} style = {{ minHeight: '69px'}} /> 
-
-      {/* <Grid item xs={12} style = {{ width: '100%'}} >
-        <Box className={classes.titleStyle}>      
-          <Typography align="center" variant="h6" ><b>Dividend Yield</b></Typography>
-        </Box>
-      </Grid> */}
 
       <Grid item container direction="row" spacing={1}>
   
@@ -144,7 +134,14 @@ export default function DividendYield (){
 
           <Paper className={classes.TableContainerStyle} >
             {/* <TableDividendYield companiesList={companiesList}/> */}
-            <TableGrahamModel companiesList={companiesList}/>
+            {/* {companiesList.map (company => (
+              <Typography>{company.companyId}</Typography>
+            ))}
+            {marks.map (mark => (
+              <Typography>{mark.label}</Typography>
+            ))} */}
+            {/* <TableGrahamModel companiesList={companiesList} setCompaniesList={setCompaniesList}  /> */}
+            <TableGrahamModel companiesList={companiesList} />
 
             {/* <TableGrahamModel /> */}
           </Paper>  
@@ -155,8 +152,8 @@ export default function DividendYield (){
             <Typography align="center" variant="subtitle2" style = {{color:"#344955"}} gutterBottom><b>Filter Options</b></Typography> 
               <Button className={classes.buttonStyle} size="medium" fullWidth>Minimum Dividend Yield</Button>
               <DiscreteSliderLabel marks={marks} minimumYield={minimumYield} setMinimumYield={setMinimumYield}/>  
-            <Typography variant="subtitle2" gutterBottom>Treasury 10 years: 1.55%</Typography>
-            <Typography variant="subtitle2">Inflation USA, CPI last 12 months: 3.5%</Typography>
+            <Typography variant="caption" paragraph >Treasury 10 years: 1.78%</Typography>
+            <Typography variant="caption">Inflation USA, CPI last 12 months: 6.8%</Typography>
           </Paper>
         </Grid>
       </Grid>

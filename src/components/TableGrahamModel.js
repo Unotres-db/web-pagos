@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { useState, useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
 import { Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from '@material-ui/core';
@@ -29,37 +29,6 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
 
 }));
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -124,23 +93,79 @@ TablePaginationActions.propTypes = {
 
 export default function TableGrahamModel({companiesList}) {
   const classes = useStyles();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(15);
-
-  const [order, setOrder] = useState('desc');
-  const [orderBy, setOrderBy] = useState('dividendYield');
-  const [selected, setSelected] = useState([]);
-
+  const [ page, setPage ] = useState(0);
+  const [ rowsPerPage, setRowsPerPage ] = useState(15);
+  const [ orderDirection, setOrderDirection ] = useState('desc');
+  const [ orderBy, setOrderBy ] = useState('dividendYield');
+  
+  useEffect ( ()=> {
+    console.log(companiesList);
+    // changeOrder();
+    // let arrayOfCompanies = companiesList;
+    // alert ("--entrou em useEffect " + orderBy + " " + orderDirection);
+    let arrayOfCompanies = companiesList;
+    if (orderBy==="dividendYield"){
+      if (orderDirection === 'desc') {
+        companiesList.sort(function (a, b) {
+          if (a.dividendYield > b.dividendYield) {
+            return 1;
+          }
+          if (a.dividendYield < b.dividendYield) {
+            return -1;
+          }
+          return 0;
+        });
+      } else if (orderDirection === 'asc'){
+        companiesList.sort(function (a, b) {
+          if (a.dividendYield < b.dividendYield) {
+            return 1;
+          }
+          if (a.dividendYield > b.dividendYield) {
+            return -1;
+          }
+          return 0;
+          });
+        }
+      // console.log(companiesList);  
+    }
+    else {
+      if (orderDirection === 'desc') {
+        companiesList.sort(function (a, b) {
+          if (a.shortName > b.shortName) {
+            return 1;
+          }
+          if (a.shortName < b.shortName) {
+            return -1;
+          }
+          return 0;
+        });
+      } else if (orderDirection === 'asc'){
+        companiesList.sort(function (a, b) {
+          if (a.shortName < b.shortName) {
+            return 1;
+          }
+          if (a.shortName > b.shortName) {
+            return -1;
+          }
+          return 0;
+          });
+        }
+    }
+    // setCompaniesList(arrayOfCompanies);
+  },[orderDirection, orderBy])
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const isAscending = (orderBy === property && orderDirection === 'asc');
+    setOrderDirection(isAscending ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
+  const createSorthandler=(property) => (event) => {
+    handleRequestSort(event, property);
+  }
+  
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - companiesList.length) : 0;
+  var emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - companiesList.length) : 0;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -151,27 +176,35 @@ export default function TableGrahamModel({companiesList}) {
     setPage(0);
   };
 
-
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} size="small" aria-label="stycky header">
         <TableHead className={classes.TableHeader}>
           <TableRow >
-            <TableCell className={classes.TableTitle} align="left">
-              <TableSortLabel active={false} direction={'asc'} >Company</TableSortLabel>
-            </TableCell>
+            {/* <TableCell className={classes.TableTitle} align="left" key="company">
+              <TableSortLabel 
+                active={orderBy==="company"} 
+                direction={orderBy==="company" ? orderDirection : 'asc'} 
+                onClick={createSorthandler("company")}
+                >Company</TableSortLabel>
+            </TableCell> */}
+            <TableCell className={classes.TableTitle} align="left">Company</TableCell>
             <TableCell className={classes.TableTitle} align="right">Symbol</TableCell>
-            <TableCell className={classes.TableTitle} align="right">Dividend </TableCell>
-            <TableCell className={classes.TableTitle} align="right">Price</TableCell>
-            <TableCell className={classes.TableTitle} align="right" >
-              <TableSortLabel active={true} direction={'desc'} >Dividend Yield</TableSortLabel>
+            <TableCell className={classes.TableTitle} align="right">Dividend</TableCell>
+            <TableCell className={classes.TableTitle} align="right">Stock Price</TableCell>
+            <TableCell className={classes.TableTitle} align="right" key="dividendYield" >
+              <TableSortLabel 
+                active={orderBy==="dividendYield"} 
+                direction={orderBy==="dividendYield" ? orderDirection : 'desc'} 
+                onClick={createSorthandler("dividendYield")}
+                >Dividend Yield</TableSortLabel>
             </TableCell>
 
           </TableRow>
         </TableHead>
         <TableBody>
-          {(rowsPerPage > 0
-            ? companiesList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          {(rowsPerPage > 0 ? 
+            companiesList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : companiesList
           ).map((company) => (
             <TableRow key={company.companyId}>
@@ -182,7 +215,6 @@ export default function TableGrahamModel({companiesList}) {
               <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(company.dividendRate)}</TableCell>
               <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(company.regularMarketPrice)}</TableCell>
               <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(company.dividendYield)}</TableCell>
-
             </TableRow>
           ))}
           {/* {emptyRows > 0 && (

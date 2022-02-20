@@ -82,7 +82,7 @@ const mainTheme = createTheme ({
       root:{
         MuiTableCell:{
           body:{
-            fontsize:10
+            fontsize:8
           }
         }
       }
