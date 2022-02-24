@@ -50,7 +50,6 @@ const mainTheme = createTheme ({
         root: { 
           color: "344955", //#1C1C49
           backgroundColor: "white",
-         
           "&:hover": {
             color:"#1C1C49",
             backgroundColor:"#D3D3D3",
@@ -72,6 +71,11 @@ const mainTheme = createTheme ({
     },
     MuiStepLabel:{
       fontSize:9
+    },
+    MuiFormControlLabel:{
+      label:{
+        fontSize:11
+      } 
     },
     MuiSlider:{
       markLabel : {

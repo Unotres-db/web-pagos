@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
 
-import { TextField, Container, Grid, Paper, Box, Typography, Button } from '@material-ui/core';
+import { TextField, Container, Grid, Paper, Box, Typography, Button, Checkbox, FormGroup, FormControlLabel } from '@material-ui/core';
 // import Autocomplete from '@mui/material/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 
-import api from '../services/api';
-import useForm from '../hooks/useForm';
+// import api from '../services/api';
+// import useForm from '../hooks/useForm';
 
 import Header from '../components/Header'; 
 import FormAssumptions from '../components/FormAssumptions';
-import TableDCFAssumptions from '../components/TableDCFAssumptions';
+import FormCAPMAssumptions from '../components/FormCAPMAssumptions';
+// import TableDCFAssumptions from '../components/TableDCFAssumptions';
 import TableDCFFinancials from '../components/TableDCFFinancials';
 import TableDCFValuation from '../components/TableDCFValuation';
 import ChartRevenueFcff from '../components/ChartRevenueFcff';
 
 // import logoXOM from '../assets/logoxom.png';
-import picExxon from '../assets/logoxom.png';
+// import picExxon from '../assets/logoxom.png';
 import useValuation from '../hooks/useValuation';
 
 const useStyles = makeStyles( (mainTheme) => ({
@@ -86,6 +87,7 @@ const useStyles = makeStyles( (mainTheme) => ({
 export default function DiscCashFlow (){
 
   useEffect (()=> {
+  // alert ("useEffect-DiscCashFlow");
   //   // api.get('dividendyield').then (response => {
   //   //   const allCompanies = response.data;
   //   //   setCompaniesList(allCompanies.filter(company => (company.dividendYield * 100) > minimumYield));
@@ -101,18 +103,14 @@ export default function DiscCashFlow (){
   //   // });
     // calcFutureCashFlow();
     calcValuation();
-  
+ 
   },[])
 
-  // useEffect (()=> {
-  //   alert("useEffect DiscCashFlow [assumptions]");
-
-    // calcFutureCashFlow();
-  // },[assumptions])
-
   const classes = useStyles();
-  const [ assumptions, setAssumptions ] = useState({revenueGrowth:10.5, marginTarget:10.8, opexGrowth:2.3, otherGrowth:0,fcffGrowthRate:12,taxRate:0.25 , discountRate:10, capexPercentage:0.15, workingCapitalChangesPercentage:0.20, wacc: 0.1, perpetualGrowthRate: 0.03});
-  // const [ freeCashFlow, setFreeCashFlow ] = useState([{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0}]);
+  const [ isCheckedDescOrder, setIsCheckedDescOrder] = useState(true);
+  const [ isCheckedShowIncStatement, setIsCheckedShowIncStatement] = useState(true);
+  const [ isCheckedShowPreviousYears, setIsCheckedShowPreviousYears] = useState(true);
+  const [ assumptions, setAssumptions ] = useState({revenueGrowth:10.5, marginTarget:50.0, opexGrowth:2.3, otherGrowth:0,fcffGrowthRate:12,taxRate:25 , discountRate:10, capexPercentage:15, workingCapitalChangesPercentage:15, wacc: 0, perpetualGrowthRate: 0.03, cashFlowDiscretePeriod:0, companyBeta:1.2, riskFreeReturn:0, marketReturn:0, debtEquityRatio:0, costOfDebt:0});
   const [ discountedFreeCashFlow, setDiscountedFreeCashFlow ] = useState([{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0}]);
   const [ valuation, setValuation] = useState({discreteNPV:0, perpetuityValue:0, perpetuityPresentValue:0,enterpriseValue:0, equityValue:0})
   const [ freeCashFlow, setFreeCashFlow] = useState(Array.from({ length: 10 } , () => (
@@ -129,11 +127,15 @@ export default function DiscCashFlow (){
     netIncome: 0,
     ebit: 0,
     capitalExpenditures: 0,
+    cash: 0,
+    shortLongTermDebt:0,
+    longTermDebt:0,
     workingCapitalChanges:0,
     fcff:0 }
   )));
 
-  const [ historicalFinancialData, setHistoricalFinancialData ] = useState([
+  // const [ historicalFinancialData, setHistoricalFinancialData ] = useState([
+    const historicalFinancialData = [
     { 
       year: 2021,
       totalRevenue: 152, 
@@ -151,7 +153,8 @@ export default function DiscCashFlow (){
       cash: 20.45,
       shortLongTermDebt:0.70,
       longTermDebt:6.15,
-      workingCapitalChanges:-1
+      workingCapitalChanges:-1,
+      fcff:16.44
     },
     {
       year: 2020,
@@ -170,7 +173,8 @@ export default function DiscCashFlow (){
       cash: 10.32,
       shortLongTermDebt:0.65,
       longTermDebt:6.05,
-      workingCapitalChanges:-1
+      workingCapitalChanges:-1,
+      fcff:11.38
     },
     {
       year: 2019,
@@ -189,7 +193,8 @@ export default function DiscCashFlow (){
       cash: 8.78,
       shortLongTermDebt:0.60,
       longTermDebt:5.95,
-      workingCapitalChanges:-1
+      workingCapitalChanges:-1,
+      fcff: 7.20
     },
     {
       year: 2018,
@@ -208,85 +213,13 @@ export default function DiscCashFlow (){
       cash: 5.78,
       shortLongTermDebt:0.50,
       longTermDebt:5.90,
-      workingCapitalChanges:-1
-    },
-    { 
-      year: 2017,
-      totalRevenue: 152, 
-      costOfRevenue: -112.39,
-      grossProfit: 39.69,
-      totalOperatingExpenses: -14.05,
-      depreciation: -6.5,
-      interestExpense: -1.75,
-      other: 1.52,
-      incomeBeforeTax: 18.91,
-      incomeTaxExpense: -4.73, 
-      netIncome: 14.19,
-      ebit: 20.66,
-      capitalExpenditures: -5.0,
-      cash: 20.45,
-      shortLongTermDebt:0.70,
-      longTermDebt:6.15,
-      workingCapitalChanges:-1
-    },
-    {
-      year: 2016,
-      totalRevenue: 132.25, 
-      costOfRevenue: -100.35,
-      grossProfit: 31.90,
-      totalOperatingExpenses: -12.54,
-      depreciation: -6,
-      interestExpense: -1.5,
-      other: 1.32,
-      incomeBeforeTax: 13.18,
-      incomeTaxExpense: -3.29, 
-      netIncome: 9.88,
-      ebit:14.68,
-      capitalExpenditures: -5,
-      cash: 10.32,
-      shortLongTermDebt:0.65,
-      longTermDebt:6.05,
-      workingCapitalChanges:-1
-    },
-    {
-      year: 2015,
-      totalRevenue: 115, 
-      costOfRevenue: -89.60,
-      grossProfit: 25.40,
-      totalOperatingExpenses: -11.2,
-      depreciation: -5.5,
-      interestExpense: -1.25,
-      other: 1.15,
-      incomeBeforeTax: 8.60,
-      incomeTaxExpense: -2.15, 
-      netIncome: 6.45,
-      ebit:9.85,
-      capitalExpenditures: -5,
-      cash: 8.78,
-      shortLongTermDebt:0.60,
-      longTermDebt:5.95,
-      workingCapitalChanges:-1
-    },
-    {
-      year: 2014,
-      totalRevenue: 100, 
-      costOfRevenue: -80,
-      grossProfit: 20,
-      totalOperatingExpenses: -10,
-      depreciation: -5,
-      interestExpense: -1,
-      other: 1,
-      incomeBeforeTax: 5,
-      incomeTaxExpense: -1.25, 
-      netIncome: 3.75,
-      ebit:6,
-      capitalExpenditures: -5,
-      cash: 5.78,
-      shortLongTermDebt:0.50,
-      longTermDebt:5.90,
-      workingCapitalChanges:-1
-    }
-  ]);
+      workingCapitalChanges:-1,
+      fcff: 3.75
+    }];
+    
+  // ]);
+
+ 
     const companiesSymbols = [ {symbol: "CVX", CompanyName:"Chevron Corp"},{symbol: "XOM", CompanyName:"Exxon Corp"},{symbol: "PBR", CompanyName:"Petrobras"} ]
     
     // const [chartData, setChartData] = useState({
@@ -294,13 +227,35 @@ export default function DiscCashFlow (){
     //   datasets:[{label:"Revenue", data:historicalFinancialData.map((currElement)=> (currElement.totalRevenue)),
     //   backgroundColor:["gray"],
     // }]});
-    const [chartData, setChartData] = useState({
-      labels:freeCashFlow.map((currElement)=> (currElement.year)),
-      datasets:[{label:"Free Cash Flow", data:freeCashFlow.map((currElement)=> (currElement.fcff)),
-      backgroundColor:["gray"],
-    }]});
+    // const [chartData, setChartData] = useState({
+    //   labels:freeCashFlow.map((currElement)=> (currElement.year)),
+    //   datasets:[{label:"Free Cash Flow", data:freeCashFlow.map((currElement)=> (currElement.fcff)),
+    //   backgroundColor:["gray"],
+    // }]});
     //"#344955"
-    const { calcValuation } = useValuation({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation, setChartData});
+    const { calcValuation } = useValuation({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation, isCheckedDescOrder});
+
+    const handleChangeCheckDescOrder = () => {
+      if (isCheckedDescOrder) {
+        setIsCheckedDescOrder(false);
+      } else {
+        setIsCheckedDescOrder(true);
+      }  
+    };
+    const handleChangeCheckShowIncStatement = () => {
+      if (isCheckedShowIncStatement) {
+        setIsCheckedShowIncStatement(false);
+      } else {
+        setIsCheckedShowIncStatement(true);
+      }  
+    };
+    const handleChangeCheckShowPreviousYears = () => {
+      if (isCheckedShowPreviousYears) {
+        setIsCheckedShowPreviousYears(false);
+      } else {
+        setIsCheckedShowPreviousYears(true);
+      }  
+    };
 
     return (
     <>
@@ -333,7 +288,18 @@ export default function DiscCashFlow (){
               setDiscountedFreeCashFlow={setDiscountedFreeCashFlow}
               valuation={valuation}
               setValuation={setValuation}
-              setChartData={setChartData}
+              // setChartData={setChartData}
+            />
+            <FormCAPMAssumptions 
+              assumptions={assumptions} 
+              setAssumptions={setAssumptions}
+              historicalFinancialData={historicalFinancialData} 
+              freeCashFlow={freeCashFlow} 
+              setFreeCashFlow={setFreeCashFlow}
+              discountedFreeCashFlow={discountedFreeCashFlow}
+              setDiscountedFreeCashFlow={setDiscountedFreeCashFlow}
+              valuation={valuation}
+              setValuation={setValuation}
             />
           </Paper>
         </Grid>  
@@ -341,30 +307,54 @@ export default function DiscCashFlow (){
         <Grid item xs={12} md={6} > 
           <Paper className={classes.TableContainerStyle} >
             <Paper className={classes.CompanyInfo}>
-              <Typography align="center" variant="subtitle3">Exxon Corp (XOM)</Typography>
-              {/* <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={companiesSymbols}
-                sx={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} label="Company" />}
-              /> */}
+              <Typography align="center" variant="subtitle3" style={{height:"30px"}}>Exxon Corp (XOM)</Typography>
+              <FormGroup style={{height:"20px"}}> 
+                <FormControlLabel 
+                    control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
+                    label = "Show Income Statement" 
+                    onChange = {handleChangeCheckShowIncStatement}
+                />
+                <FormControlLabel 
+                  control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
+                  label = "Show previous years" 
+                  onChange = {handleChangeCheckShowPreviousYears}
+                />
+                <FormControlLabel 
+                  control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
+                  label = "Show years in descending order" 
+                  onChange = {handleChangeCheckDescOrder}
+                />
+
+              </FormGroup>
+              {/* <FormGroup>
+                <FormControlLabel 
+                  control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
+                  label = "Show Income Statement" 
+                  onChange = {handleChangeCheckIncStatement}
+                  // style={{backgroundColor:"red"}}
+                />
+              </FormGroup> */}
             </Paper>
             <TableDCFFinancials 
               historyFinancialData={historicalFinancialData} 
               freeCashFlow={freeCashFlow} 
               discountedFreeCashFlow={discountedFreeCashFlow}
+              isCheckedDescOrder={isCheckedDescOrder}
             />
-          </Paper>  
+          </Paper>
         </Grid>
 
-        <Grid item xs={12} md={3} > 
+        <Grid item xs={12} md={3} >
           <Paper className={classes.paperStyle} >
             <TableDCFValuation 
               valuation={valuation} 
               historicalFinancialData={historicalFinancialData} 
             />
-            <ChartRevenueFcff chartData={chartData} />
+            <ChartRevenueFcff 
+              historicalFinancialData={historicalFinancialData}
+              freeCashFlow={freeCashFlow} 
+              isCheckedDescOrder={isCheckedDescOrder}
+            />
           </Paper>
         </Grid>
       </Grid>

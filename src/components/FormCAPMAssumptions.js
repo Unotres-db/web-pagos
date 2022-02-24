@@ -3,7 +3,7 @@ import React from 'react';
 import { Paper, Grid, Tooltip, Typography, Box, TextField, InputAdornment,Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import useForm from '../hooks/useForm';
+// import useForm from '../hooks/useForm';
 import useValuation from '../hooks/useValuation';
 
 const useStyles = makeStyles( (mainTheme) => ({
@@ -23,23 +23,23 @@ const useStyles = makeStyles( (mainTheme) => ({
     fontSize: 11
     }
   }));
-
-
-export default function FormAssumptions ({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation}){
+export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation}){
 
   const { calcValuation } = useValuation({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation});
   const classes = useStyles();
-  
-    return (
+
+  return (
     <>
-    {/* <Box style={{height:"5px"}}/> */}
+        {/* <Box style={{height:"5px"}}/> */}
 
     <TableContainer component={Paper}>
       <Table className={classes.table} size="small" aria-label="stycky header">
         <TableHead className={classes.TableHeader}>
           <TableRow>
-            <TableCell className={classes.TableTitle} align="left">Business Assumptions</TableCell>
+            <Tooltip title="Capital Assets Pricing Model">
+            <TableCell className={classes.TableTitle} align="left">CAPM Assumptions</TableCell>
             {/* <TableCell className={classes.TableTitle} align="right"></TableCell> */}
+            </Tooltip>
           </TableRow>
         </TableHead>
 
@@ -48,70 +48,32 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
             <Grid container>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Revenue Growth Rate (%)"
+                label="Rf: Risk Free Return (%)"
                 size="small"
-                value={assumptions.revenueGrowth}
+                value={assumptions.riskFreeReturn}
                 type="number"
-                onChange = {(e) => setAssumptions(prevState => ({...prevState, revenueGrowth:e.target.value }))}
-                onBlur = {(e) => { calcValuation()}}
+                onChange = {(e) => setAssumptions(prevState => ({...prevState, riskFreeReturn:e.target.value }))}
+                // onBlur = {(e) => { calcValuation()}}
                 variant="filled"
                 fullWidth
-                name="revenueGrowth"
+                name="riskFreeReturn"
                 InputProps={{
                   startAdornment: <InputAdornment position="start">%</InputAdornment>,
                 }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Tooltip title="Estimate Margin for next years">
+              {/* <Tooltip title="Estimate Margin for next years"> */}
                 <TextField
-                  label="Target Margin (%)"
+                  label="Rm: Market Return (%)"
                   size="small"
-                  value={assumptions.marginTarget}
+                  value={assumptions.marketReturn}
                   type="number"
-                  onChange = {(e) => setAssumptions(prevState => ({...prevState,marginTarget:e.target.value }))}
-                  onBlur = {(e) => { calcValuation()}}
+                  onChange = {(e) => setAssumptions(prevState => ({...prevState,marketReturn:e.target.value }))}
+                  // onBlur = {(e) => { calcValuation()}}
                   variant="filled"
                   fullWidth
-                  name="marginTarget"
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">%</InputAdornment>,
-                  }}
-                />
-              </Tooltip>
-            </Grid>
-            </Grid>
-          </TableRow>
-          <TableRow>
-            <Grid container>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Opex Growth Rate (%)"
-                size="small"
-                value={assumptions.opexGrowth}
-                type="number"
-                onChange = {(e) => setAssumptions(prevState => ({...prevState, opexGrowth:e.target.value }))}
-                onBlur = {(e) => { calcValuation()}}
-                variant="filled"
-                fullWidth
-                name="opexGrowth"
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">%</InputAdornment>,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              {/* <Tooltip title="Average Opex Growth (last  4 years): 15%"> */}
-                <TextField
-                  label="Other Inc. Growth Rate (%)"
-                  size="small"
-                  value={assumptions.otherGrowth}
-                  type="number"
-                  onChange = {(e) => setAssumptions(prevState => ({...prevState,otherGrowth:e.target.value }))}
-                  onBlur = {(e) => { calcValuation()}}
-                  variant="filled"
-                  fullWidth
-                  name="otherGrowth"
+                  name="marketReturn"
                   InputProps={{
                     startAdornment: <InputAdornment position="start">%</InputAdornment>,
                   }}
@@ -124,22 +86,60 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
             <Grid container>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Capex Growth Rate (%)"
+                label="Company Beta"
                 size="small"
-                value={assumptions.capexPercentage}
+                value={assumptions.companyBeta}
                 type="number"
-                onChange = {(e) => setAssumptions(prevState => ({...prevState, capexPercentage:e.target.value }))}
+                onChange = {(e) => setAssumptions(prevState => ({...prevState, companyBeta:e.target.value }))}
+                // onBlur = {(e) => { calcValuation()}}
+                variant="filled"
+                fullWidth
+                name="companyBeta"
+                // InputProps={{
+                //   startAdornment: <InputAdornment position="start"></InputAdornment>,
+                // }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              {/* <Tooltip title="Average Opex Growth (last  4 years): 15%"> */}
+                <TextField
+                  label="Debt/Equity Ratio (%)"
+                  size="small"
+                  value={assumptions.debtEquityRatio}
+                  type="number"
+                  onChange = {(e) => setAssumptions(prevState => ({...prevState,debtEquityRatio:e.target.value }))}
+                  // onBlur = {(e) => { calcValuation()}}
+                  variant="filled"
+                  fullWidth
+                  name="debtEquityRatio"
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                  }}
+                />
+              {/* </Tooltip> */}
+            </Grid>
+            </Grid>
+          </TableRow>
+          <TableRow>
+            <Grid container>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Kd: Cost of Debt (%)"
+                size="small"
+                value={assumptions.costOfDebt}
+                type="number"
+                onChange = {(e) => setAssumptions(prevState => ({...prevState, costOfDebt:e.target.value }))}
                 onBlur = {(e) => { calcValuation()}}
                 variant="filled"
                 fullWidth
-                name="capexPercentage"
+                name="costOfDebt"
                 InputProps={{
                   startAdornment: <InputAdornment position="start">%</InputAdornment>,
                 }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Tooltip title="Net Working Capital">
+              {/* <Tooltip title="Ke: Cost of Equity"> */}
                 <TextField
                   label="NWC Growth Rate (%)"
                   size="small"
@@ -154,46 +154,7 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
                     startAdornment: <InputAdornment position="start">%</InputAdornment>,
                   }}
                 />
-              </Tooltip>
-            </Grid>
-            </Grid>
-          </TableRow>
-          <TableRow>
-
-          <Grid container>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Perpetual Growth Rate (%)"
-                size="small"
-                value={assumptions.perpetualGrowthRate}
-                type="number"
-                onChange = {(e) => setAssumptions(prevState => ({...prevState, perpetualGrowthRate:e.target.value }))}
-                onBlur = {(e) => { calcValuation()}}
-                variant="filled"
-                fullWidth
-                name="perpetualGrowthRate"
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">%</InputAdornment>,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Tooltip title="Free cash Flow Discrete Period (in Years)">
-                <TextField
-                  label="FCFF Discrete Period"
-                  size="small"
-                  value={assumptions.cashFlowDiscretePeriod}
-                  type="number"
-                  onChange = {(e) => setAssumptions(prevState => ({...prevState,cashFlowDiscretePeriod:e.target.value }))}
-                  onBlur = {(e) => { calcValuation() }}
-                  variant="filled"
-                  fullWidth
-                  name="cashFlowDiscretePeriod"
-                  // InputProps={{
-                  //   startAdornment: <InputAdornment position="start">Years</InputAdornment>,
-                  // }}
-                />
-              </Tooltip>
+              {/* </Tooltip> */}
             </Grid>
             </Grid>
           </TableRow>

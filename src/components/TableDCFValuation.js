@@ -33,7 +33,7 @@ TableCurrentPrice:{
 
 
 export default function TableDCFValuation ({valuation, historicalFinancialData}){
-  console.log(historicalFinancialData);
+
   const classes = useStyles();
   return (
   <>

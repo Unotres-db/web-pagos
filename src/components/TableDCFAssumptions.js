@@ -45,7 +45,7 @@ export default function TableDCFAssumptions ({fcffGrowthRate, taxRate, discountR
               </TableRow>
               <TableRow>
                   <TableCell align="left" className={classes.TableRows}>Discount Rate </TableCell>
-                  <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(discountRate)}</TableCell>
+                  <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(discountRate/100)}</TableCell>
               </TableRow>
               <TableRow>
                   <TableCell align="left" className={classes.TableRows}>Perpetual Growth Rate </TableCell>
@@ -56,12 +56,11 @@ export default function TableDCFAssumptions ({fcffGrowthRate, taxRate, discountR
                   <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(capexPercentage)}</TableCell>
               </TableRow>
               <TableRow>
-                  <Tooltip title ="Net Working Capital Changes: section of the cash flow statement tracks the net change in operating assets and operating liabilities across a specified period. If the change in NWC is positive, the company collects and holds onto cash earlier" placement="top">
+                  <Tooltip title ="Net Working Capital Changes" placement="top">
                     <TableCell align="left" className={classes.TableRows}>NWC Changes</TableCell>
                   </Tooltip>
                   <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(workingCapitalChangesPercentage)}</TableCell>
               </TableRow>
-
           </TableBody>
       </Table>
   </TableContainer>
