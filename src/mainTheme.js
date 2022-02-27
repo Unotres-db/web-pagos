@@ -24,7 +24,7 @@ const mainTheme = createTheme ({
         "&$focused": {
           color: "#1C1C49"
         },
-        fontSize:'12px',
+        fontSize:'11px',
       },
     },  
     MuiFilledInput:{

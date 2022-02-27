@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles( (mainTheme) => ({
@@ -23,35 +23,76 @@ const useStyles = makeStyles( (mainTheme) => ({
   TableRowsSubtitle : {
     fontSize: 9,
     height: 16,
-    backgroundColor: "#d3d3d3",//light gray
+    backgroundColor: "#d3d3d3",//light gray d3d3d3   3C6E76
     }  
   }));
 
-export default function TableDCFFinancials ({historyFinancialData, freeCashFlow, discountedFreeCashFlow, isCheckedDescOrder}){
+export default function TableDCFFinancials ({historyFinancialData, freeCashFlow, discountedFreeCashFlow, isCheckedDescOrder,isCheckedShowIncStatement, isCheckedShowPreviousYears}){
   const classes = useStyles()
   let combinedArray = [];
-  let emptyFcff = [{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0}] // ---gambiarra.com
   const [financialArray, setFinancialArray] = useState([]);
+
+  function defineColor(index){
+    if (isCheckedShowPreviousYears){
+      if (isCheckedDescOrder){
+        if (index < 5){
+          return "orange";
+        } else {
+          return "whitesmoke";//"#55757A";
+        }
+      } else {
+        if (index < 3){
+          return "whitesmoke"; //"darkgray"
+        } else {
+          return "orange";
+        }
+      }
+    }
+  }
+
+  function defineFontColor(index){
+    if (isCheckedShowPreviousYears){
+      if (isCheckedDescOrder){
+        if (index < 5){
+          return "black";
+        } else {
+          return "#55757A";
+        }
+      } else {
+        if (index < 3){
+          return "#55757A"; //"darkgray"
+        } else {
+          return "black";
+        }
+      }
+    }
+  }
 
   useEffect (()=> {
     if (isCheckedDescOrder){
       for (let i = 0; i < 5 ; i++){
         combinedArray[i] = freeCashFlow[i];
       }; 
-      for (let j = 0; j < 3 ; j++){
-        combinedArray[j+5] = historyFinancialData[j];
-      };
+      if (isCheckedShowPreviousYears) {
+        for (let j = 0; j < 3 ; j++){
+          combinedArray[j+5] = historyFinancialData[j];
+          combinedArray[j+5].discountedFcff = 0;
+        };
+      }
     } 
     else {
-      for (let k = 2; k >= 0 ; k--){
-        combinedArray[Math.abs(k-2)] = historyFinancialData[k];
-      };
+      if (isCheckedShowPreviousYears) {
+        for (let k = 2; k >= 0 ; k--){
+          combinedArray[Math.abs(k-2)] = historyFinancialData[k];
+          combinedArray[Math.abs(k-2)].discountedFcff = 0;
+        };
+      }
       for (let k = 4; k >= 0 ; k--){
         combinedArray[Math.abs(k-4)+4] = freeCashFlow[k];
       };
     }
     setFinancialArray(combinedArray);
-  },[freeCashFlow, isCheckedDescOrder])
+  },[freeCashFlow, isCheckedDescOrder, isCheckedShowPreviousYears])
 
   return (
     <>
@@ -61,15 +102,15 @@ export default function TableDCFFinancials ({historyFinancialData, freeCashFlow,
           <TableRow>
             <TableCell className={classes.TableTitle} align="left">Inc. Statement</TableCell>
   
-            {financialArray.map ((currElement) => (
-              <TableCell className={classes.TableTitle} align="right">{currElement.year}</TableCell>
+            {financialArray.map ((currElement, index) => (
+              <TableCell className={classes.TableTitle} style={{color:defineColor(index)}} align="right">{currElement.year}</TableCell>
               ))}
           </TableRow>
         </TableHead>
         <TableBody>
           <TableRow>
             <TableCell align="left" className={classes.TableRowsSubtitle} style={{ width: "30%" }}>Revenue</TableCell>
-            {financialArray.map ((currElement) => (
+            {financialArray.map ((currElement, index) => (
               <TableCell align="right" className={classes.TableRowsSubtitle} >{Intl.NumberFormat('en-US',{style:'decimal',minimumFractionDigits:1,maximumFractionDigits:1}).format(currElement.totalRevenue)}</TableCell>
             ))}
           </TableRow>
@@ -132,15 +173,15 @@ export default function TableDCFFinancials ({historyFinancialData, freeCashFlow,
     </Table>
   </TableContainer>
   <TableContainer component={Paper}>
-      <Table className={classes.table} size="small" aria-label="stycky header">
-        <TableHead className={classes.TableHeader}>
-          <TableRow>
-            <TableCell className={classes.TableTitle} align="left">Free Cash Flow</TableCell>
-            {financialArray.map ((currElement) => (
-              <TableCell className={classes.TableTitle} align="right">{currElement.year}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
+    <Table className={classes.table} size="small" aria-label="stycky header">
+      <TableHead className={classes.TableHeader}>
+        <TableRow>
+          <TableCell className={classes.TableTitle} align="left" style={{ width: "30%" }}>Free Cash Flow</TableCell>
+          {financialArray.map ((currElement, index) => (
+            <TableCell className={classes.TableTitle} align="right" style={{color:defineColor(index)}}>{currElement.year}</TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
         <TableBody>
           <TableRow>
             <TableCell align="left" className={classes.TableRows}>EBIT</TableCell>
@@ -179,18 +220,18 @@ export default function TableDCFFinancials ({historyFinancialData, freeCashFlow,
             ))}
           </TableRow>
           <TableRow>
-            <TableCell align="left" className={classes.TableRowsSubtitle}>Discounted CF</TableCell>
-            {discountedFreeCashFlow.map ((currElement) => (
-              <TableCell align="right" className={classes.TableRowsSubtitle} >{Intl.NumberFormat('en-US',{style:'decimal',minimumFractionDigits:1,maximumFractionDigits:1}).format(currElement.fcff)}</TableCell>
-            ))}
-            {emptyFcff.map((currElement) =>(
-              <TableCell align="right" className={classes.TableRowsSubtitle} >{Intl.NumberFormat('en-US',{style:'decimal',minimumFractionDigits:0,maximumFractionDigits:0}).format(currElement.fcff)}</TableCell>
-            ))}
+            {/* <Tooltip title="Discounted Free Cash Flow of the Firm"> */}
+              <Tooltip title="Discounted Free Cash Flow of the Firm">
+              <TableCell align="left" className={classes.TableRowsSubtitle}>Discounted CF</TableCell>
+              </Tooltip>
+              {financialArray.map ((currElement) => (
+                <TableCell align="right" className={classes.TableRowsSubtitle} >{Intl.NumberFormat('en-US',{style:'decimal',minimumFractionDigits:1,maximumFractionDigits:1}).format(currElement.discountedFcff)}</TableCell>
+              ))}
+            {/* </Tooltip> */}
           </TableRow>
         </TableBody>
     </Table>
   </TableContainer> 
- 
   </>
   )
 }

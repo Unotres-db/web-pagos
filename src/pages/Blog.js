@@ -55,7 +55,7 @@ export default function Blog () {
         </Box>
       </Grid > 
 
-      <Slide in direction = "up" timeout = {1000}>
+      {/* <Slide in direction = "up" timeout = {1000}> */}
       <Grid item xs={12}>
         <Box className = {classes.paragraphStyle}>
           <Typography align="center" gutterBottom>In this Blog we publish every week content about valuations and Finance in general</Typography>
@@ -69,7 +69,7 @@ export default function Blog () {
           <InstagramIcon className = {classes.iconStyle} />
         </Box>
       </Grid>
-      </Slide>
+      {/* </Slide> */}
 
       <Grid item xs={12} style = {{ minHeight:'2vh'}}/>
       <Grid item xs={12} style = {{ width: '100%'}}>

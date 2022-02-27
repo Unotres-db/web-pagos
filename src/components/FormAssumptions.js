@@ -13,7 +13,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   },
   TableHeader:{
     color: "white",
-    backgroundColor: mainTheme.palette.primary.main
+    backgroundColor:  mainTheme.palette.secondary.main
   },
   TableTitle:{
     color: "white",

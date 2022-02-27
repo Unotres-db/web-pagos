@@ -34,6 +34,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   innerBoxStyle:{
     width: "100%",   
     paddingLeft: "10px",   
+    paddingLeft: "10px",   
     color: "black",
     backgroundColor: "white",
     marginBottom: "1px",
@@ -157,8 +158,8 @@ export default function Books () {
               <Typography variant="subtitle2" gutterBottom><b>Author: </b>{book.author}</Typography>
               <Typography variant="subtitle2" gutterBottom><b>Level: </b>{book.classification}</Typography>
               <Typography variant="subtitle2" gutterBottom><b>Description: </b>{book.description}</Typography>
-              <Button variant="outlined" size="small" disableRipple startIcon={<FileCopyIcon />} className={classes.buttonStyle} style={{justifyContent: 'center',width:'150px'}} onClick={() => handleBuyingBook(book)}>Buy Book</Button>
               <Typography variant="caption" gutterBottom ><b>My comments: </b>{book.mclComments}</Typography>
+              <Button variant="outlined" size="small" disableRipple startIcon={<FileCopyIcon />} className={classes.buttonStyle} style={{justifyContent: 'center',width:'150px'}} onClick={() => handleBuyingBook(book)}>Buy Book</Button>
             </Box>
               <Grid container spacing={0} >
 
@@ -169,9 +170,11 @@ export default function Books () {
           </Paper>
         </Grid>
         ))}
-      <Typography align="center" variant="caption">Note: ValuationWeb is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.</Typography>
+
       </Grid>
-      <Grid style={{height:'8vh'}} />
+      <Box style={{height:"20px"}}/>
+      <Typography align="center" variant="caption">Note: ValuationWeb is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.</Typography>
+      {/* <Grid style={{height:'8vh'}} /> */}
     </Grid>
     </>  
   )

@@ -3,16 +3,17 @@ import React, {useState, useEffect} from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 
-function ChartRevenueFcff ({ historicalFinancialData, freeCashFlow, isCheckedDescOrder }) {
+export default function ChartRevenueFcff ({ historicalFinancialData, freeCashFlow, isCheckedDescOrder }) {
 
   function extractYear(year){
     let textYear = year.toString()
     let finalDigitsYear= textYear.substring(2,4);
     return finalDigitsYear
   }
-
+  
   let combinedArray = [];
-  let chartColors=["#344955","#344955","#344955","#344955","#344955","gray","gray","gray", "gray"];
+  //#F9AA33
+  let chartColors=["#F9AA33","#F9AA33","#F9AA33","#F9AA33","#F9AA33","#3C6E76","#3C6E76","#3C6E76", "#3C6E76"]; //#344955"
   const [ chartData, setChartData] = useState({
     labels:combinedArray.map((currElement)=> (currElement.year)),
     datasets:[{label:"Free Cash Flow", data:combinedArray.map((currElement)=> (currElement.fcff)),
@@ -35,7 +36,7 @@ function ChartRevenueFcff ({ historicalFinancialData, freeCashFlow, isCheckedDes
       for (let k = 4; k >= 0 ; k--){
         combinedArray[Math.abs(k-4)+4] = freeCashFlow[k];
       };
-      chartColors=["gray","gray","gray", "gray","#344955","#344955","#344955","#344955","#344955"];
+      chartColors=["#3C6E76","#3C6E76","#3C6E76", "#3C6E76","#F9AA33","#F9AA33","#F9AA33","#F9AA33","#F9AA33"];
     }
     setChartData({
       labels:combinedArray.map((currElement)=>currElement.year),
@@ -46,9 +47,8 @@ function ChartRevenueFcff ({ historicalFinancialData, freeCashFlow, isCheckedDes
 
     return (
     <>
-    <Bar data = { chartData } />;
+    <Bar data = { chartData } />
     </>
   )
 }
 
-export default ChartRevenueFcff ;

@@ -13,7 +13,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   },
   TableHeader:{
     color: "white",
-    backgroundColor: mainTheme.palette.primary.main
+    backgroundColor: mainTheme.palette.secondary.main
   },
   TableTitle:{
     color: "white",
@@ -25,7 +25,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   }));
 export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation}){
 
-  const { calcValuation } = useValuation({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation});
+  const { calcValuation, calcWacc } = useValuation({assumptions, setAssumptions, freeCashFlow, setFreeCashFlow, discountedFreeCashFlow, setDiscountedFreeCashFlow, historicalFinancialData, valuation, setValuation});
   const classes = useStyles();
 
   return (
@@ -36,10 +36,8 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
       <Table className={classes.table} size="small" aria-label="stycky header">
         <TableHead className={classes.TableHeader}>
           <TableRow>
-            <Tooltip title="Capital Assets Pricing Model">
-            <TableCell className={classes.TableTitle} align="left">CAPM Assumptions</TableCell>
+            <TableCell className={classes.TableTitle} align="left">Cost of Capital Assumptions</TableCell>
             {/* <TableCell className={classes.TableTitle} align="right"></TableCell> */}
-            </Tooltip>
           </TableRow>
         </TableHead>
 
@@ -53,7 +51,7 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
                 value={assumptions.riskFreeReturn}
                 type="number"
                 onChange = {(e) => setAssumptions(prevState => ({...prevState, riskFreeReturn:e.target.value }))}
-                // onBlur = {(e) => { calcValuation()}}
+                onBlur = {(e) => { calcWacc() }}
                 variant="filled"
                 fullWidth
                 name="riskFreeReturn"
@@ -70,7 +68,7 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
                   value={assumptions.marketReturn}
                   type="number"
                   onChange = {(e) => setAssumptions(prevState => ({...prevState,marketReturn:e.target.value }))}
-                  // onBlur = {(e) => { calcValuation()}}
+                  onBlur = {(e) => { calcWacc() }}
                   variant="filled"
                   fullWidth
                   name="marketReturn"
@@ -91,7 +89,7 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
                 value={assumptions.companyBeta}
                 type="number"
                 onChange = {(e) => setAssumptions(prevState => ({...prevState, companyBeta:e.target.value }))}
-                // onBlur = {(e) => { calcValuation()}}
+                onBlur = {(e) => { calcWacc() }}
                 variant="filled"
                 fullWidth
                 name="companyBeta"
@@ -101,17 +99,17 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              {/* <Tooltip title="Average Opex Growth (last  4 years): 15%"> */}
+              {/* <Tooltip title="Cost of Equity using CAPM Model"> */}
                 <TextField
-                  label="Debt/Equity Ratio (%)"
+                  label="Ke: Cost of Equity (%)"
                   size="small"
-                  value={assumptions.debtEquityRatio}
+                  value={assumptions.costOfEquity}
                   type="number"
-                  onChange = {(e) => setAssumptions(prevState => ({...prevState,debtEquityRatio:e.target.value }))}
-                  // onBlur = {(e) => { calcValuation()}}
+                  onChange = {(e) => setAssumptions(prevState => ({...prevState,costOfEquity:e.target.value }))}
+                  onBlur = {(e) => { calcWacc() }}
                   variant="filled"
                   fullWidth
-                  name="debtEquityRatio"
+                  name="costOfEquity"
                   InputProps={{
                     startAdornment: <InputAdornment position="start">%</InputAdornment>,
                   }}
@@ -129,7 +127,7 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
                 value={assumptions.costOfDebt}
                 type="number"
                 onChange = {(e) => setAssumptions(prevState => ({...prevState, costOfDebt:e.target.value }))}
-                onBlur = {(e) => { calcValuation()}}
+                onBlur = {(e) => { calcWacc() }}
                 variant="filled"
                 fullWidth
                 name="costOfDebt"
@@ -141,15 +139,15 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
             <Grid item xs={12} sm={6}>
               {/* <Tooltip title="Ke: Cost of Equity"> */}
                 <TextField
-                  label="NWC Growth Rate (%)"
+                  label="Debt/Equity Ratio (%)"
                   size="small"
-                  value={assumptions.workingcapitalPercentage}
+                  value={assumptions.debtEquityRatio}
                   type="number"
-                  onChange = {(e) => setAssumptions(prevState => ({...prevState,workingcapitalPercentage:e.target.value }))}
-                  onBlur = {(e) => { calcValuation() }}
+                  onChange = {(e) => setAssumptions(prevState => ({...prevState,debtEquityRatio:e.target.value }))}
+                  onBlur = {(e) => { calcWacc() }}
                   variant="filled"
                   fullWidth
-                  name="workingcapitalPercentage"
+                  name="debtEquityRatio"
                   InputProps={{
                     startAdornment: <InputAdornment position="start">%</InputAdornment>,
                   }}

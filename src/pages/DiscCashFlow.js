@@ -13,11 +13,14 @@ import FormCAPMAssumptions from '../components/FormCAPMAssumptions';
 // import TableDCFAssumptions from '../components/TableDCFAssumptions';
 import TableDCFFinancials from '../components/TableDCFFinancials';
 import TableDCFValuation from '../components/TableDCFValuation';
+import TableHistoricalCompanyAverages from '../components/TableHistoricalCompanyAverages';
 import ChartRevenueFcff from '../components/ChartRevenueFcff';
 
 // import logoXOM from '../assets/logoxom.png';
 // import picExxon from '../assets/logoxom.png';
 import useValuation from '../hooks/useValuation';
+import picChevron from '../assets/logocvx.png';
+
 
 const useStyles = makeStyles( (mainTheme) => ({
   contentStyle: {
@@ -51,11 +54,12 @@ const useStyles = makeStyles( (mainTheme) => ({
   paperStyle: {
     position: 'sticky',
     width: "100%",   
-    height:"500px",
+    height:"610px",
     marginLeft:"3px",
     marginRight:"0px",
     color: "white",
-    backgroundColor: mainTheme.palette.secondary.main,
+    // backgroundColor: mainTheme.palette.primary.main,
+    backgroundColor: "#f0f8ff", //"whistesmoke", //"lightgray",
     padding: "10px",
   },
   CompanyInfo: {
@@ -67,11 +71,12 @@ const useStyles = makeStyles( (mainTheme) => ({
   },
   TableContainerStyle: {
     width: "100%",   
-    height:"560px", // vai ser do tamanho do conteudo da tabela
+    height:"610px", // vai ser do tamanho do conteudo da tabela
     marginLeft:"3px",
     marginRight:"0px",
     color: "white",
-    backgroundColor: mainTheme.palette.secondary.main,
+    // backgroundColor: mainTheme.palette.primary.main,
+    backgroundColor: "#f0f8ff", //"whistesmoke", //"lightgray",
     padding: "10px",
   },
   iconStyle: {
@@ -102,15 +107,17 @@ export default function DiscCashFlow (){
   //   //       }
   //   // });
     // calcFutureCashFlow();
+  
     calcValuation();
- 
+    
   },[])
 
   const classes = useStyles();
   const [ isCheckedDescOrder, setIsCheckedDescOrder] = useState(true);
   const [ isCheckedShowIncStatement, setIsCheckedShowIncStatement] = useState(true);
   const [ isCheckedShowPreviousYears, setIsCheckedShowPreviousYears] = useState(true);
-  const [ assumptions, setAssumptions ] = useState({revenueGrowth:10.5, marginTarget:50.0, opexGrowth:2.3, otherGrowth:0,fcffGrowthRate:12,taxRate:25 , discountRate:10, capexPercentage:15, workingCapitalChangesPercentage:15, wacc: 0, perpetualGrowthRate: 0.03, cashFlowDiscretePeriod:0, companyBeta:1.2, riskFreeReturn:0, marketReturn:0, debtEquityRatio:0, costOfDebt:0});
+  const [ assumptions, setAssumptions ] = useState({revenueGrowth:10.5, marginTarget:50.0, opexGrowth:2.3, otherGrowth:0,fcffGrowthRate:12,taxRate:25 , discountRate:10, capexPercentage:15, workingCapitalChangesPercentage:15, wacc: 10, perpetualGrowthRate: 3, cashFlowDiscretePeriod:5, companyBeta:1.2, riskFreeReturn:3, marketReturn:8, debtEquityRatio:30, costOfDebt:5, costOfEquity:0});
+  const [ historicalAverages, setHistoricalAverages ] = useState({revenueGrowthAvg:10.5, marginAvg:50.0, opexGrowthAvg:2.3, otherGrowthAvg:0,fcffGrowthRateAvg:12,taxRateAvg:25, capexGrowthAvg:15, nwcGrowthAvg:15, costOfDebtAvg:0});
   const [ discountedFreeCashFlow, setDiscountedFreeCashFlow ] = useState([{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0}]);
   const [ valuation, setValuation] = useState({discreteNPV:0, perpetuityValue:0, perpetuityPresentValue:0,enterpriseValue:0, equityValue:0})
   const [ freeCashFlow, setFreeCashFlow] = useState(Array.from({ length: 10 } , () => (
@@ -131,7 +138,8 @@ export default function DiscCashFlow (){
     shortLongTermDebt:0,
     longTermDebt:0,
     workingCapitalChanges:0,
-    fcff:0 }
+    fcff:0,
+    discountedFcff:0 }
   )));
 
   // const [ historicalFinancialData, setHistoricalFinancialData ] = useState([
@@ -219,21 +227,8 @@ export default function DiscCashFlow (){
     
   // ]);
 
- 
-    const companiesSymbols = [ {symbol: "CVX", CompanyName:"Chevron Corp"},{symbol: "XOM", CompanyName:"Exxon Corp"},{symbol: "PBR", CompanyName:"Petrobras"} ]
-    
-    // const [chartData, setChartData] = useState({
-    //   labels:historicalFinancialData.map((currElement)=> (currElement.year)),
-    //   datasets:[{label:"Revenue", data:historicalFinancialData.map((currElement)=> (currElement.totalRevenue)),
-    //   backgroundColor:["gray"],
-    // }]});
-    // const [chartData, setChartData] = useState({
-    //   labels:freeCashFlow.map((currElement)=> (currElement.year)),
-    //   datasets:[{label:"Free Cash Flow", data:freeCashFlow.map((currElement)=> (currElement.fcff)),
-    //   backgroundColor:["gray"],
-    // }]});
-    //"#344955"
-    const { calcValuation } = useValuation({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation, isCheckedDescOrder});
+    // const companiesSymbols = [ {symbol: "CVX", CompanyName:"Chevron Corp"},{symbol: "XOM", CompanyName:"Exxon Corp"},{symbol: "PBR", CompanyName:"Petrobras"} ]
+    const { calcValuation } = useValuation({assumptions, setAssumptions, freeCashFlow, setFreeCashFlow, discountedFreeCashFlow, setDiscountedFreeCashFlow, historicalFinancialData, valuation, setValuation, isCheckedDescOrder, historicalAverages, setHistoricalAverages});
 
     const handleChangeCheckDescOrder = () => {
       if (isCheckedDescOrder) {
@@ -268,7 +263,12 @@ export default function DiscCashFlow (){
       <Grid item container direction="row" spacing={1} >
   
         <Grid item xs={12} md={3} >
-          <Paper className={classes.paperStyle} >
+          <Paper className={classes.paperStyle} elevation={6}>
+            <TableHistoricalCompanyAverages 
+              historicalFinancialData={historicalFinancialData}
+              historicalAverages={historicalAverages}
+              setHistoricalAverages={setHistoricalAverages}
+            />
             {/* <Typography align="center" variant="subtitle3">Assumptions:</Typography> */}
             {/* <TableDCFAssumptions 
                 fcffGrowthRate={assumptions.fcffGrowthRate}
@@ -278,6 +278,7 @@ export default function DiscCashFlow (){
                 capexPercentage={assumptions.capexPercentage}
                 workingCapitalChangesPercentage={assumptions.workingCapitalChangesPercentage}
             /> */}
+            <Box style={{height:"5px"}}/>
             <FormAssumptions 
               assumptions={assumptions} 
               setAssumptions={setAssumptions}
@@ -290,6 +291,7 @@ export default function DiscCashFlow (){
               setValuation={setValuation}
               // setChartData={setChartData}
             />
+            <Box style={{height:"5px"}}/>
             <FormCAPMAssumptions 
               assumptions={assumptions} 
               setAssumptions={setAssumptions}
@@ -305,26 +307,48 @@ export default function DiscCashFlow (){
         </Grid>  
 
         <Grid item xs={12} md={6} > 
-          <Paper className={classes.TableContainerStyle} >
+          <Paper className={classes.TableContainerStyle} elevation={6}>
             <Paper className={classes.CompanyInfo}>
-              <Typography align="center" variant="subtitle3" style={{height:"30px"}}>Exxon Corp (XOM)</Typography>
+              <Grid container spacing={2}>
+                <Grid item>
+                  <img src = {picChevron} alt="Figma" className={classes.logoStyle} style={{height:30}} /> 
+                </Grid>
+                <Grid item>
+                  <Typography align="center" variant="subtitle3" style={{height:"30px"}}>Chevron Corp.(CVX)</Typography>
+                </Grid>
+              </Grid>
               <FormGroup style={{height:"20px"}}> 
-                <FormControlLabel 
-                    control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
-                    label = "Show Income Statement" 
-                    onChange = {handleChangeCheckShowIncStatement}
-                />
-                <FormControlLabel 
-                  control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
-                  label = "Show previous years" 
-                  onChange = {handleChangeCheckShowPreviousYears}
-                />
-                <FormControlLabel 
-                  control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
-                  label = "Show years in descending order" 
-                  onChange = {handleChangeCheckDescOrder}
-                />
+                <Grid container >
+                  <Grid item xs={12} md={4} >
+                    <Box display="flex" justifyContent="flex-start">
+                      <FormControlLabel 
+                          control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
+                          label = "Show Income Statement" 
+                          onChange = {handleChangeCheckShowIncStatement}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={4} >
+                  <Box display="flex" justifyContent="center">
+                    <FormControlLabel 
+                      control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
+                      label = "Show previous years" 
+                      onChange = {handleChangeCheckShowPreviousYears}
+                    />
+                      </Box>
+                  </Grid>
+                  <Grid item xs={12} md={4} >
+                  <Box display="flex" justifyContent="flex-end">
 
+                    <FormControlLabel 
+                      control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
+                      label = "Show years in descending order" 
+                      onChange = {handleChangeCheckDescOrder}
+                    />
+                    </Box>
+                  </Grid>
+
+                </Grid>
               </FormGroup>
               {/* <FormGroup>
                 <FormControlLabel 
@@ -340,16 +364,20 @@ export default function DiscCashFlow (){
               freeCashFlow={freeCashFlow} 
               discountedFreeCashFlow={discountedFreeCashFlow}
               isCheckedDescOrder={isCheckedDescOrder}
+              isCheckedShowIncStatement={isCheckedShowIncStatement}
+              isCheckedShowPreviousYears={isCheckedShowPreviousYears}
             />
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={3} >
-          <Paper className={classes.paperStyle} >
+          <Paper className={classes.paperStyle} elevation={6}>
             <TableDCFValuation 
+              assumptions={assumptions}
               valuation={valuation} 
               historicalFinancialData={historicalFinancialData} 
             />
+            <Box style={{height:"40px"}}/>
             <ChartRevenueFcff 
               historicalFinancialData={historicalFinancialData}
               freeCashFlow={freeCashFlow} 
