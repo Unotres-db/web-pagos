@@ -3,8 +3,8 @@ import React from 'react';
 import { Paper, Grid, Tooltip, Typography, Box, TextField, InputAdornment,Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import useForm from '../hooks/useForm';
-import useValuation from '../hooks/useValuation';
+// import useForm from '../hooks/useForm';
+// import useValuation from '../hooks/useValuation';
 
 const useStyles = makeStyles( (mainTheme) => ({
   table: {
@@ -12,7 +12,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     maxHeight: 900
   },
   TableHeader:{
-    color: "white",
+    color:  "white",
     backgroundColor:  mainTheme.palette.secondary.main
   },
   TableTitle:{
@@ -24,12 +24,21 @@ const useStyles = makeStyles( (mainTheme) => ({
     }
   }));
 
+export default function FormBusinessAssumptions ({assumptions, setAssumptions}){
+  // export default function FormBusinessAssumptions ({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation, calcValuation}){
 
-export default function FormAssumptions ({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation}){
+  // const { calcValuation } = useValuation({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData, valuation, setValuation});
+  const classes = useStyles();  
 
-  const { calcValuation } = useValuation({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation});
-  const classes = useStyles();
-  
+  const handleChange = (e) => {
+    setAssumptions (prevState => ({...prevState, [e.target.name]:e.target.value }))
+    // setAssumptions(parseFloat(event.target.value));
+  }; 
+
+  const handleBlur = (e) => {
+    // calcValuation();
+  }; 
+
     return (
     <>
     {/* <Box style={{height:"5px"}}/> */}
@@ -51,9 +60,12 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
                 label="Revenue Growth Rate (%)"
                 size="small"
                 value={assumptions.revenueGrowth}
-                type="number"
-                onChange = {(e) => setAssumptions(prevState => ({...prevState, revenueGrowth:e.target.value }))}
-                onBlur = {(e) => { calcValuation()}}
+                // type="number"
+                // onChange = {(e) => setAssumptions(prevState => ({...prevState, revenueGrowth:e.target.value }))}
+                // onBlur = {(e) => { calcValuation()}}
+                // onChange = {(e) => setAssumptions(prevState => ({...prevState, revenueGrowth:e.target.value }))}
+                onChange={(e) => { handleChange (e)}}
+                onBlur={(e) => { handleBlur (e)}}
                 variant="filled"
                 fullWidth
                 name="revenueGrowth"
@@ -69,8 +81,10 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
                   size="small"
                   value={assumptions.marginTarget}
                   type="number"
-                  onChange = {(e) => setAssumptions(prevState => ({...prevState,marginTarget:e.target.value }))}
-                  onBlur = {(e) => { calcValuation()}}
+                  // onChange = {(e) => setAssumptions(prevState => ({...prevState,marginTarget:e.target.value }))}
+                  onChange={(e) => { handleChange (e)}}
+                  // onBlur = {(e) => { calcValuation()}}
+                  onBlur={(e) => { handleBlur (e) }}
                   variant="filled"
                   fullWidth
                   name="marginTarget"
@@ -90,8 +104,9 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
                 size="small"
                 value={assumptions.opexGrowth}
                 type="number"
-                onChange = {(e) => setAssumptions(prevState => ({...prevState, opexGrowth:e.target.value }))}
-                onBlur = {(e) => { calcValuation()}}
+                // onChange = {(e) => setAssumptions(prevState => ({...prevState, opexGrowth:e.target.value }))}
+                onChange={(e) => { handleChange (e)}}
+                // onBlur = {(e) => { calcValuation()}}
                 variant="filled"
                 fullWidth
                 name="opexGrowth"
@@ -103,15 +118,16 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
             <Grid item xs={12} sm={6}>
               {/* <Tooltip title="Average Opex Growth (last  4 years): 15%"> */}
                 <TextField
-                  label="Other Inc. Growth Rate (%)"
+                  label="Interest Growth Rate (%)"
                   size="small"
-                  value={assumptions.otherGrowth}
+                  value={assumptions.interestGrowth}
                   type="number"
-                  onChange = {(e) => setAssumptions(prevState => ({...prevState,otherGrowth:e.target.value }))}
-                  onBlur = {(e) => { calcValuation()}}
+                  // onChange = {(e) => setAssumptions(prevState => ({...prevState,interestGrowth:e.target.value }))}
+                  onChange={(e) => { handleChange (e)}}
+                  // onBlur = {(e) => { calcValuation()}}
                   variant="filled"
                   fullWidth
-                  name="otherGrowth"
+                  name="interestGrowth"
                   InputProps={{
                     startAdornment: <InputAdornment position="start">%</InputAdornment>,
                   }}
@@ -123,16 +139,58 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
           <TableRow>
             <Grid container>
             <Grid item xs={12} sm={6}>
+              {/* <Tooltip title="Average Opex Growth (last  4 years): 15%"> */}
+                <TextField
+                  label="Other Inc. Growth Rate (%)"
+                  size="small"
+                  value={assumptions.otherGrowth}
+                  type="number"
+                  // onChange = {(e) => setAssumptions(prevState => ({...prevState,otherGrowth:e.target.value }))}
+                  onChange={(e) => { handleChange (e)}}
+                  // onBlur = {(e) => { calcValuation()}}
+                  variant="filled"
+                  fullWidth
+                  name="otherGrowth"
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                  }}
+                />
+              {/* </Tooltip> */}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Inc. Taxes Rate (%)"
+                size="small"
+                value={assumptions.taxRate}
+                type="number"
+                // onChange = {(e) => setAssumptions(prevState => ({...prevState, taxRate:e.target.value }))}
+                onChange={(e) => { handleChange (e)}}
+                // onBlur = {(e) => { calcValuation()}}
+                variant="filled"
+                fullWidth
+                name="taxRate"
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                }}
+              />
+            </Grid>
+            </Grid>
+          </TableRow>
+
+          <TableRow>
+            <Grid container>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Capex Growth Rate (%)"
                 size="small"
-                value={assumptions.capexPercentage}
+                value={assumptions.capexGrowth}
                 type="number"
-                onChange = {(e) => setAssumptions(prevState => ({...prevState, capexPercentage:e.target.value }))}
-                onBlur = {(e) => { calcValuation()}}
+                // onChange = {(e) => setAssumptions(prevState => ({...prevState, capexGrowth:e.target.value }))}
+                onChange={(e) => { handleChange (e)}}
+                // onBlur = {(e) => { calcValuation()}}
                 variant="filled"
                 fullWidth
-                name="capexPercentage"
+                name="capexGrowth"
                 InputProps={{
                   startAdornment: <InputAdornment position="start">%</InputAdornment>,
                 }}
@@ -143,13 +201,14 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
                 <TextField
                   label="NWC Growth Rate (%)"
                   size="small"
-                  value={assumptions.workingcapitalPercentage}
+                  value={assumptions.nwcGrowth}
                   type="number"
-                  onChange = {(e) => setAssumptions(prevState => ({...prevState,workingcapitalPercentage:e.target.value }))}
-                  onBlur = {(e) => { calcValuation() }}
+                  // onChange = {(e) => setAssumptions(prevState => ({...prevState,nwcGrowth:e.target.value }))}
+                  onChange={(e) => { handleChange (e)}}
+                  // onBlur = {(e) => { calcValuation() }}
                   variant="filled"
                   fullWidth
-                  name="workingcapitalPercentage"
+                  name="nwcGrowth"
                   InputProps={{
                     startAdornment: <InputAdornment position="start">%</InputAdornment>,
                   }}
@@ -158,8 +217,8 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
             </Grid>
             </Grid>
           </TableRow>
+    
           <TableRow>
-
           <Grid container>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -167,8 +226,9 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
                 size="small"
                 value={assumptions.perpetualGrowthRate}
                 type="number"
-                onChange = {(e) => setAssumptions(prevState => ({...prevState, perpetualGrowthRate:e.target.value }))}
-                onBlur = {(e) => { calcValuation()}}
+                // onChange = {(e) => setAssumptions(prevState => ({...prevState, perpetualGrowthRate:e.target.value }))}
+                onChange={(e) => { handleChange (e)}}
+                // onBlur = {calcValuation}
                 variant="filled"
                 fullWidth
                 name="perpetualGrowthRate"
@@ -184,8 +244,10 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
                   size="small"
                   value={assumptions.cashFlowDiscretePeriod}
                   type="number"
-                  onChange = {(e) => setAssumptions(prevState => ({...prevState,cashFlowDiscretePeriod:e.target.value }))}
-                  onBlur = {(e) => { calcValuation() }}
+                  // onChange = {(e) => setAssumptions(prevState => ({...prevState,cashFlowDiscretePeriod:e.target.value }))}
+                  onChange={(e) => { handleChange (e)}}
+                  // onBlur = {calcValuation}
+                  // onBlur = {(e) => { calcValuation() }}
                   variant="filled"
                   fullWidth
                   name="cashFlowDiscretePeriod"
@@ -197,6 +259,7 @@ export default function FormAssumptions ({assumptions, setAssumptions,freeCashFl
             </Grid>
             </Grid>
           </TableRow>
+
         </TableBody>
       </Table>
     </TableContainer>

@@ -57,6 +57,7 @@ export default function Header() {
 
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [ isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -110,8 +111,8 @@ export default function Header() {
         classes={{
           paper: classes.drawerPaper,
         }}
-       >
-       <div className={classes.drawerContainer}>
+      >
+      <div className={classes.drawerContainer}>
           <List>
             <ListItem button component={Link} to={'/home'} disableRipple className={classes.buttonDrawerStyle}>
               <ListItemText primary="Home" />
@@ -123,7 +124,7 @@ export default function Header() {
               <ListItemText primary="Graham Model" />
             </ListItem> 
             <ListItem button component={Link} to={'/disccashflow'} disableRipple className={classes.buttonDrawerStyle}>
-              <ListItemText primary="DCF Valuation" />
+              <ListItemText primary="Valuation" />
             </ListItem> 
             <ListItem button component={Link} to={'/books'} disableRipple className={classes.buttonDrawerStyle} >
               <ListItemText primary="Books" />
@@ -135,15 +136,15 @@ export default function Header() {
           <Divider />
           <List>
             <ListItem button component={Link} to={'/whoweare'} disableRipple className={classes.buttonDrawerStyle} >
-               <ListItemText primary="About me" />
+              <ListItemText primary="About me" />
             </ListItem> 
             <ListItem button component={Link} to={'/contact'} disableRipple className={classes.buttonDrawerStyle} >
-               <ListItemText primary="Contact" />
+              <ListItemText primary="Contact" />
             </ListItem> 
             <ListItem button component={Link} to={'/login'} disableRipple className={classes.buttonDrawerStyle} >
-               <ListItemText primary="Login" />
+              <ListItemText primary="Login" />
             </ListItem> 
-         </List>
+        </List>
         </div>
       </Drawer>
     </Hidden>

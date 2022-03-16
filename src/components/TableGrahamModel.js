@@ -97,15 +97,16 @@ export default function TableGrahamModel({companiesList}) {
   const [ rowsPerPage, setRowsPerPage ] = useState(15);
   const [ orderDirection, setOrderDirection ] = useState('desc');
   const [ orderBy, setOrderBy ] = useState('dividendYield');
+  console.log(companiesList);
   
   useEffect ( ()=> {
-    console.log(companiesList);
+  
     // changeOrder();
     // let arrayOfCompanies = companiesList;
     // alert ("--entrou em useEffect " + orderBy + " " + orderDirection);
     let arrayOfCompanies = companiesList;
-    if (orderBy==="dividendYield"){
-      if (orderDirection === 'desc') {
+    if (orderBy === "dividendYield"){
+      if (orderDirection === 'asc') {
         companiesList.sort(function (a, b) {
           if (a.dividendYield > b.dividendYield) {
             return 1;
@@ -115,7 +116,7 @@ export default function TableGrahamModel({companiesList}) {
           }
           return 0;
         });
-      } else if (orderDirection === 'asc'){
+      } else if (orderDirection === 'desc'){
         companiesList.sort(function (a, b) {
           if (a.dividendYield < b.dividendYield) {
             return 1;
@@ -129,7 +130,7 @@ export default function TableGrahamModel({companiesList}) {
       // console.log(companiesList);  
     }
     else {
-      if (orderDirection === 'desc') {
+      if (orderDirection === 'asc') {
         companiesList.sort(function (a, b) {
           if (a.shortName > b.shortName) {
             return 1;
@@ -139,7 +140,7 @@ export default function TableGrahamModel({companiesList}) {
           }
           return 0;
         });
-      } else if (orderDirection === 'asc'){
+      } else if (orderDirection === 'desc'){
         companiesList.sort(function (a, b) {
           if (a.shortName < b.shortName) {
             return 1;
@@ -155,9 +156,11 @@ export default function TableGrahamModel({companiesList}) {
   },[orderDirection, orderBy])
 
   const handleRequestSort = (event, property) => {
+    alert ("handleSort");
     const isAscending = (orderBy === property && orderDirection === 'asc');
     setOrderDirection(isAscending ? 'desc' : 'asc');
     setOrderBy(property);
+    console.log(orderDirection);
   };
 
   const createSorthandler=(property) => (event) => {

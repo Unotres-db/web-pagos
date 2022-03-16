@@ -3,7 +3,7 @@ import React, {useState, useEffect} from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 
-export default function ChartRevenueFcff ({ historicalFinancialData, forecastedFinancialData, isCheckedDescOrder }) {
+export default function ChartRevenue ({ historicalFinancialData, forecastedFinancialData, isCheckedDescOrder }) {
   // console.log(historicalFinancialData);
   function extractYear(year){
     let textYear = year.toString()
@@ -15,8 +15,8 @@ export default function ChartRevenueFcff ({ historicalFinancialData, forecastedF
   //#F9AA33
   let chartColors=["#F9AA33","#F9AA33","#F9AA33","#F9AA33","#F9AA33","#3C6E76","#3C6E76","#3C6E76", "#3C6E76"]; //#344955"
   const [ chartData, setChartData] = useState({
-    labels:combinedArray.map((currElement)=> (currElement.year)),
-    datasets:[{label:"Free Cash Flow", data:combinedArray.map((currElement)=> (currElement.fcff)),
+    labels:combinedArray.map((currElement)=> extractYear((currElement.year))),
+    datasets:[{label:"Revenue", data:combinedArray.map((currElement)=> (currElement.totalRevenue)),
     backgroundColor:["white"],
   }]});
 
@@ -26,12 +26,12 @@ export default function ChartRevenueFcff ({ historicalFinancialData, forecastedF
         for (let i = 0; i < 5 ; i++){
           combinedArray[i] = forecastedFinancialData[i];
         }; 
-        for (let j = 0; j < 4 ; j++){    // < 4
+        for (let j = 0; j < 4 ; j++){
           combinedArray[j+5] = historicalFinancialData[j];
         };
       } 
       else {
-        for (let k = 3; k >= 0 ; k--){  // K=3
+        for (let k = 3; k >= 0 ; k--){
           combinedArray[Math.abs(k-3)] = historicalFinancialData[k];
         };
         for (let k = 4; k >= 0 ; k--){
@@ -41,12 +41,10 @@ export default function ChartRevenueFcff ({ historicalFinancialData, forecastedF
       }
     
       setChartData({
-        labels:combinedArray.map((currElement)=>(currElement.year)),
-        datasets:[{label:"Free Cash Flow", data:combinedArray.map((currElement)=> (currElement.fcff)),
+        labels:combinedArray.map((currElement)=>extractYear(currElement.year)),
+        datasets:[{label:"Revenue", data:combinedArray.map((currElement)=> (currElement.totalRevenue)),
         backgroundColor:chartColors,
-        }]
-    });
-    // label:"Free Cash Flow",
+      }]});
     }
     
     generateChartData();
@@ -58,4 +56,3 @@ export default function ChartRevenueFcff ({ historicalFinancialData, forecastedF
     </>
   )
 }
-

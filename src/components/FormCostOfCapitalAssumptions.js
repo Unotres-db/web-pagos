@@ -23,14 +23,14 @@ const useStyles = makeStyles( (mainTheme) => ({
     fontSize: 11
     }
   }));
-export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCashFlow, setFreeCashFlow,discountedFreeCashFlow,setDiscountedFreeCashFlow,historicalFinancialData,valuation, setValuation}){
+export default function FormCostOfCapitalAssumptions ({assumptions, setAssumptions, calculatedCostOfCapital}){
 
-  const { calcValuation, calcWacc } = useValuation({assumptions, setAssumptions, freeCashFlow, setFreeCashFlow, discountedFreeCashFlow, setDiscountedFreeCashFlow, historicalFinancialData, valuation, setValuation});
+  // const {calcCostOfCapital } = useValuation({assumptions, setAssumptions, freeCashFlow, setFreeCashFlow, discountedFreeCashFlow, setDiscountedFreeCashFlow, historicalFinancialData, valuation, setValuation});
   const classes = useStyles();
 
   return (
     <>
-        {/* <Box style={{height:"5px"}}/> */}
+    {/* <Box style={{height:"5px"}}/> */}
 
     <TableContainer component={Paper}>
       <Table className={classes.table} size="small" aria-label="stycky header">
@@ -51,7 +51,8 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
                 value={assumptions.riskFreeReturn}
                 type="number"
                 onChange = {(e) => setAssumptions(prevState => ({...prevState, riskFreeReturn:e.target.value }))}
-                onBlur = {(e) => { calcWacc() }}
+                // onBlur = {(e) => { calcCostOfCapital() }}
+                // onBlur = {calcCostOfCapital}
                 variant="filled"
                 fullWidth
                 name="riskFreeReturn"
@@ -68,7 +69,8 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
                   value={assumptions.marketReturn}
                   type="number"
                   onChange = {(e) => setAssumptions(prevState => ({...prevState,marketReturn:e.target.value }))}
-                  onBlur = {(e) => { calcWacc() }}
+                  // onBlur = {(e) => { calcCostOfCapital() }}
+                  // onBlur = {calcCostOfCapital}
                   variant="filled"
                   fullWidth
                   name="marketReturn"
@@ -84,12 +86,13 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
             <Grid container>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Company Beta"
+                label="Unlevered Segment Beta"
                 size="small"
                 value={assumptions.companyBeta}
                 type="number"
                 onChange = {(e) => setAssumptions(prevState => ({...prevState, companyBeta:e.target.value }))}
-                onBlur = {(e) => { calcWacc() }}
+                // onBlur = {(e) => { calcCostOfCapital() }}
+                // onBlur = {calcCostOfCapital}
                 variant="filled"
                 fullWidth
                 name="companyBeta"
@@ -103,10 +106,11 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
                 <TextField
                   label="Ke: Cost of Equity (%)"
                   size="small"
-                  value={assumptions.costOfEquity}
+                  value={calculatedCostOfCapital.costOfEquity}
                   type="number"
-                  onChange = {(e) => setAssumptions(prevState => ({...prevState,costOfEquity:e.target.value }))}
-                  onBlur = {(e) => { calcWacc() }}
+                  // onChange = {(e) => setAssumptions(prevState => ({...prevState,costOfEquity:e.target.value }))}
+                  // onBlur = {(e) => { calcCostOfCapital() }}
+                  // onBlur = {calcCostOfCapital}
                   variant="filled"
                   fullWidth
                   name="costOfEquity"
@@ -127,7 +131,8 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
                 value={assumptions.costOfDebt}
                 type="number"
                 onChange = {(e) => setAssumptions(prevState => ({...prevState, costOfDebt:e.target.value }))}
-                onBlur = {(e) => { calcWacc() }}
+                // onBlur = {(e) => { calcCostOfCapital(e) }}
+                // onBlur = {calcCostOfCapital}
                 variant="filled"
                 fullWidth
                 name="costOfDebt"
@@ -144,7 +149,8 @@ export default function FormCAPMAssumptions ({assumptions, setAssumptions,freeCa
                   value={assumptions.debtEquityRatio}
                   type="number"
                   onChange = {(e) => setAssumptions(prevState => ({...prevState,debtEquityRatio:e.target.value }))}
-                  onBlur = {(e) => { calcWacc() }}
+                  // onBlur = {(e) => { calcCostOfCapital() }}
+                  // onBlur = {calcCostOfCapital}
                   variant="filled"
                   fullWidth
                   name="debtEquityRatio"

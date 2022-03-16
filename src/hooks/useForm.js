@@ -132,7 +132,7 @@ export default function useForm (callback) {
   }
 
   const handleChange = (e, validators) =>{
-    const target=e.target;
+    const target = e.target;
     setValues (prevState => ({...prevState, [target.name]:target.value }))
     handleValidators(target, validators);
   }
