@@ -1,6 +1,6 @@
 export default function useValuation({assumptions, setAssumptions, forecastedFinancialData, setForecastedFinancialData, discountedFreeCashFlow, setDiscountedFreeCashFlow, historicalFinancialData, valuation, setValuation, historicalAverages, setHistoricalAverages, calculatedCostOfCapital, setCalculatedCostOfCapital, companyData}) {   //
   
-  function round(num) {
+  function round (num) {
     var m = Number((Math.abs(num) * 100).toPrecision(15));
     return Math.round(m) / 100 * Math.sign(num);
   }
@@ -22,8 +22,8 @@ export default function useValuation({assumptions, setAssumptions, forecastedFin
   }
 
   function calcHistoricalAverages(){
-    // console.log(historicalFinancialData);
-  let averagesIndicators = {revenueCAGR: 0, opexCAGR: 0, interestCAGR: 0, otherCAGR: 0, capexCAGR:0, nwcCAGR:0, sumOfRevenue: 0, sumOfGrossProfit: 0, marginAvg: 0, sumOfIncomeBeforeTax: 0, sumOfIncomeTaxExpense: 0, taxRateAvg:0}
+  
+    let averagesIndicators = {revenueCAGR: 0, opexCAGR: 0, interestCAGR: 0, otherCAGR: 0, capexCAGR:0, nwcCAGR:0, sumOfRevenue: 0, sumOfGrossProfit: 0, marginAvg: 0, sumOfIncomeBeforeTax: 0, sumOfIncomeTaxExpense: 0, taxRateAvg:0}
 
     // if (  historicalFinancialData[0].totalRevenue !== undefined &&  historicalFinancialData[0].totalRevenue !== null ){ 
       // CAGR = Compound Annual Growth Rate
@@ -91,8 +91,10 @@ export default function useValuation({assumptions, setAssumptions, forecastedFin
   function calcCostOfCapital (){
     // uses CAPM model
     // alert("--entrou em calcCostOfCapital");
+    const debtRatio = (historicalFinancialData[0].longTermDebt + historicalFinancialData[0].shortLongTermDebt)/(historicalFinancialData[0].longTermDebt + historicalFinancialData[0].shortLongTermDebt + companyData.marketCap)
+    // alert(debtRatio);
     let ke = round((parseFloat(assumptions.riskFreeReturn/100) + (assumptions.companyBeta*(parseFloat(assumptions.marketReturn/100)-parseFloat(assumptions.riskFreeReturn/100))))*100);
-    let calculatedWacc = round((assumptions.costOfDebt * parseFloat(assumptions.debtEquityRatio/100)) + (ke * (parseFloat(100-assumptions.debtEquityRatio)/100)));
+    let calculatedWacc = round((assumptions.costOfDebt * parseFloat(debtRatio)) + (ke * parseFloat(1 - debtRatio)));
     return {costOfEquity:ke, costOfCapital:calculatedWacc}
   };
   
@@ -225,19 +227,3 @@ export default function useValuation({assumptions, setAssumptions, forecastedFin
 
   return {calcForecastedCashFlow, calcValuation, calcCostOfCapital, calcHistoricalAverages};
 }
-
-
-// Function CAGR_flexible(begin, final, years)
-//     Select Case True
-//     Case (begin > 0 And final > 0)
-//         CAGR_flexible = (final / begin) ^ (1 / years) - 1
-//     Case (begin < 0 And final < 0)
-//         CAGR_flexible = (-1) * ((Abs(final) / Abs(begin)) ^ (1 / years) - 1)
-//     Case (begin < 0 And final > 0)
-//        CAGR_flexible = ((final + 2 * Abs(begin)) / Abs(begin)) ^ (1 / years) - 1
-//     Case (begin > 0 And final < 0)
-//         CAGR_flexible = (-1) * (((Abs(final) + 2 * begin) / begin) ^ (1 / years) - 1)
-//     Case Else
-//         CAGR_flexible = 0
-//     End Select
-// End Function

@@ -103,28 +103,6 @@ export default function FormCostOfCapitalAssumptions ({assumptions, setAssumptio
             </Grid>
             <Grid item xs={12} sm={6}>
               {/* <Tooltip title="Cost of Equity using CAPM Model"> */}
-                <TextField
-                  label="Ke: Cost of Equity (%)"
-                  size="small"
-                  value={calculatedCostOfCapital.costOfEquity}
-                  type="number"
-                  // onChange = {(e) => setAssumptions(prevState => ({...prevState,costOfEquity:e.target.value }))}
-                  // onBlur = {(e) => { calcCostOfCapital() }}
-                  // onBlur = {calcCostOfCapital}
-                  variant="filled"
-                  fullWidth
-                  name="costOfEquity"
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">%</InputAdornment>,
-                  }}
-                />
-              {/* </Tooltip> */}
-            </Grid>
-            </Grid>
-          </TableRow>
-          <TableRow>
-            <Grid container>
-            <Grid item xs={12} sm={6}>
               <TextField
                 label="Kd: Cost of Debt (%)"
                 size="small"
@@ -140,20 +118,43 @@ export default function FormCostOfCapitalAssumptions ({assumptions, setAssumptio
                   startAdornment: <InputAdornment position="start">%</InputAdornment>,
                 }}
               />
+
+              {/* </Tooltip> */}
             </Grid>
+            </Grid>
+          </TableRow>
+          <TableRow>
+            <Grid container>
             <Grid item xs={12} sm={6}>
-              {/* <Tooltip title="Ke: Cost of Equity"> */}
-                <TextField
-                  label="Debt/Equity Ratio (%)"
+            <TextField
+                  label="Ke: Cost of Equity (%)"
                   size="small"
-                  value={assumptions.debtEquityRatio}
-                  type="number"
-                  onChange = {(e) => setAssumptions(prevState => ({...prevState,debtEquityRatio:e.target.value }))}
+                  value={calculatedCostOfCapital.costOfEquity}
+                  // type="number"
+                  // onChange = {(e) => setAssumptions(prevState => ({...prevState,costOfEquity:e.target.value }))}
                   // onBlur = {(e) => { calcCostOfCapital() }}
                   // onBlur = {calcCostOfCapital}
                   variant="filled"
                   fullWidth
-                  name="debtEquityRatio"
+                  name="costOfEquity"
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                  }}
+                />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              {/* <Tooltip title="Ke: Cost of Equity"> */}
+                <TextField
+                  label="Cost of Capital (WACC) (%)"
+                  size="small"
+                  value={calculatedCostOfCapital.costOfCapital}
+                  // type="number"
+                  // onChange = {(e) => setAssumptions(prevState => ({...prevState,debtEquityRatio:e.target.value }))}
+                  // onBlur = {(e) => { calcCostOfCapital() }}
+                  // onBlur = {calcCostOfCapital}
+                  variant="filled"
+                  fullWidth
+                  name="costOfCapital"
                   InputProps={{
                     startAdornment: <InputAdornment position="start">%</InputAdornment>,
                   }}

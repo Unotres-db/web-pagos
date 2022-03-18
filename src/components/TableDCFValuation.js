@@ -32,7 +32,7 @@ TableRowsSubtitle : {
   },
 TableCurrentPrice:{
   color: "white",
-  backgroundColor: mainTheme.palette.primary.main,
+  backgroundColor: "#3C6E76", //mainTheme.palette.primary.main,
   fontSize: 11
 },
 }));
@@ -66,12 +66,12 @@ export default function TableDCFValuation ({valuation, historicalFinancialData, 
           <TableCell align="left" className={classes.TableRows}>{`FCFF Average Growth ${firstYear}-${finalYear}`}</TableCell>
           <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2,maximumFractionDigits:2}).format(valuation.fcffAvgGrowth/100)}</TableCell>
         </TableRow>
-        <TableRow>
+        {/* <TableRow>
           <Tooltip placement="top-start" title="WACC, Weighted Average Cost of Capital calulated using the CAPM Model">
             <TableCell align="left" className={classes.TableRows}>Cost of Capital (WACC)</TableCell>
           </Tooltip>
           <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2,maximumFractionDigits:2}).format(calculatedCostOfCapital.costOfCapital/100)}</TableCell>
-        </TableRow>
+        </TableRow> */}
         <TableRow>
         <Tooltip placement="top-start" title="Present Value of the Free Cash Flow to Firm, using WACC as Discount Rate">
           <TableCell align="left" className={classes.TableRows}>{`FCFF Present Value @${Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:2,maximumFractionDigits:2}).format(calculatedCostOfCapital.costOfCapital)}%`}</TableCell>
@@ -107,16 +107,20 @@ export default function TableDCFValuation ({valuation, historicalFinancialData, 
           <TableCell align="right" className={classes.TableValuationPrice} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(valuation.equityValue)}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell align="left" className={classes.TableRows}>Total shares</TableCell>
-          <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(companyData.shares)}</TableCell>
-        </TableRow>
-        <TableRow>
           <TableCell align="left" className={classes.TableValuationPrice}>Target Stock Price </TableCell>
           <TableCell align="right" className={classes.TableValuationPrice} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(valuation.targetStockPrice)}</TableCell>
         </TableRow>
         <TableRow>
+          <TableCell align="left" className={classes.TableRows}>Total shares</TableCell>
+          <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(companyData.shares)}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell align="left" className={classes.TableCurrentPrice}>Current Market Capitalization</TableCell>
+          <TableCell align="right" className={classes.TableCurrentPrice} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(companyData.marketCap)}</TableCell>
+        </TableRow>
+        <TableRow>
           <TableCell className={classes.TableCurrentPrice} align="left">Current Stock Price</TableCell>
-          <TableCell align="right" className={classes.TableCurrentPrice} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(162.04)}</TableCell>
+          <TableCell align="right" className={classes.TableCurrentPrice} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(companyData.regularMarketPrice)}</TableCell>
         </TableRow>
       </TableBody>
     </Table>

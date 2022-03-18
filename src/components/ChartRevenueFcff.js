@@ -16,7 +16,7 @@ export default function ChartRevenueFcff ({ historicalFinancialData, forecastedF
   let chartColors=["#F9AA33","#F9AA33","#F9AA33","#F9AA33","#F9AA33","#3C6E76","#3C6E76","#3C6E76", "#3C6E76"]; //#344955"
   const [ chartData, setChartData] = useState({
     labels:combinedArray.map((currElement)=> (currElement.year)),
-    datasets:[{label:"Free Cash Flow", data:combinedArray.map((currElement)=> (currElement.fcff)),
+    datasets:[{label:"Free Cash Flow to the Firm", data:combinedArray.map((currElement)=> (currElement.fcff)),
     backgroundColor:["white"],
   }]});
 
@@ -42,7 +42,7 @@ export default function ChartRevenueFcff ({ historicalFinancialData, forecastedF
     
       setChartData({
         labels:combinedArray.map((currElement)=>(currElement.year)),
-        datasets:[{label:"Free Cash Flow", data:combinedArray.map((currElement)=> (currElement.fcff)),
+        datasets:[{label:"Free Cash Flow to the Firm", data:combinedArray.map((currElement)=> (currElement.fcff)),
         backgroundColor:chartColors,
         }]
     });

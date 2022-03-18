@@ -1,7 +1,7 @@
 import React, { useState, useEffect }  from 'react';
 import PropTypes from 'prop-types';
 
-import { Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel } from '@material-ui/core';
+import { Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useTheme } from '@material-ui/core/styles';
 
@@ -23,6 +23,19 @@ const useStyles = makeStyles( (mainTheme) => ({
   TableTitle:{
     color: "white",
     fontSize: 12
+  },
+  ButtonTable:{
+    display: 'inline-block',
+    padding:0,
+    minHeight: 0,
+    minWidth: 0,
+    color: mainTheme.palette.primary.main,
+    fontSize: "11px",
+    textTransform:"none",
+    "&:hover": {
+      color:mainTheme.palette.secondary.main,
+      backgroundColor:"whitesmoke"
+    },
   },
   TableRows : {
     fontSize: 12
@@ -212,7 +225,8 @@ export default function TableGrahamModel({companiesList}) {
           ).map((company) => (
             <TableRow key={company.companyId}>
               <TableCell component="th" scope="row" className={classes.TableRows}>
-                {company.shortName}
+                <Button variant="text" size="small" disableRipple className={classes.ButtonTable} >{company.shortName}</Button>
+                
               </TableCell>
               <TableCell align="right" className={classes.TableRows} >{company.companyId}</TableCell>
               <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(company.dividendRate)}</TableCell>

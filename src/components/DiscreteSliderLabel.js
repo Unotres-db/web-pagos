@@ -13,7 +13,7 @@ export default function DiscreteSliderLabel({marks, minimumYield, setMinimumYiel
   }
 
   return (
-    // <Box sx={{ width: 300 }}>
+    <Box style={{ width: 250 }}>
       <Slider
         aria-label = "Always visible"
         defaultValue = {1.55}
@@ -27,6 +27,6 @@ export default function DiscreteSliderLabel({marks, minimumYield, setMinimumYiel
         value={minimumYield}
         onChange={handleMinimumYield}
       />
-    // </Box>
+    </Box>
   );
 }

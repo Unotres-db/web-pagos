@@ -10,6 +10,10 @@ import mainLogo from '../assets/logovw.svg';
 
 const useStyles = makeStyles( (mainTheme) => ({
   buttonMenuStyle: {
+    display: 'inline-block',
+    padding: 6,
+    // minHeight: 0,
+    minWidth: 0,
     color: "white",
     backgroundColor:mainTheme.palette.primary.main,
     textTransform:"none",
@@ -79,6 +83,7 @@ export default function Header() {
         <Hidden smDown>
           <Box style={{ width: '20px' }}/>    
             <Button component={Link} to={'/home'} className={classes.buttonMenuStyle} size="small" disableRipple>Home</Button>
+            <Button component={Link} to={'/dividendyield'} className={classes.buttonMenuStyle} size="small" disableRipple>Company Data</Button>
             <Button component={Link} to={'/dividendyield'} className={classes.buttonMenuStyle} size="small" disableRipple>Dividend Yield Model</Button>
             <Button component={Link} to={'/graham'} className={classes.buttonMenuStyle} size="small" disableRipple>Graham Model</Button>
             <Button component={Link} to={'/disccashflow'} className={classes.buttonMenuStyle} size="small" disableRipple>Valuation</Button>
@@ -117,6 +122,9 @@ export default function Header() {
             <ListItem button component={Link} to={'/home'} disableRipple className={classes.buttonDrawerStyle}>
               <ListItemText primary="Home" />
             </ListItem>
+            <ListItem button component={Link} to={'/dividendyield'} disableRipple className={classes.buttonDrawerStyle}>
+              <ListItemText primary="Company Data" />
+            </ListItem> 
             <ListItem button component={Link} to={'/dividendyield'} disableRipple className={classes.buttonDrawerStyle}>
               <ListItemText primary="Dividend Yield Model" />
             </ListItem> 

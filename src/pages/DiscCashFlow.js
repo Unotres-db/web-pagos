@@ -7,25 +7,20 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import SaveIcon from '@material-ui/icons/Save';
 
 import api from '../services/api';
-// import useForm from '../hooks/useForm';
+import useUnsavedWarning from '../hooks/useUnsavedWarning';
+import useValuation from '../hooks/useValuation';
 
 import Header from '../components/Header'; 
+import FormAssumptionsOptions from '../components/FormBusinessAssumptions';
 import FormBusinessAssumptions from '../components/FormBusinessAssumptions';
 import FormCostOfCapitalAssumptions from '../components/FormCostOfCapitalAssumptions';
-// import TableDCFAssumptions from '../components/TableDCFAssumptions';
 import TableDCFFinancials from '../components/TableDCFFinancials';
 import TableDCFValuation from '../components/TableDCFValuation';
 import TableHistoricalCompanyAverages from '../components/TableHistoricalCompanyAverages';
 import ChartRevenueFcff from '../components/ChartRevenueFcff';
 import ChartRevenue from '../components/ChartRevenue';
 
-
-// import logoXOM from '../assets/logoxom.png';
-// import picExxon from '../assets/logoxom.png';
-import useValuation from '../hooks/useValuation';
 import picCompany from '../assets/logocvx.png';
-// import picCompany from '../assets/logoaon.jpg';
-
 
 const useStyles = makeStyles( (mainTheme) => ({
   contentStyle: {
@@ -83,7 +78,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     marginLeft:"3px",
     marginRight:"0px",
     color: "white",
-    // backgroundColor: mainTheme.palette.primary.main,
+    // backgroundColor: mainTheme.palette.secondary.main,
     backgroundColor: "#f0f8ff", //"whistesmoke", //"lightgray",
     padding: "10px",
   },
@@ -103,15 +98,20 @@ const useStyles = makeStyles( (mainTheme) => ({
 export default function DiscCashFlow (){
 
   const classes = useStyles();
+  const [ Prompt, setIsDirty, setIsPristine ] = useUnsavedWarning();
   const [ isLoading, setIsLoading ]= useState(true);
-  const [ isUsingAverageAsAssumption, setIsUsingAverageAsAssumption ]= useState(true);
+  const [ isValuationMinRequirements, setIsValuationMinRequirements ] = useState(false);
+  const [ isUsingAverageAsAssumption, setIsUsingAverageAsAssumption ] = useState(true);
+  const [ isEstimateFcffOnly, setIsEstimateFcffOnly ] = useState(false);
   const [ isCheckedDescOrder, setIsCheckedDescOrder] = useState(true);
   const [ isCheckedShowIncStatement, setIsCheckedShowIncStatement] = useState(true);
   const [ isCheckedShowPreviousYears, setIsCheckedShowPreviousYears] = useState(true);
   const [ companyIdSearch, setCompanyIdSearch] = useState("CVX");
   const [ historicalFinancialData, setHistoricalFinancialData ] = useState();
-  const [ companyData, setCompanyData] = useState({symbol:"",shortName:"", shares: 0, regularMarketPrice:0});
+  const [ companyData, setCompanyData] = useState({symbol:"",shortName:"", shares: 0, regularMarketPrice:0, marketCap:0});
   const [ assumptions, setAssumptions ] = useState({revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",fcffGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: 2, cashFlowDiscretePeriod:5, companyBeta:1.2, riskFreeReturn:2, marketReturn:6, debtEquityRatio:30, costOfDebt:5});
+
+  // const [ assumptions, setAssumptions ] = useState({});
   const [ calculatedCostOfCapital, setCalculatedCostOfCapital] = useState({ costOfEquity:0, costOfCapital:0});
   const [ historicalAverages, setHistoricalAverages ] = useState({revenueGrowth:0, marginTarget:0, opexGrowth:0, interestGrowth:0, otherGrowth:0, fcffGrowthRate:0, taxRate:0, capexGrowth:0, nwcGrowth:0});
   // let  historicalAverages = {revenueGrowth:0, marginTarget:0, opexGrowth:0, interestGrowth:0, otherGrowth:0, fcffGrowthRate:0, taxRate:0, capexGrowth:0, nwcGrowth:0};
@@ -145,6 +145,10 @@ export default function DiscCashFlow (){
   // const companiesSymbols = [ {symbol: "CVX", CompanyName:"Chevron Corp"},{symbol: "XOM", CompanyName:"Exxon Corp"},{symbol: "PBR", CompanyName:"Petrobras"} ]
   const { calcForecastedCashFlow, calcValuation, calcHistoricalAverages, calcCostOfCapital } = useValuation ({assumptions, setAssumptions, forecastedFinancialData, setForecastedFinancialData, discountedFreeCashFlow, setDiscountedFreeCashFlow, historicalFinancialData, valuation, setValuation, isCheckedDescOrder, historicalAverages, setHistoricalAverages,calculatedCostOfCapital, setCalculatedCostOfCapital, companyData}); //
   
+  useEffect(() => {
+    setIsDirty()
+  }, []);
+
   useEffect (()=> {
     // alert("--useEffect []");
 
@@ -189,7 +193,7 @@ export default function DiscCashFlow (){
           financialAuxArray[2].workingCapitalChanges=(financialAuxArray[2].totalCurrentAssets-financialAuxArray[2].totalCurrentLiabilities)-(financialAuxArray[3].totalCurrentAssets-financialAuxArray[3].totalCurrentLiabilities);
 
           setHistoricalFinancialData(financialAuxArray);
-          setCompanyData({symbol:"CVX",shortName:"Chevron Corp.", shares: 1870, regularMarketPrice:166.31})
+          setCompanyData({symbol:"CVX",shortName:"Chevron Corp.", shares: 1947.549952, regularMarketPrice:113.6, marketCap:221.242})
           setIsLoading(false);
       }).catch (function (err){
         if (err.response) {
@@ -251,202 +255,232 @@ useEffect (()=> {
     setCalculatedCostOfCapital(calcCostOfCapital());
     setForecastedFinancialData(calcForecastedCashFlow());
     setValuation(calcValuation());
-    // calcValuation();
+    if (checkValuationMinRequirements) {
+      localStorage.setItem('valuation', JSON.stringify(valuation));
+      localStorage.setItem('forecastedFinancialData', JSON.stringify(forecastedFinancialData));
+      localStorage.setItem('calculatedCostOfCapital', JSON.stringify(calculatedCostOfCapital));
+    }
   }
 },[assumptions]);  
 
-    const handleChangeCheckDescOrder = () => {
-      if (isCheckedDescOrder) {
-        setIsCheckedDescOrder(false);
-      } else {
-        setIsCheckedDescOrder(true);
-      }  
-    };
-    const handleChangeCheckShowIncStatement = () => {
-      if (isCheckedShowIncStatement) {
-        setIsCheckedShowIncStatement(false);
-      } else {
-        setIsCheckedShowIncStatement(true);
-      }  
-    };
-    const handleChangeCheckShowPreviousYears = () => {
-      if (isCheckedShowPreviousYears) {
-        setIsCheckedShowPreviousYears(false);
-      } else {
-        setIsCheckedShowPreviousYears(true);
-      }  
-    };
+function checkValuationMinRequirements() {
+  if ( assumptions.revenueGrowth !== "" &&
+        assumptions.marginTarget !== "" &&
+        assumptions.opexGrowth !== "" &&
+        assumptions.taxRate !== "" &&
+        assumptions.perpetualGrowthRate !== "" &&
+        assumptions.riskFreeReturn !=="" &&
+        assumptions.marketReturn !=="" &&
+        assumptions.companyBeta !== "" &&
+        assumptions.costOfDebt !==""
+  ){ 
+    setIsValuationMinRequirements(true);
+    return true
+  } else {
+      return false
+  }}
 
-    return (
+const handleChangeCheckDescOrder = () => {
+  if (isCheckedDescOrder) {
+    setIsCheckedDescOrder(false);
+  } else {
+    setIsCheckedDescOrder(true);
+  }  
+};
+const handleChangeCheckShowIncStatement = () => {
+  if (isCheckedShowIncStatement) {
+    setIsCheckedShowIncStatement(false);
+  } else {
+    setIsCheckedShowIncStatement(true);
+  }  
+};
+const handleChangeCheckShowPreviousYears = () => {
+  if (isCheckedShowPreviousYears) {
+    setIsCheckedShowPreviousYears(false);
+  } else {
+    setIsCheckedShowPreviousYears(true);
+  }  
+};
 
-    <>
-    <Header />
-    
-    { historicalFinancialData ? <div>
-    {/* <Container fixed> */}
-    <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}} className={classes.container} >
+  return (
 
-      <Grid item xs={12} style = {{ minHeight: '69px'}} /> 
+  <>
+  <Header />
+  
+  { historicalFinancialData ? <div>
+  {/* <Container fixed> */}
+  <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}} className={classes.container} >
 
-      <Grid item container direction="row" spacing={1} >
-      {/* <Typography>{historicalFinancialData.map ( (currElement) => currElement.totalRevenue)}</Typography> */}
-        <Grid item xs={12} md={3} >
-          <Paper className={classes.paperStyle} elevation={6}>
+    <Grid item xs={12} style = {{ minHeight: '69px'}} /> 
+
+    <Grid item container direction="row" spacing={1} >
+    {/* <Typography>{historicalFinancialData.map ( (currElement) => currElement.totalRevenue)}</Typography> */}
+      <Grid item xs={12} md={3} >
+        <Paper className={classes.paperStyle} elevation={6}>
+        { ! isLoading ? (
+          <TableHistoricalCompanyAverages 
+          calcHistoricalAverages={calcHistoricalAverages}
+            historicalFinancialData={historicalFinancialData}
+            historicalAverages={historicalAverages}
+            // setHistoricalAverages={setHistoricalAverages}
+            setAssumptions={setAssumptions}
+          />
+        ) : 0 }
+          {/* <Typography align="center" variant="subtitle3">Assumptions:</Typography> */}
+          {/* <TableDCFAssumptions 
+              fcffGrowthRate={assumptions.fcffGrowthRate}
+              taxRate={assumptions.taxRate} 
+              discountRate={assumptions.discountRate}
+              perpetualGrowthRate={assumptions.perpetualGrowthRate}
+              capexPercentage={assumptions.capexPercentage}
+              workingCapitalChangesPercentage={assumptions.workingCapitalChangesPercentage}
+          /> */}
+          {/* <Box style={{height:"5px"}}/>
           { ! isLoading ? (
-            <TableHistoricalCompanyAverages 
-            calcHistoricalAverages={calcHistoricalAverages}
-              historicalFinancialData={historicalFinancialData}
-              historicalAverages={historicalAverages}
-              // setHistoricalAverages={setHistoricalAverages}
-              setAssumptions={setAssumptions}
-            />
+          <FormAssumptionsOptions 
+            isEstimateFcffOnly = {isEstimateFcffOnly}
+            setIsEstimateFcffOnly = {setIsEstimateFcffOnly}/>
+          ) : 0 }  */}
+
+          <Box style={{height:"5px"}}/>  
+          { ! isLoading ? (
+          <FormBusinessAssumptions 
+            assumptions={assumptions} 
+            setAssumptions={setAssumptions}
+          />
           ) : 0 }
-            {/* <Typography align="center" variant="subtitle3">Assumptions:</Typography> */}
-            {/* <TableDCFAssumptions 
-                fcffGrowthRate={assumptions.fcffGrowthRate}
-                taxRate={assumptions.taxRate} 
-                discountRate={assumptions.discountRate}
-                perpetualGrowthRate={assumptions.perpetualGrowthRate}
-                capexPercentage={assumptions.capexPercentage}
-                workingCapitalChangesPercentage={assumptions.workingCapitalChangesPercentage}
-            /> */}
-            <Box style={{height:"5px"}}/>
-            { ! isLoading ? (
-            <FormBusinessAssumptions 
-              assumptions={assumptions} 
-              setAssumptions={setAssumptions}
-            />
-            ) : 0 }
-            <Box style={{height:"5px"}}/>
-            { ! isLoading ? (
-            <FormCostOfCapitalAssumptions 
-              assumptions={assumptions} 
-              setAssumptions={setAssumptions}
-              calculatedCostOfCapital={calculatedCostOfCapital}
-            />
-            ) : 0 }
-          </Paper>
-        </Grid>  
+          <Box style={{height:"5px"}}/>
+          { ! isLoading ? (
+          <FormCostOfCapitalAssumptions 
+            assumptions={assumptions} 
+            setAssumptions={setAssumptions}
+            calculatedCostOfCapital={calculatedCostOfCapital}
+          />
+          ) : 0 }
+        </Paper>
+      </Grid>  
 
-        <Grid item xs={12} md={6} > 
-    
-          <Paper className={classes.TableContainerStyle} elevation={6}>
+      <Grid item xs={12} md={6} > 
+  
+        <Paper className={classes.TableContainerStyle} elevation={6}>
 
-            <Paper className={classes.CompanyInfo}>
-            {companyData ? <div>
-              <Grid container spacing={2}>
-                <Grid container item xs={4}  spacing={1}>
-                  <Grid item>
-                  <img src = {picCompany} alt="CompanyLogo" className={classes.logoStyle} style={{height:30}} /> 
-                  </Grid>
-                  <Grid item>
-                  <Box style={{height: "5px"}}/>  
-                    <Typography align="center" variant="subtitle3" style={{height:"30px"}}>{`${companyData.shortName} (${companyData.symbol})`}</Typography>
-                  </Grid>
+          <Paper className={classes.CompanyInfo}>
+          {companyData ? <div>
+            <Grid container spacing={2}>
+              <Grid container item xs={4}  spacing={1}>
+                <Grid item>
+                <img src = {picCompany} alt="CompanyLogo" className={classes.logoStyle} style={{height:30}} /> 
+                {/* <Typography>{isValuationMinRequirements? "sem requisitos minimos": "com requisitos minimos"}</Typography> */}
                 </Grid>
-        
-                <Grid item xs={4}>
-                  {/* <Typography align="center" variant="subtitle3" style={{height:"30px"}}>Chevron Corp.(CVX)</Typography> */}
-                </Grid>
-                <Grid item xs={4} >
-                  <Box display="flex" justifyContent="flex-end">
-                    {/* <Button variant="contained" size="small" className={classes.buttonStyle} startIcon={<SaveIcon />} disableRipple>Generate Pdf</Button> */}
-                    <Button variant="contained" size="small" className={classes.buttonStyle} startIcon={<SaveIcon />} disableRipple>Save Valuation</Button>
-                  </Box>  
+                <Grid item>
+                <Box style={{height: "5px"}}/>  
+                  <Typography align="center" variant="subtitle3" style={{height:"30px"}}>{`${companyData.shortName} (${companyData.symbol})`}</Typography>
                 </Grid>
               </Grid>
-              </div> :0}
-              <FormGroup style={{height:"20px"}}> 
-                <Grid container >
-                  <Grid item xs={12} md={4} >
-                    <Box display="flex" justifyContent="flex-start">
-                      <FormControlLabel className={classes.textCheckboxStyle}
-                        control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
-                        label = "Show Income Statement" 
-                        onChange = {handleChangeCheckShowIncStatement}
-                    />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} md={4} >
-                    <Box display="flex" justifyContent="center">
-                      <FormControlLabel className={classes.textCheckboxStyle}
-                        control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
-                        label = "Show previous years" 
-                        onChange = {handleChangeCheckShowPreviousYears}
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} md={4} >
-                  <Box display="flex" justifyContent="flex-end">
-
+      
+              <Grid item xs={4}>
+                {/* <Typography align="center" variant="subtitle3" style={{height:"30px"}}>Chevron Corp.(CVX)</Typography> */}
+              </Grid>
+              <Grid item xs={4} >
+                <Box display="flex" justifyContent="flex-end">
+                  {/* <Button variant="contained" size="small" className={classes.buttonStyle} startIcon={<SaveIcon />} disableRipple>Generate Pdf</Button> */}
+                  <Button variant="contained" size="small" className={classes.buttonStyle} startIcon={<SaveIcon />} disableRipple>Save Valuation</Button>
+                </Box>  
+              </Grid>
+            </Grid>
+            </div> :0}
+            <FormGroup style={{height:"20px"}}> 
+              <Grid container >
+                <Grid item xs={12} md={4} >
+                  <Box display="flex" justifyContent="flex-start">
                     <FormControlLabel className={classes.textCheckboxStyle}
                       control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
-                      label = "Show years in descending order" 
-                      onChange = {handleChangeCheckDescOrder}
-                    />
-                    </Box>
-                  </Grid>
-
+                      label = "Show Income Statement" 
+                      onChange = {handleChangeCheckShowIncStatement}
+                  />
+                  </Box>
                 </Grid>
-              </FormGroup>
-              {/* <FormGroup>
-                <FormControlLabel 
-                  control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
-                  label = "Show Income Statement" 
-                  onChange = {handleChangeCheckIncStatement}
-                  // style={{backgroundColor:"red"}}
-                />
-              </FormGroup> */}
-            </Paper>
-            {/* { (historicalFinancialData !== undefined) ? <div> */}
-              <TableDCFFinancials 
-                historicalFinancialData={historicalFinancialData} 
-                forecastedFinancialData={forecastedFinancialData} 
-                isCheckedDescOrder={isCheckedDescOrder}
-                isCheckedShowIncStatement={isCheckedShowIncStatement}
-                isCheckedShowPreviousYears={isCheckedShowPreviousYears}
-              />
-              {/* </div>
-            : 0 } */}
-          </Paper>
-        </Grid>
+                <Grid item xs={12} md={4} >
+                  <Box display="flex" justifyContent="center">
+                    <FormControlLabel className={classes.textCheckboxStyle}
+                      control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
+                      label = "Show previous years" 
+                      onChange = {handleChangeCheckShowPreviousYears}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={4} >
+                <Box display="flex" justifyContent="flex-end">
 
-        <Grid item xs={12} md={3} >
-          <Paper className={classes.paperStyle} elevation={6}>
-            { ! isLoading ? <div>
-            <TableDCFValuation 
-              valuation = {valuation} 
-              historicalFinancialData = {historicalFinancialData} 
-              calculatedCostOfCapital = {calculatedCostOfCapital}
-              assumptions = {assumptions}
-              companyData = {companyData}
+                  <FormControlLabel className={classes.textCheckboxStyle}
+                    control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
+                    label = "Show years in descending order" 
+                    onChange = {handleChangeCheckDescOrder}
+                  />
+                  </Box>
+                </Grid>
+
+              </Grid>
+            </FormGroup>
+            {/* <FormGroup>
+              <FormControlLabel 
+                control = {<Checkbox defaultChecked disableRipple = {true} size="small"/>} 
+                label = "Show Income Statement" 
+                onChange = {handleChangeCheckIncStatement}
+                // style={{backgroundColor:"red"}}
+              />
+            </FormGroup> */}
+          </Paper>
+          {/* { (historicalFinancialData !== undefined) ? <div> */}
+            <TableDCFFinancials 
+              historicalFinancialData={historicalFinancialData} 
+              forecastedFinancialData={forecastedFinancialData} 
+              isCheckedDescOrder={isCheckedDescOrder}
+              isCheckedShowIncStatement={isCheckedShowIncStatement}
+              isCheckedShowPreviousYears={isCheckedShowPreviousYears}
             />
-            <Box style={{height:"8px"}}/>
-            <Paper elevation ={6} style={{height:'180px'}}>
-              <ChartRevenueFcff 
-                historicalFinancialData = {historicalFinancialData}
-                forecastedFinancialData = {forecastedFinancialData} 
-                isCheckedDescOrder = {isCheckedDescOrder}
-              />
-            </Paper>
-            {/* <Paper elevation ={6} style={{height:'150px'}}>
-              <ChartRevenue 
-                historicalFinancialData = {historicalFinancialData}
-                forecastedFinancialData = {forecastedFinancialData} 
-                isCheckedDescOrder = {isCheckedDescOrder}
-              />
-            </Paper> */}
-            </div> :0} 
-          </Paper>
-        </Grid>
+            {/* </div>
+          : 0 } */}
+        </Paper>
       </Grid>
-      </Grid>
-    
-    <Grid container direction="column" alignItems="center" style= {{ minHeight: '5vh'}} />
 
-    {/* </Container> */}
-  </div> : 0} 
-    </>
+      <Grid item xs={12} md={3} >
+        <Paper className={classes.paperStyle} elevation={6}>
+          { ! isLoading ? <div>
+          <TableDCFValuation 
+            valuation = {valuation} 
+            historicalFinancialData = {historicalFinancialData} 
+            calculatedCostOfCapital = {calculatedCostOfCapital}
+            assumptions = {assumptions}
+            companyData = {companyData}
+          />
+          <Box style={{height:"8px"}}/>
+          <Paper elevation ={6} style={{height:'180px'}}>
+            <ChartRevenueFcff 
+              historicalFinancialData = {historicalFinancialData}
+              forecastedFinancialData = {forecastedFinancialData} 
+              isCheckedDescOrder = {isCheckedDescOrder}
+            />
+          </Paper>
+          {/* <Paper elevation ={6} style={{height:'150px'}}>
+            <ChartRevenue 
+              historicalFinancialData = {historicalFinancialData}
+              forecastedFinancialData = {forecastedFinancialData} 
+              isCheckedDescOrder = {isCheckedDescOrder}
+            />
+          </Paper> */}
+          </div> :0} 
+        </Paper>
+      </Grid>
+    </Grid>
+    </Grid>
+  
+  <Grid container direction="column" alignItems="center" style= {{ minHeight: '5vh'}} />
+
+  {/* </Container> */}
+</div> : 0} 
+  {Prompt}
+  </>
   )
 }
 

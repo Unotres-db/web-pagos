@@ -44,8 +44,10 @@ const useStyles = makeStyles( (mainTheme) => ({
     height:"560px",
     marginLeft:"3px",
     marginRight:"0px",
-    color: "white",
-    backgroundColor: mainTheme.palette.secondary.main,
+    // color: "white",
+    color: "black",
+    backgroundColor: "#f0f8ff", //"whistesmoke", //"lightgray",
+    // backgroundColor: mainTheme.palette.secondary.main,
     padding: "10px",
   },
   TableContainerStyle: {
@@ -56,6 +58,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     color: "white",
     backgroundColor: mainTheme.palette.secondary.main,
     padding: "10px",
+    
   },
   iconStyle: {
     textAlign: "center",
@@ -117,8 +120,10 @@ export default function DividendYield (){
     
           <Grid item xs={12} md={3} >
             <Paper className={classes.paperStyle} >
+              <Paper elevation={6}>
               <Typography align="center" variant="subtitle2" style = {{color:"#344955"}} gutterBottom><b>What is Dividend Yield ?</b></Typography> 
               <Typography align="center" variant="subtitle3">The dividend yield, displayed as a percentage, is the amount of money a company pays shareholders for owning a share of its stock divided by its current stock price.</Typography>
+              </Paper>
             </Paper>
           </Grid>  
 
@@ -131,12 +136,14 @@ export default function DividendYield (){
 
           <Grid item xs={12} md={3} > 
             <Paper className={classes.paperStyle} >
+              <Paper elevation={6} style={{backgroundColor:"orange"}}>
               <Typography align="center" variant="subtitle2" style = {{color:"#344955"}} gutterBottom><b>Filter Options</b></Typography> 
                 <Button className={classes.buttonStyle} size="medium" fullWidth>Minimum Dividend Yield</Button>
                 <DiscreteSliderLabel marks={marks} minimumYield={minimumYield} setMinimumYield={setMinimumYield}/>  
               <Typography variant="caption" paragraph >Treasury 10 years: 1.78%</Typography>
               <Typography variant="caption">Inflation USA, CPI last 12 months: 6.8%</Typography>
               {/* <TestDYChild companiesList={companiesList}/> */}
+              </Paper>
             </Paper>
           </Grid>
 
