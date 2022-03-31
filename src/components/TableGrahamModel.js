@@ -1,15 +1,8 @@
 import React, { useState, useEffect }  from 'react';
-import PropTypes from 'prop-types';
 
-import { Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel, Button } from '@material-ui/core';
+import { Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel, Button, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { useTheme } from '@material-ui/core/styles';
-
-import IconButton from '@mui/material/IconButton';
-import FirstPageIcon from '@mui/icons-material/FirstPage';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import LastPageIcon from '@mui/icons-material/LastPage';
+import TablePaginationActions from './TablePaginationActions';
 
 const useStyles = makeStyles( (mainTheme) => ({
   table: {
@@ -22,7 +15,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   },
   TableTitle:{
     color: "white",
-    fontSize: 12
+    fontSize: 11
   },
   ButtonTable:{
     display: 'inline-block',
@@ -30,7 +23,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     minHeight: 0,
     minWidth: 0,
     color: mainTheme.palette.primary.main,
-    fontSize: "11px",
+    fontSize: "9px",
     textTransform:"none",
     "&:hover": {
       color:mainTheme.palette.secondary.main,
@@ -38,71 +31,25 @@ const useStyles = makeStyles( (mainTheme) => ({
     },
   },
   TableRows : {
-    fontSize: 12
+    fontSize: 11
   }
-
 }));
 
-function TablePaginationActions(props) {
-  const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
-
-  const handleFirstPageButtonClick = (event) => {
-    onPageChange(event, 0);
-  };
-
-  const handleBackButtonClick = (event) => {
-    onPageChange(event, page - 1);
-  };
-
-  const handleNextButtonClick = (event) => {
-    onPageChange(event, page + 1);
-  };
-
-  const handleLastPageButtonClick = (event) => {
-    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-  };
-
-  return (
-    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-      <IconButton
-        onClick={handleFirstPageButtonClick}
-        disabled={page === 0}
-        aria-label="first page"
-      >
-        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-      </IconButton>
-      <IconButton
-        onClick={handleBackButtonClick}
-        disabled={page === 0}
-        aria-label="previous page"
-      >
-        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-      </IconButton>
-      <IconButton
-        onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
-      >
-        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-      </IconButton>
-      <IconButton
-        onClick={handleLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
-      >
-        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-      </IconButton>
-    </Box>
-  );
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
 }
 
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
+function getComparator(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
 
 export default function TableGrahamModel({companiesList}) {
   const classes = useStyles();
@@ -110,70 +57,11 @@ export default function TableGrahamModel({companiesList}) {
   const [ rowsPerPage, setRowsPerPage ] = useState(15);
   const [ orderDirection, setOrderDirection ] = useState('desc');
   const [ orderBy, setOrderBy ] = useState('dividendYield');
-  console.log(companiesList);
-  
-  useEffect ( ()=> {
-  
-    // changeOrder();
-    // let arrayOfCompanies = companiesList;
-    // alert ("--entrou em useEffect " + orderBy + " " + orderDirection);
-    let arrayOfCompanies = companiesList;
-    if (orderBy === "dividendYield"){
-      if (orderDirection === 'asc') {
-        companiesList.sort(function (a, b) {
-          if (a.dividendYield > b.dividendYield) {
-            return 1;
-          }
-          if (a.dividendYield < b.dividendYield) {
-            return -1;
-          }
-          return 0;
-        });
-      } else if (orderDirection === 'desc'){
-        companiesList.sort(function (a, b) {
-          if (a.dividendYield < b.dividendYield) {
-            return 1;
-          }
-          if (a.dividendYield > b.dividendYield) {
-            return -1;
-          }
-          return 0;
-          });
-        }
-      // console.log(companiesList);  
-    }
-    else {
-      if (orderDirection === 'asc') {
-        companiesList.sort(function (a, b) {
-          if (a.shortName > b.shortName) {
-            return 1;
-          }
-          if (a.shortName < b.shortName) {
-            return -1;
-          }
-          return 0;
-        });
-      } else if (orderDirection === 'desc'){
-        companiesList.sort(function (a, b) {
-          if (a.shortName < b.shortName) {
-            return 1;
-          }
-          if (a.shortName > b.shortName) {
-            return -1;
-          }
-          return 0;
-          });
-        }
-    }
-    // setCompaniesList(arrayOfCompanies);
-  },[orderDirection, orderBy])
 
   const handleRequestSort = (event, property) => {
-    alert ("handleSort");
     const isAscending = (orderBy === property && orderDirection === 'asc');
     setOrderDirection(isAscending ? 'desc' : 'asc');
     setOrderBy(property);
-    console.log(orderDirection);
   };
 
   const createSorthandler=(property) => (event) => {
@@ -193,52 +81,63 @@ export default function TableGrahamModel({companiesList}) {
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} size="small" aria-label="stycky header">
+    <TableContainer component={Paper} >
+      <Table className={classes.table} size="small" aria-label="stycky header" >
         <TableHead className={classes.TableHeader}>
           <TableRow >
-            {/* <TableCell className={classes.TableTitle} align="left" key="company">
+            <TableCell className={classes.TableTitle} style={{width:"50%",position:"sticky", left:0, zIndex:2}}  align="left" key="shortName">
               <TableSortLabel 
-                active={orderBy==="company"} 
-                direction={orderBy==="company" ? orderDirection : 'asc'} 
-                onClick={createSorthandler("company")}
+                active={orderBy==="shortName"} 
+                style={{width:"46%", paddingLeft:"0px", paddingRight:"2px"}}
+                direction={orderBy==="shortName" ? orderDirection : 'asc'} 
+                onClick={createSorthandler("shortName")}
                 >Company</TableSortLabel>
-            </TableCell> */}
-            <TableCell className={classes.TableTitle} align="left">Company</TableCell>
-            <TableCell className={classes.TableTitle} align="right">Symbol</TableCell>
-            <TableCell className={classes.TableTitle} align="right">Dividend</TableCell>
-            <TableCell className={classes.TableTitle} align="right">Stock Price</TableCell>
-            <TableCell className={classes.TableTitle} align="right" key="dividendYield" >
+            </TableCell>
+            <TableCell className={classes.TableTitle} style={{width:"6%"}} align="right">Symbol</TableCell>
+            <TableCell className={classes.TableTitle} style={{width:"6%"}} align="right">Dividend</TableCell>
+            <TableCell className={classes.TableTitle} style={{width:"6%", paddingLeft:"3px", paddingRight:"3px"}} align="center">Stock Price</TableCell>
+            <TableCell className={classes.TableTitle} style={{width:"16%", paddingLeft:"0px", paddingRight:"0px"}} align="right" key="dividendYield" >
               <TableSortLabel 
                 active={orderBy==="dividendYield"} 
+                style={{width:"100px", paddingLeft:"0px", paddingRight:"2px"}}
                 direction={orderBy==="dividendYield" ? orderDirection : 'desc'} 
                 onClick={createSorthandler("dividendYield")}
                 >Dividend Yield</TableSortLabel>
             </TableCell>
-
+            {/* <Tooltip title="Average Five Years Dividend Yield: Average divided by current stock price"> */}
+            <TableCell className={classes.TableTitle} style={{width:"16%",paddingLeft:"0px", paddingRight:"0px"}} padding="none" align="right" key="fiveYearAvgDividendYield" >
+              <TableSortLabel 
+                active={orderBy==="fiveYearAvgDividendYield"} 
+                style={{width:"106px", paddingLeft:"0px", paddingRight:"4px"}}
+                direction={orderBy==="fiveYearAvgDividendYield" ? orderDirection : 'desc'} 
+                onClick={createSorthandler("fiveYearAvgDividendYield")}
+                >5 Years D.Yield</TableSortLabel>
+            </TableCell>
+            {/* </Tooltip> */}
           </TableRow>
         </TableHead>
         <TableBody>
           {(rowsPerPage > 0 ? 
-            companiesList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            companiesList.slice().sort(getComparator(orderDirection, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : companiesList
           ).map((company) => (
             <TableRow key={company.companyId}>
-              <TableCell component="th" scope="row" className={classes.TableRows}>
+              {/* <TableCell component="th" scope="row" className={classes.TableRows}>
                 <Button variant="text" size="small" disableRipple className={classes.ButtonTable} >{company.shortName}</Button>
-                
-              </TableCell>
+              </TableCell> */}
+              <TableCell align="left" className={classes.TableRows} style={{width:"50%",position:"sticky", left:0,  paddingLeft:"6px", paddingRight:"0px", backgroundColor:"white"}} >{company.shortName}</TableCell>  
               <TableCell align="right" className={classes.TableRows} >{company.companyId}</TableCell>
               <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(company.dividendRate)}</TableCell>
               <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(company.regularMarketPrice)}</TableCell>
               <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(company.dividendYield)}</TableCell>
+              <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(company.fiveYearAvgDividendYield/100)}</TableCell>
             </TableRow>
           ))}
-          {/* {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
+          {emptyRows > 0 && (
+            <TableRow style={{ height: 28.72 * emptyRows }}>
               <TableCell colSpan={6} />
             </TableRow>
-          )} */}
+          )}
 
         </TableBody>
         <TableFooter>

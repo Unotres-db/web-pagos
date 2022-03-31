@@ -11,14 +11,16 @@ import useUnsavedWarning from '../hooks/useUnsavedWarning';
 import useValuation from '../hooks/useValuation';
 
 import Header from '../components/Header'; 
-import FormAssumptionsOptions from '../components/FormBusinessAssumptions';
+import TableHistoricalCompanyAverages from '../components/TableHistoricalCompanyAverages';
+import FormAssumptionsOptions from '../components/FormAssumptionsOptions';
+import FormFcffAssumption from '../components/FormFcffAssumption';
 import FormBusinessAssumptions from '../components/FormBusinessAssumptions';
 import FormCostOfCapitalAssumptions from '../components/FormCostOfCapitalAssumptions';
 import TableDCFFinancials from '../components/TableDCFFinancials';
 import TableDCFValuation from '../components/TableDCFValuation';
-import TableHistoricalCompanyAverages from '../components/TableHistoricalCompanyAverages';
+
 import ChartRevenueFcff from '../components/ChartRevenueFcff';
-import ChartRevenue from '../components/ChartRevenue';
+// import ChartRevenue from '../components/ChartRevenue';
 
 import picCompany from '../assets/logocvx.png';
 
@@ -57,7 +59,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   paperStyle: {
     position: 'sticky',
     width: "100%",   
-    height:"660px",
+    minHeight:"660px",
     marginLeft:"3px",
     marginRight:"0px",
     color: "white",
@@ -80,10 +82,11 @@ const useStyles = makeStyles( (mainTheme) => ({
     color: "white",
     // backgroundColor: mainTheme.palette.secondary.main,
     backgroundColor: "#f0f8ff", //"whistesmoke", //"lightgray",
-    padding: "10px",
+    padding: "2px",
   },
   textCheckboxStyle:{
-    color:mainTheme.palette.primary.main
+    color:mainTheme.palette.primary.main,
+    
   },
   iconStyle: {
     textAlign: "center",
@@ -100,32 +103,30 @@ export default function DiscCashFlow (){
   const classes = useStyles();
   const [ Prompt, setIsDirty, setIsPristine ] = useUnsavedWarning();
   const [ isLoading, setIsLoading ]= useState(true);
-  const [ isValuationMinRequirements, setIsValuationMinRequirements ] = useState(false);
-  const [ isUsingAverageAsAssumption, setIsUsingAverageAsAssumption ] = useState(true);
-  const [ isEstimateFcffOnly, setIsEstimateFcffOnly ] = useState(false);
+  // const [ isValuationMinRequirements, setIsValuationMinRequirements ] = useState(false);
+  const [ isUseAvgAsAssumption, setIsUseAvgAsAssumption ] = useState(true); // Uses historical averages as assumptions to forecast next years
+  const [ isEstimateFcffOnly,setIsEstimateFcffOnly  ] = useState(false); // 
   const [ isCheckedDescOrder, setIsCheckedDescOrder] = useState(true);
   const [ isCheckedShowIncStatement, setIsCheckedShowIncStatement] = useState(true);
   const [ isCheckedShowPreviousYears, setIsCheckedShowPreviousYears] = useState(true);
   const [ companyIdSearch, setCompanyIdSearch] = useState("CVX");
   const [ historicalFinancialData, setHistoricalFinancialData ] = useState();
-  const [ companyData, setCompanyData] = useState({symbol:"",shortName:"", shares: 0, regularMarketPrice:0, marketCap:0});
-  const [ assumptions, setAssumptions ] = useState({revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",fcffGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: 2, cashFlowDiscretePeriod:5, companyBeta:1.2, riskFreeReturn:2, marketReturn:6, debtEquityRatio:30, costOfDebt:5});
-
-  // const [ assumptions, setAssumptions ] = useState({});
+  const [ companyData, setCompanyData] = useState({symbol:"",shortName:"", sharesOustanding: 0, regularMarketPrice:0, marketCap:0});
+  const [ assumptions, setAssumptions ] = useState({revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",cashFlowGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: 2, cashFlowDiscretePeriod:5, companyBeta:1.2, riskFreeReturn:2, marketReturn:6, debtTotalRatio:30, costOfDebt:5});
   const [ calculatedCostOfCapital, setCalculatedCostOfCapital] = useState({ costOfEquity:0, costOfCapital:0});
   const [ historicalAverages, setHistoricalAverages ] = useState({revenueGrowth:0, marginTarget:0, opexGrowth:0, interestGrowth:0, otherGrowth:0, fcffGrowthRate:0, taxRate:0, capexGrowth:0, nwcGrowth:0});
-  // let  historicalAverages = {revenueGrowth:0, marginTarget:0, opexGrowth:0, interestGrowth:0, otherGrowth:0, fcffGrowthRate:0, taxRate:0, capexGrowth:0, nwcGrowth:0};
-  const [ discountedFreeCashFlow, setDiscountedFreeCashFlow ] = useState([{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0},{year:0,fcff:0}]);
-  const [ valuation, setValuation] = useState({discreteNPV:0, perpetuityValue:0, perpetuityPresentValue:0,enterpriseValue:0, equityValue:0, fcffAvgGrowth:0, targetStockPrice:0})
-  const [ showFinancialData, setShowFinancialData]  =useState([{}]);
-  // const [ freeCashFlow, setFreeCashFlow] = useState(Array.from({ length: 10 } , () => (
+  const [ valuation, setValuation] = useState({cashFlowAvgGrowth:0, sumOfCashFlowPresentValue:0, perpetuityValue:0, perpetuityPresentValue:0, enterpriseValue:0, cash:0, debt:0, equityValue:0, sharesOutstanding:0, targetStockPrice:0, marketCap:0})
+  const { cashFlowAvgGrowth, sumOfCashFlowPresentValue, perpetuityValue, perpetuityPresentValue, enterpriseValue, cash, debt, equityValue, sharesOutstanding, targetStockPrice, marketCap } = valuation;
+  const { revenueGrowth, marginTarget, opexGrowth, interestGrowth, otherGrowth, taxRate, capexGrowth, nwcGrowth, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn, debtTotalRatio, costOfDebt} = assumptions
+  const { costOfEquity, costOfCapital} = calculatedCostOfCapital
 
   const [ forecastedFinancialData, setForecastedFinancialData] = useState(Array.from({ length: 5 } , () => (
-  { year: 0,
+  { year:0,
+    period:0,
     totalRevenue:0, 
     costOfRevenue: 0,
     grossProfit: 0,
-    totalOperatingExpenses: 0,
+    operatingExpenses: 0,
     depreciation: 0,
     interestExpense: 0,
     other: 0,
@@ -138,62 +139,74 @@ export default function DiscCashFlow (){
     shortLongTermDebt:0,
     longTermDebt:0,
     workingCapitalChanges:0,
-    fcff:0,
-    discountedFcff:0 }
+    cashFlow:0,
+    discountedCashFlow:0 }
   )));
 
-  // const companiesSymbols = [ {symbol: "CVX", CompanyName:"Chevron Corp"},{symbol: "XOM", CompanyName:"Exxon Corp"},{symbol: "PBR", CompanyName:"Petrobras"} ]
-  const { calcForecastedCashFlow, calcValuation, calcHistoricalAverages, calcCostOfCapital } = useValuation ({assumptions, setAssumptions, forecastedFinancialData, setForecastedFinancialData, discountedFreeCashFlow, setDiscountedFreeCashFlow, historicalFinancialData, valuation, setValuation, isCheckedDescOrder, historicalAverages, setHistoricalAverages,calculatedCostOfCapital, setCalculatedCostOfCapital, companyData}); //
+  const { calcForecastedCashFlow, calcValuation, calcHistoricalAverages, calcCostOfCapital } = useValuation ({assumptions, forecastedFinancialData, historicalFinancialData, isCheckedDescOrder, setHistoricalAverages,calculatedCostOfCapital, companyData, isEstimateFcffOnly}); //
   
-  useEffect(() => {
-    setIsDirty()
-  }, []);
+  // useEffect(() => {
+  //   setIsDirty()
+  // }, []);
 
   useEffect (()=> {
     // alert("--useEffect []");
+        // api.get('companies',{ companyIdSearch }
+      const dataCompany = {companyIdSearch}
+      function getCompany(){
+        api.get('companies', 
+        { headers :{ Authorization: companyIdSearch,}}
+        ).then (response => {
+          const company = response.data;
+          setCompanyData({symbol:company.symbol,shortName:company.shortName, sharesOutstanding: company.marketCap/1000000/company.regularMarketPrice, regularMarketPrice:company.regularMarketPrice, marketCap:company.marketCap/1000000000})
+  
+        }).catch (function (err){
+          if (err.response) {
+            const errorMsg = Object.values(err.response.data);
+            alert("warning - Error en acceso a base de datos" + errorMsg)
+          }
+        });  
+      }
 
       function getFinancials(){ 
       // const data = { companyIdSearch };
-        api.get('financials',{ headers :{
-          Authorization: companyIdSearch,
-        }
-        }).then (response => {
+      
+      api.get('financials',{ headers :{
+        Authorization: companyIdSearch,
+      }
+      }).then (response => {
           const results = response.data;
-          let financialAuxArray = Array.from({ length: 4 } , () => ({ year: 0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, totalOperatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, totalCurrentAssets:0, totalCurrentLiabilities:0, workingCapitalChanges:0, fcff:0, discountedFcff:0 }));
+          let financialAuxArray = Array.from({ length: 4 } , () => ({ year: 0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, totalCurrentAssets:0, totalCurrentLiabilities:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0 }));
+
+          financialAuxArray[0].workingCapitalChanges = ((results[0].totalCurrentAssets-results[0].totalCurrentLiabilities)-(results[1].totalCurrentAssets-results[1].totalCurrentLiabilities))/1000000000;
+          financialAuxArray[1].workingCapitalChanges = ((results[1].totalCurrentAssets-results[1].totalCurrentLiabilities)-(results[2].totalCurrentAssets-results[2].totalCurrentLiabilities))/1000000000;
+          financialAuxArray[2].workingCapitalChanges = ((results[2].totalCurrentAssets-results[2].totalCurrentLiabilities)-(results[3].totalCurrentAssets-results[3].totalCurrentLiabilities))/1000000000;
 
           for (let i = 0 ; i < 4; i++){
             financialAuxArray[i].year = results[i].year;
             financialAuxArray[i].totalRevenue = results[i].totalRevenue/1000000000;
             financialAuxArray[i].costOfRevenue = results[i].costOfRevenue/-1000000000;
             financialAuxArray[i].grossProfit = results[i].grossProfit/1000000000;
-            // financialAuxArray[i].totalOperatingExpenses = results[i].totalOperatingExpenses/-1000000000;
-            financialAuxArray[i].totalOperatingExpenses=results[i].sellingGeneralAdministrative/-1000000000 + results[i].otherOperatingExpenses/-1000000000 + results[i].researchDevelopment/-1000000000 + results[i].otherItems/-1000000000;
+            // financialAuxArray[i].operatingExpenses = results[i].operatingExpenses/-1000000000;
+            financialAuxArray[i].operatingExpenses = results[i].sellingGeneralAdministrative/-1000000000 + results[i].otherOperatingExpenses/-1000000000 + results[i].researchDevelopment/-1000000000 + results[i].otherItems/-1000000000;
             financialAuxArray[i].depreciation = results[i].depreciation/-1000000000;
             financialAuxArray[i].interestExpense = results[i].interestExpense/1000000000;
             financialAuxArray[i].incomeBeforeTax = results[i].incomeBeforeTax/1000000000;
-            financialAuxArray[i].other = financialAuxArray[i].incomeBeforeTax-( financialAuxArray[i].grossProfit+ financialAuxArray[i].totalOperatingExpenses+financialAuxArray[i].depreciation+financialAuxArray[i].interestExpense); 
+            financialAuxArray[i].other = financialAuxArray[i].incomeBeforeTax-( financialAuxArray[i].grossProfit+ financialAuxArray[i].operatingExpenses+financialAuxArray[i].depreciation+financialAuxArray[i].interestExpense); 
             financialAuxArray[i].incomeTaxExpense = (results[i].incomeTaxExpense/1000000000)*-1;
             financialAuxArray[i].netIncome = results[i].netIncome/1000000000;
             // financialAuxArray[i].ebit = results[i].ebit/1000000000;
             financialAuxArray[i].ebit =  financialAuxArray[i].incomeBeforeTax - financialAuxArray[i].interestExpense;
-
             financialAuxArray[i].capitalExpenditures = results[i].capitalExpenditures/1000000000;
             financialAuxArray[i].cash = results[i].cash/1000000000;
             financialAuxArray[i].shortLongTermDebt = results[i].shortLongTermDebt/1000000000;
             financialAuxArray[i].longTermDebt = results[i].longTermDebt/1000000000;
             financialAuxArray[i].totalCurrentAssets = results[i].totalCurrentAssets/1000000000;
             financialAuxArray[i].totalCurrentLiabilities = results[i].totalCurrentLiabilities/1000000000;
-            // financialAuxArray[i].workingCapitalChanges = (financialAuxArray[i].totalCurrentAssets-financialAuxArray[i].totalCurrentLiabilities)-(financialAuxArray[i+1].totalCurrentAssets-financialAuxArray[i+1].totalCurrentLiabilities);
-            financialAuxArray[i].fcff =  financialAuxArray[i].ebit + financialAuxArray[i].incomeTaxExpense - financialAuxArray[i].depreciation + financialAuxArray[i].capitalExpenditures + financialAuxArray[i].workingCapitalChanges;
-            // console.log(financialAuxArray[i].fcff);
+            financialAuxArray[i].cashFlow =  financialAuxArray[i].ebit + financialAuxArray[i].incomeTaxExpense - financialAuxArray[i].depreciation + financialAuxArray[i].capitalExpenditures + financialAuxArray[i].workingCapitalChanges;
           }  
-          // console.log(financialAuxArray[2].fcff);
-          financialAuxArray[0].workingCapitalChanges=(financialAuxArray[0].totalCurrentAssets-financialAuxArray[0].totalCurrentLiabilities)-(financialAuxArray[1].totalCurrentAssets-financialAuxArray[1].totalCurrentLiabilities);
-          financialAuxArray[1].workingCapitalChanges=(financialAuxArray[1].totalCurrentAssets-financialAuxArray[1].totalCurrentLiabilities)-(financialAuxArray[2].totalCurrentAssets-financialAuxArray[2].totalCurrentLiabilities);
-          financialAuxArray[2].workingCapitalChanges=(financialAuxArray[2].totalCurrentAssets-financialAuxArray[2].totalCurrentLiabilities)-(financialAuxArray[3].totalCurrentAssets-financialAuxArray[3].totalCurrentLiabilities);
-
           setHistoricalFinancialData(financialAuxArray);
-          setCompanyData({symbol:"CVX",shortName:"Chevron Corp.", shares: 1947.549952, regularMarketPrice:113.6, marketCap:221.242})
+          // setCompanyData({symbol:"CVX",shortName:"Chevron Corp.", shares: 1947.549952, regularMarketPrice:113.6, marketCap:221.242})
           setIsLoading(false);
       }).catch (function (err){
         if (err.response) {
@@ -207,7 +220,7 @@ export default function DiscCashFlow (){
       });
       setIsLoading(false);
     }
-
+    getCompany();
     getFinancials();
     // if (! isLoading) {
     if (historicalFinancialData) {  
@@ -218,14 +231,11 @@ export default function DiscCashFlow (){
     }
 },[]);
 
+
 useEffect (()=> {
-  
   if (historicalFinancialData){
     // alert ("--useEffect [historicalFinancialData]")
-    
     calcHistoricalAverages();
-    // calcCostOfCapital()
-    // calcValuation();
   }
 },[historicalFinancialData, companyData]);  
 
@@ -237,7 +247,7 @@ useEffect (()=> {
     // calcValuation();
     setForecastedFinancialData(calcForecastedCashFlow());
     if (forecastedFinancialData){
-      if (forecastedFinancialData[0].fcff <= 0){
+      if (forecastedFinancialData[0].cashFlow <= 0){
         // alert("Confirma ultimo flujo como negativo?");
       } 
     }
@@ -255,30 +265,85 @@ useEffect (()=> {
     setCalculatedCostOfCapital(calcCostOfCapital());
     setForecastedFinancialData(calcForecastedCashFlow());
     setValuation(calcValuation());
-    if (checkValuationMinRequirements) {
-      localStorage.setItem('valuation', JSON.stringify(valuation));
-      localStorage.setItem('forecastedFinancialData', JSON.stringify(forecastedFinancialData));
-      localStorage.setItem('calculatedCostOfCapital', JSON.stringify(calculatedCostOfCapital));
-    }
+    // if (checkValuationMinRequirements) {
+    //   localStorage.setItem('valuation', JSON.stringify(valuation));
+    //   localStorage.setItem('forecastedFinancialData', JSON.stringify(forecastedFinancialData));
+    //   localStorage.setItem('calculatedCostOfCapital', JSON.stringify(calculatedCostOfCapital));
+    // }
   }
 },[assumptions]);  
 
-function checkValuationMinRequirements() {
-  if ( assumptions.revenueGrowth !== "" &&
-        assumptions.marginTarget !== "" &&
-        assumptions.opexGrowth !== "" &&
-        assumptions.taxRate !== "" &&
-        assumptions.perpetualGrowthRate !== "" &&
-        assumptions.riskFreeReturn !=="" &&
-        assumptions.marketReturn !=="" &&
-        assumptions.companyBeta !== "" &&
-        assumptions.costOfDebt !==""
-  ){ 
-    setIsValuationMinRequirements(true);
-    return true
-  } else {
-      return false
-  }}
+
+async function handleValuation (){
+
+  // axios.all([
+  //   axios.post(`/my-url`, {
+  //     myVar: 'myValue'
+  //   }), 
+  //   axios.post(`/my-url2`, {
+  //     myVar: 'myValue'
+  //   })
+  // ])
+  // .then(axios.spread((data1, data2) => {
+  //   // output of req.
+  //   console.log('data1', data1, 'data2', data2)
+  // }));
+  const userId = "martincsl";
+  const companyId = companyData.symbol;
+  const valuationData = { userId, companyId, cashFlowAvgGrowth, sumOfCashFlowPresentValue, perpetuityValue, perpetuityPresentValue, enterpriseValue, cash, debt, equityValue, sharesOutstanding, targetStockPrice, marketCap, revenueGrowth, marginTarget, opexGrowth, interestGrowth, otherGrowth, taxRate, capexGrowth, nwcGrowth, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn, debtTotalRatio, costOfDebt, costOfEquity, costOfCapital } ;
+  let dataToProcess=[];
+  api.post('/valuations', valuationData ).then (response => {
+    const { valuationId: valuationId, data } = response.data;
+    console.log(valuationId);
+    dataToProcess = forecastedFinancialData.map((item, index) => ({...item, valuationId:valuationId, forecastedId:valuationId + index.toString(), companyId:companyData.symbol})) 
+    dataToProcess.map ((currElement)=> (
+  
+      api.post('/forecasted', currElement ).then (response => {
+      
+      }).catch (function (err){
+        if (err.request){
+          alert("Forecasted: Server not responding");
+          return { valid: false, message:"Server not responding" };
+        } 
+        if ( err.response.status == 404) {
+          alert("Forecasted: Database not found")
+          return { valid: false, message:"Database not found" };
+        }
+        const errorMsg = Object.values(err.response.data);
+        alert("post: forecasted " + errorMsg);
+      })))
+    
+  }).catch (function (err){
+    if (err.request){
+      alert("Valuation: Server not responding");
+      return { valid: false, message:"Server not responding" };
+    } 
+    if ( err.response.status == 404) {
+      alert("Valuation: Database not found")
+      return { valid: false, message:"Database not found" };
+    }
+    const errorMsg = Object.values(err.response.data);
+    alert("post: valuation " + errorMsg);
+  });
+
+}
+
+// function checkValuationMinRequirements() {
+//   if ( assumptions.revenueGrowth !== "" &&
+//         assumptions.marginTarget !== "" &&
+//         assumptions.opexGrowth !== "" &&
+//         assumptions.taxRate !== "" &&
+//         assumptions.perpetualGrowthRate !== "" &&
+//         assumptions.riskFreeReturn !=="" &&
+//         assumptions.marketReturn !=="" &&
+//         assumptions.companyBeta !== "" &&
+//         assumptions.costOfDebt !==""
+//   ){ 
+//     setIsValuationMinRequirements(true);
+//     return true
+//   } else {
+//       return false
+//   }}
 
 const handleChangeCheckDescOrder = () => {
   if (isCheckedDescOrder) {
@@ -319,29 +384,23 @@ const handleChangeCheckShowPreviousYears = () => {
         <Paper className={classes.paperStyle} elevation={6}>
         { ! isLoading ? (
           <TableHistoricalCompanyAverages 
-          calcHistoricalAverages={calcHistoricalAverages}
+            calcHistoricalAverages={calcHistoricalAverages}
             historicalFinancialData={historicalFinancialData}
             historicalAverages={historicalAverages}
             // setHistoricalAverages={setHistoricalAverages}
-            setAssumptions={setAssumptions}
+            // setAssumptions={setAssumptions}
           />
-        ) : 0 }
-          {/* <Typography align="center" variant="subtitle3">Assumptions:</Typography> */}
-          {/* <TableDCFAssumptions 
-              fcffGrowthRate={assumptions.fcffGrowthRate}
-              taxRate={assumptions.taxRate} 
-              discountRate={assumptions.discountRate}
-              perpetualGrowthRate={assumptions.perpetualGrowthRate}
-              capexPercentage={assumptions.capexPercentage}
-              workingCapitalChangesPercentage={assumptions.workingCapitalChangesPercentage}
-          /> */}
-          {/* <Box style={{height:"5px"}}/>
+        ) : "" }
+
+        <Box style={{height:"5px"}}/>
           { ! isLoading ? (
           <FormAssumptionsOptions 
             isEstimateFcffOnly = {isEstimateFcffOnly}
-            setIsEstimateFcffOnly = {setIsEstimateFcffOnly}/>
-          ) : 0 }  */}
+            setIsEstimateFcffOnly = {setIsEstimateFcffOnly}
+          />
+          ) : 0 }  
 
+          {  ! isEstimateFcffOnly ? <div>
           <Box style={{height:"5px"}}/>  
           { ! isLoading ? (
           <FormBusinessAssumptions 
@@ -349,6 +408,14 @@ const handleChangeCheckShowPreviousYears = () => {
             setAssumptions={setAssumptions}
           />
           ) : 0 }
+          </div> : <div> 
+          <Box style={{height:"5px"}}/>    
+          <FormFcffAssumption 
+            assumptions={assumptions} 
+            setAssumptions={setAssumptions}
+          />
+          </div>
+          }
           <Box style={{height:"5px"}}/>
           { ! isLoading ? (
           <FormCostOfCapitalAssumptions 
@@ -363,18 +430,17 @@ const handleChangeCheckShowPreviousYears = () => {
       <Grid item xs={12} md={6} > 
   
         <Paper className={classes.TableContainerStyle} elevation={6}>
-
           <Paper className={classes.CompanyInfo}>
           {companyData ? <div>
             <Grid container spacing={2}>
               <Grid container item xs={4}  spacing={1}>
                 <Grid item>
-                <img src = {picCompany} alt="CompanyLogo" className={classes.logoStyle} style={{height:30}} /> 
+                {/* <img src = {picCompany} alt="CompanyLogo" className={classes.logoStyle} style={{height:30}} />  */}
                 {/* <Typography>{isValuationMinRequirements? "sem requisitos minimos": "com requisitos minimos"}</Typography> */}
                 </Grid>
                 <Grid item>
                 <Box style={{height: "5px"}}/>  
-                  <Typography align="center" variant="subtitle3" style={{height:"30px"}}>{`${companyData.shortName} (${companyData.symbol})`}</Typography>
+                  <Typography align="center" variant="caption" style={{height:"30px"}}>{`${companyData.shortName} (${companyData.symbol})`}</Typography>
                 </Grid>
               </Grid>
       
@@ -383,12 +449,19 @@ const handleChangeCheckShowPreviousYears = () => {
               </Grid>
               <Grid item xs={4} >
                 <Box display="flex" justifyContent="flex-end">
-                  {/* <Button variant="contained" size="small" className={classes.buttonStyle} startIcon={<SaveIcon />} disableRipple>Generate Pdf</Button> */}
-                  <Button variant="contained" size="small" className={classes.buttonStyle} startIcon={<SaveIcon />} disableRipple>Save Valuation</Button>
+                  <Button onClick = {handleValuation} 
+                          variant="contained" 
+                          size="small" 
+                          className={classes.buttonStyle} 
+                          startIcon={<SaveIcon />} 
+                          disableRipple
+                          >Save Valuation
+                  </Button>
                 </Box>  
               </Grid>
             </Grid>
             </div> :0}
+
             <FormGroup style={{height:"20px"}}> 
               <Grid container >
                 <Grid item xs={12} md={4} >
@@ -438,6 +511,7 @@ const handleChangeCheckShowPreviousYears = () => {
               isCheckedDescOrder={isCheckedDescOrder}
               isCheckedShowIncStatement={isCheckedShowIncStatement}
               isCheckedShowPreviousYears={isCheckedShowPreviousYears}
+              isEstimateFcffOnly={isEstimateFcffOnly}
             />
             {/* </div>
           : 0 } */}
@@ -474,151 +548,13 @@ const handleChangeCheckShowPreviousYears = () => {
       </Grid>
     </Grid>
     </Grid>
-  
+
   <Grid container direction="column" alignItems="center" style= {{ minHeight: '5vh'}} />
 
   {/* </Container> */}
+
 </div> : 0} 
   {Prompt}
   </>
   )
 }
-
-  // const [historicalFinancialData, setHistoricalFinancialData] = useState([
-  // { 
-  //   year: 2021,
-  //   totalRevenue: 152, 
-  //   costOfRevenue: -112.39,
-  //   grossProfit: 39.69,
-  //   totalOperatingExpenses: -14.05,
-  //   depreciation: -6.5,
-  //   interestExpense: -1.75,
-  //   other: 1.52,
-  //   incomeBeforeTax: 18.91,
-  //   incomeTaxExpense: -4.73, 
-  //   netIncome: 14.19,
-  //   ebit: 20.66,
-  //   capitalExpenditures: -5.0,
-  //   cash: 20.45,
-  //   shortLongTermDebt:0.70,
-  //   longTermDebt:6.15,
-  //   workingCapitalChanges:-1,
-  //   fcff:16.44,
-  //   discountedFcff:0
-  // },
-  // {
-  //   year: 2020,
-  //   totalRevenue: 132.25, 
-  //   costOfRevenue: -100.35,
-  //   grossProfit: 31.90,
-  //   totalOperatingExpenses: -12.54,
-  //   depreciation: -6,
-  //   interestExpense: -1.5,
-  //   other: 1.32,
-  //   incomeBeforeTax: 13.18,
-  //   incomeTaxExpense: -3.29, 
-  //   netIncome: 9.88,
-  //   ebit:14.68,
-  //   capitalExpenditures: -5,
-  //   cash: 10.32,
-  //   shortLongTermDebt:0.65,
-  //   longTermDebt:6.05,
-  //   workingCapitalChanges:-1,
-  //   fcff:11.38, 
-  //   discountedFcff:0
-
-  // },
-  // {
-  //   year: 2019,
-  //   totalRevenue: 115, 
-  //   costOfRevenue: -89.60,
-  //   grossProfit: 25.40,
-  //   totalOperatingExpenses: -11.2,
-  //   depreciation: -5.5,
-  //   interestExpense: -1.25,
-  //   other: 1.15,
-  //   incomeBeforeTax: 8.60,
-  //   incomeTaxExpense: -2.15, 
-  //   netIncome: 6.45,
-  //   ebit:9.85,
-  //   capitalExpenditures: -5,
-  //   cash: 8.78,
-  //   shortLongTermDebt:0.60,
-  //   longTermDebt:5.95,
-  //   workingCapitalChanges:-1,
-  //   fcff: 7.20,
-  //   discountedFcff:0
-  // },
-  // {
-  //   year: 2018,
-  //   totalRevenue: 100, 
-  //   costOfRevenue: -80,
-  //   grossProfit: 20,
-  //   totalOperatingExpenses: -10,
-  //   depreciation: -5,
-  //   interestExpense: -1,
-  //   other: 1,
-  //   incomeBeforeTax: 5,
-  //   incomeTaxExpense: -1.25, 
-  //   netIncome: 3.75,
-  //   ebit:6,
-  //   capitalExpenditures: -5,
-  //   cash: 5.78,
-  //   shortLongTermDebt:0.50,
-  //   longTermDebt:5.90,
-  //   workingCapitalChanges:-1,
-  //   fcff: 3.75,
-  //   discountedFcff:0
-  // }]);
-  // const [ historicalFinancialData, setHistoricalFinancialData]= useState([]);
-  // const [ historicalFinancialData, setHistoricalFinancialData ] = useState(Array.from({ length: 4 } , () => (
-  // let historicalFinancialData = (Array.from({ length: 4 } , () => (
-  //   { year: 0,
-  //     totalRevenue:0, 
-  //     costOfRevenue: 0,
-  //     grossProfit: 0,
-  //     totalOperatingExpenses: 0,
-  //     depreciation: 0,
-  //     interestExpense: 0,
-  //     other: 0,
-  //     incomeBeforeTax: 0,
-  //     incomeTaxExpense: 0, 
-  //     netIncome: 0,
-  //     ebit: 0,
-  //     capitalExpenditures: 0,
-  //     cash: 0,
-  //     shortLongTermDebt:0,
-  //     longTermDebt:0,
-  //     workingCapitalChanges:0,
-  //     fcff:0,
-  //     discountedFcff:0 }
-  //   )));
-
-
-
-
-        // const results = response.data;
-        // console.log(results);
-        // setHistoricalFinancialData(response.data);
-      //   // for (let i = 0; i < historicalFinancialData.length-1 ; i++) {
-      //   for (let i = 0 ; i < 4; i++){
-  
-      //     historicalFinancialData[i].year = results[i].year
-      //     historicalFinancialData[i].totalRevenue = results[i].totalRevenue/1000000000
-      //     historicalFinancialData[i].costOfRevenue = results[i].costOfRevenue/1000000000
-      //     historicalFinancialData[i].grossProfit = results[i].grossProfit/1000000000
-      //     historicalFinancialData[i].totalOperatingExpenses = results[i].totalOperatingExpenses/-1000000000
-      //     historicalFinancialData[i].depreciation = results[i].depreciation/-1000000000
-      //     historicalFinancialData[i].interestExpense = results[i].interestExpense/1000000000
-      //     // historicalFinancialData[i].other = results[i].other/1000000000 // calculated field
-      //     historicalFinancialData[i].incomeBeforeTax = results[i].incomeBeforeTax/1000000000
-      //     historicalFinancialData[i].incomeTaxExpense = results[i].incomeTaxExpense/1000000000
-      //     historicalFinancialData[i].netIncome = results[i].netIncome/1000000000
-      //     historicalFinancialData[i].capitalExpenditures = results[i].capitalExpenditures/1000000000
-      //     historicalFinancialData[i].cash = results[i].cash/1000000000
-      //     historicalFinancialData[i].shortLongTermDebt = results[i].shortLongTermDebt/1000000000
-      //     historicalFinancialData[i].longTermDebt = results[i].longTermDebt/1000000000
-      //     // historicalFinancialData[i].workingCapitalChanges = 0
-      //     // historicalFinancialData[i].fcff = 0
-      //   // }))    
-      //   }

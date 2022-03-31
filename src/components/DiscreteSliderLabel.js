@@ -8,12 +8,11 @@ function valuetext(value) {
 export default function DiscreteSliderLabel({marks, minimumYield, setMinimumYield}) {
 
   function handleMinimumYield(event, newValue) {
-    
     setMinimumYield(newValue);
   }
 
   return (
-    <Box style={{ width: 250 }}>
+    <Box style={{ marginTop: "15px", width:"95%" }}>
       <Slider
         aria-label = "Always visible"
         defaultValue = {1.55}

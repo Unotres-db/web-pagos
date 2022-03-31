@@ -21,7 +21,7 @@ TableRows : {
   }
 }));
 
-export default function TableDCFAssumptions ({fcffGrowthRate, taxRate, discountRate, perpetualGrowthRate, capexPercentage, workingCapitalChangesPercentage}){
+export default function TableDCFAssumptions ({cashFlowGrowthRate, taxRate, discountRate, perpetualGrowthRate, capexPercentage, workingCapitalChangesPercentage}){
   const classes = useStyles();
 
   return (

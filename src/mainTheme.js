@@ -87,7 +87,7 @@ const mainTheme = createTheme ({
         MuiTableCell:{
           body:{
             fontsize:8
-          }
+          },
         }
       }
     },
@@ -99,7 +99,6 @@ const mainTheme = createTheme ({
           opacity: 1,
           color: "gray"
         },
-
         "&:hover": {
           color: "#F9AA33",
 
@@ -117,6 +116,7 @@ const mainTheme = createTheme ({
             color: "#F9AA33"
           },
         },
+        
       },
     }
     },   //overrides

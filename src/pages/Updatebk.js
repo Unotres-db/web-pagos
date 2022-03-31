@@ -5,7 +5,7 @@ import axios from "axios";
 import api from '../services/api';
 import Header from '../components/Header';
 import { Grid, Typography, Button } from '@material-ui/core';
-import { LeakAddTwoTone } from '@material-ui/icons';
+// import { LeakAddTwoTone } from '@material-ui/icons';
 
 export default function Update () {
 
@@ -188,11 +188,10 @@ export default function Update () {
 
   async function handleFinancials (i){
     
-    // for (let i = 0; i < financialData.length; i++) {
-      
-      //  alert("entrou em handlefinancials" + financialQtrData[i].companyId+financialQtrData[i].endDate);
     // verifica se a informacao dos dados financeiros ja esta no banco de dados
+    console.log(financialData[i].financialsId);
     try {
+    
       const response = await api.get ('/financials', { headers: { Authorization: financialData[i].financialsId }})
         try {
           const data =  financialData[i]  ;
@@ -225,7 +224,7 @@ export default function Update () {
         } else {
           // se...
             const errorMsg = Object.values(err.response.data);
-            alert("Error en inicio de sessión");
+            // alert("Error en inicio de sessión");
             // return { valid: false, message:"Error en actualización de datos financieros" };
           }
         }
@@ -235,14 +234,11 @@ export default function Update () {
 
   async function handleFinancialsQtr (i){
     
-    // for (let i = 0; i < financialQtrData.length; i++) {
-      alert("entrou em handlefinancialsQtr" + financialQtrData[i].companyId);
     // verifica se a informacao dos dados financeiros ja esta no banco de dados
     try {
       const response = await api.get ('/financialsqtr', { headers: { Authorization: financialQtrData[i].financialsId }})
         try {
           const data =  financialQtrData[i]  ;
-          
           const response = await api.put ('/financialsqtr', data);
           // return { valid: true, message:"Éxito en actualización de datos financieros" };
         } catch (err) {
@@ -333,6 +329,7 @@ export default function Update () {
     const result = handleCompany();
     if (result) {   // DEVERIA RETORNAR O OK DO BACKEND.....
       for (let i = 0; i < financialData.length; i++){
+        console.log("chama handleFinancials");
         handleFinancials(i);
       }  
       for (let i = 0; i < financialQtrData.length; i++){
@@ -344,8 +341,13 @@ export default function Update () {
   }
 
   async function getYFData(){
-    const companiesList = ['MMM','AOS','ABT','ABBV','AFL','APD','ALB','AMCR','ADM','T','ATO','ADP','BDX','CAH','CAT','CB','CINF','CTAS','CLX','CL','ED','DOV','ECL','EMR','ESS','EXPD','FRT','BEN','GD','GPC','HRL','ITW','IBM','KMB','LEG','LIN','LOW','MKC','MCD','MDT','NEE','NUE','PNR','PBCT','PPG','PG','ROP','SPGI','SHW','SWK','SYY','TROW','TGT','VFC','GWW','WBA','WMT','WST'];
+    // const companiesList = ['CVX','XOM'];
+
+    // const companiesList = ['CVX','XOM','PBR','BP','SHEL','FB','AMZN','TSLA','GOOG','MSFT'];
+    const companiesList = ['MMM','AOS','ABT','ABBV','AFL','APD','ALB','AMCR','ADM','T','ATO','ADP','BDX','CAH','CAT','CB','CINF','CTAS','CLX','CL','ED','DOV','ECL','EMR','ESS','EXPD','FRT','BEN','GD','GPC','HRL','ITW','IBM','KMB','LEG','LIN','LOW','MKC','MCD','MDT','NEE','NUE','PNR','PBCT','PPG','PG','ROP','SPGI','SHW','SWK','SYY','TROW','TGT','VFC','GWW','WBA','WMT','WST','PBR','BP','SHEL','FB','AMZN','TSLA','GOOG','MSFT'];
+
     for (let i = 0; i < companiesList.length; i++) {
+      console.log(i/companiesList.length);
       var companySymbol = companiesList[i];
       var options = {
         method: 'GET',
@@ -2756,7 +2758,7 @@ export default function Update () {
 
         handleCreate();
       }).catch(function (error) {
-        alert (error);
+        // alert (error);
         console.error(error);
       });
     

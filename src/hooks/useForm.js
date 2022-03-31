@@ -4,7 +4,6 @@ import { LoginContext } from '../helpers/Context.js';
 export default function useForm (callback) {
   
   const { userId, setUserId, setUserName, setSponsorName} = useContext (LoginContext);
-  // const [ assumptions, setAssumptions ] = useState({fcffGrowthRate:0.12,taxRate:0.25 , discountRate:0.1, capexPercentage:0.15, workingCapitalChangesPercentage:0.20, wacc: 0.1, perpetualGrowthRate: 0.03});
   const [ values, setValues ] = useState ({ contactName: "", contactMobile: "", contactEmail: "", contactMsg:"", userPassword:"" });
   const [ formErrors, setFormErrors ] = useState({ contactName: "", contactMobile: "", contactEmail: "", contactMsg:"", userId:"", userPassword:"" });
   const { contactName, contactMobile, contactEmail, contactMsg, userPassword } = values;

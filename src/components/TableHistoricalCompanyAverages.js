@@ -23,10 +23,10 @@ TableRows : {
   }
 }));
 
-export default function TableHistoricalCompanyAverages ({calcHistoricalAverages, historicalFinancialData, historicalAverages, setAssumptions}){   //, setHistoricalAverages
+export default function TableHistoricalCompanyAverages ({calcHistoricalAverages, historicalFinancialData, historicalAverages}){   //, setHistoricalAverages
   
   const classes = useStyles();
-  console.log(historicalAverages);
+  // console.log(historicalAverages);
   // alert("--entrou em historical averages");
   // const { calcHistoricalAverages } = useValuation({ historicalFinancialData, historicalAverages, setHistoricalAverages, setAssumptions});
   // console.log(historicalFinancialData);

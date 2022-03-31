@@ -9,8 +9,8 @@ import DividendYield from './pages/DividendYield.js';
 import Graham from './pages/Graham.js';
 import Home from './pages/Home.js';
 import Login from './pages/Login.js';
-// import Update from './pages/Update.js';
-// import Updatebk from './pages/Updatebk.js';
+import Update from './pages/Update.js';
+import Updatebk from './pages/Updatebk.js';
 import Whoweare from './pages/Whoweare.js';
 
 export default function Routes() {
@@ -28,8 +28,8 @@ export default function Routes() {
         <Route path = "/graham" component = {Graham} />
         <Route path = "/home" component = {Home} />
         <Route path = "/login" component = {Login} />
-        {/* <Route path = "/update" component = {Update} />
-        <Route path = "/updatebk" component = {Updatebk} /> */}
+        <Route path = "/update" component = {Update} />
+        <Route path = "/updatebk" component = {Updatebk} />
         <Route path = "/whoweare" component = {Whoweare} />
       </Switch>
     </Router>  
