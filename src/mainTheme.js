@@ -104,7 +104,7 @@ const mainTheme = createTheme ({
 
           '&& $icon': {
             opacity: 1,
-            color: "white"
+            color: "orangered"
           },
         },
         "&$active": {

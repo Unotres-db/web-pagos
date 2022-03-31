@@ -2,7 +2,7 @@ import React, { useState, useEffect }  from 'react';
 
 import { Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel, Button, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import TablePaginationActions from '../pages/DividendYieldModel/TablePaginationActions';
+import TablePaginationActions from './TablePaginationActions';
 
 const useStyles = makeStyles( (mainTheme) => ({
   table: {
@@ -51,7 +51,7 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-export default function TableGrahamModel({companiesList}) {
+export default function TableDividendYield ({companiesList}) {
   const classes = useStyles();
   const [ page, setPage ] = useState(0);
   const [ rowsPerPage, setRowsPerPage ] = useState(15);
