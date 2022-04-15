@@ -18,16 +18,23 @@ const useStyles = makeStyles( (mainTheme) => ({
   },
   TableRows : {
     fontSize: 11
-    }
+  }
   }));
 
 export default function FormFcffAssumption ({assumptions, setAssumptions}){
   const classes = useStyles();
 
   const handleChange = (e) => {
-    setAssumptions (prevState => ({...prevState, [e.target.name]:e.target.value, revenueGrowth:"",marginTarget:"",opexGrowth:"", interestGrowth:"",otherGrowth:"",taxRate:"", capexGrowth:"", nwcGrowth:""
-    }))
-  }; 
+    setAssumptions (prevState => ({...prevState, [e.target.name]:e.target.value, revenueGrowth:"",marginTarget:"",opexGrowth:"", interestGrowth:"",otherGrowth:"",taxRate:"", capexGrowth:"", nwcGrowth:""}))
+  };
+  
+  const handleChangeDiscretePeriod = (e) => {
+    if (e.target.value > 0 && e.target.value < 21){
+      setAssumptions (prevState => ({...prevState, [e.target.name]:e.target.value }))
+    } else{
+      setAssumptions (prevState => ({...prevState, [e.target.name]:1 }))
+    }
+  } 
 
   return (
   <>
@@ -40,9 +47,9 @@ export default function FormFcffAssumption ({assumptions, setAssumptions}){
       </TableHead>
 
       <TableBody>
-        <TableRow>
+        {/* <TableRow>
           <TextField
-            label="Cash Flow Growth Rate (%)"
+            label="Free Cash Flow Growth"
             size="small"
             value={assumptions.cashFlowGrowthRate}
             type="number"
@@ -54,42 +61,64 @@ export default function FormFcffAssumption ({assumptions, setAssumptions}){
               startAdornment: <InputAdornment position="start">%</InputAdornment>,
             }}
           />
-        </TableRow>
+        </TableRow> */}
 
         <TableRow>
-        <Grid container>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Perpetual Growth Rate (%)"
-              size="small"
-              value={assumptions.perpetualGrowthRate}
-              type="number"
-              onChange={(e) => { handleChange (e)}}
-              variant="filled"
-              fullWidth
-              name="perpetualGrowthRate"
-              InputProps={{
-                startAdornment: <InputAdornment position="start">%</InputAdornment>,
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Tooltip title="Free cash Flow Discrete Period (in Years)">
+          <Grid container>
+
+            <Grid item xs = {4}>
               <TextField
-                label="FCFF Discrete Period (Years)"
+                label="Free Cash Flow Growth Rate"
                 size="small"
-                value={assumptions.cashFlowDiscretePeriod}
+                value={assumptions.cashFlowGrowthRate}
                 type="number"
                 onChange={(e) => { handleChange (e)}}
                 variant="filled"
                 fullWidth
-                name="cashFlowDiscretePeriod"
+                name="cashFlowGrowthRate"
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                }}
               />
-            </Tooltip>
-          </Grid>
+            </Grid>
+
+            <Grid item xs = {4} >
+              <TextField
+                label="Perpetual Growth Rate"
+                size="small"
+                value={assumptions.perpetualGrowthRate}
+                type="number"
+                onChange={(e) => { handleChange (e)}}
+                variant="filled"
+                fullWidth
+                name="perpetualGrowthRate"
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                }}
+              />
+            </Grid>
+            
+            <Grid item xs={4} >
+              <Tooltip title="Free Cash Flow Discrete Period (in Years)">
+                <TextField
+                  label="FCFF Discrete Period (Years)"
+                  size="small"
+                  value={assumptions.cashFlowDiscretePeriod}
+                  type="number"
+                  onChange={(e) => { handleChangeDiscretePeriod (e)}}
+                  variant="filled"
+                  fullWidth
+                  name="cashFlowDiscretePeriod"
+                  InputProps={{
+                    inputProps: { 
+                        max: 20, min: 1 
+                    }}}
+                />
+              </Tooltip>
+            </Grid>
+
           </Grid>
         </TableRow>
-
       </TableBody>
     </Table>
   </TableContainer>

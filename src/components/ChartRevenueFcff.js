@@ -3,58 +3,72 @@ import React, {useState, useEffect} from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 
-export default function ChartRevenueFcff ({ historicalFinancialData, forecastedFinancialData, isCheckedDescOrder }) {
-  // console.log(historicalFinancialData);
-  function extractYear(year){
-    let textYear = year.toString()
-    let finalDigitsYear= textYear.substring(2,4);
-    return finalDigitsYear
-  }
-  
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+
+import useDataHandling from "../hooks/useDataHandling";
+
+// export default function ChartRevenueFcff ({ historicalFinancialData, assumptions, forecastedFinancialData, isCheckedShowPreviousYears, isCheckedDescOrder }) {
+  export default function ChartRevenueFcff ({ combinedFinancialdata, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder }) {
+
+  // const { changeArrayOrder } = useDataHandling ({ historicalFinancialData, forecastedFinancialData, isCheckedShowPreviousYears, isCheckedDescOrder });
   let combinedArray = [];
-  //#F9AA33
-  let chartColors=["#F9AA33","#F9AA33","#F9AA33","#F9AA33","#F9AA33","#3C6E76","#3C6E76","#3C6E76", "#3C6E76"]; //#344955"
+  // const numberOfYears = assumptions;
+  // console.log(assumptions);
+  const theme = useTheme();
   const [ chartData, setChartData] = useState({
     labels:combinedArray.map((currElement)=> (currElement.year)),
     datasets:[{label:"Free Cash Flow to the Firm", data:combinedArray.map((currElement)=> (currElement.cashFlow)),
     backgroundColor:["white"],
   }]});
 
-  useEffect (()=> {
-    function generateChartData(){
+  //   const [ chartData, setChartData] = useState({
+  //   labels:combinedFinancialdata.map((currElement)=> (currElement.year)),
+  //   datasets:[{label:"Free Cash Flow to the Firm", data:combinedArray.map((currElement)=> (currElement.cashFlow)),
+  //   backgroundColor:["white"],
+  // }]});
+
+  // function extractYear(year){
+  //   let textYear = year.toString()
+  //   let finalDigitsYear= textYear.substring(2,4);
+  //   return finalDigitsYear
+  // }
+
+  function defineChartColors (){
+    const arrayOfForecastedColors = Array.from({ length: assumptions.cashFlowDiscretePeriod } , () => (theme.palette.primary.main));
+    const arrayOfHistoricalColors = Array.from({ length: 3 } , () => (theme.palette.tertiary.main));  
+    if (isCheckedShowPreviousYears){
       if (isCheckedDescOrder){
-        for (let i = 0; i < 5 ; i++){
-          combinedArray[i] = forecastedFinancialData[i];
-        }; 
-        for (let j = 0; j < 4 ; j++){    // < 4
-          combinedArray[j+5] = historicalFinancialData[j];
-        };
-      } 
-      else {
-        for (let k = 3; k >= 0 ; k--){  // K=3
-          combinedArray[Math.abs(k-3)] = historicalFinancialData[k];
-        };
-        for (let k = 4; k >= 0 ; k--){
-          combinedArray[Math.abs(k-4)+4] = forecastedFinancialData[k];
-        };
-        chartColors=["#3C6E76","#3C6E76","#3C6E76", "#3C6E76","#F9AA33","#F9AA33","#F9AA33","#F9AA33","#F9AA33"];
+        const arrayOfColorsDesc = arrayOfForecastedColors.concat(arrayOfHistoricalColors);
+        console.log(arrayOfColorsDesc);
+        return arrayOfColorsDesc
       }
-    
-      setChartData({
-        labels:combinedArray.map((currElement)=>(currElement.year)),
-        datasets:[{label:"Free Cash Flow to the Firm", data:combinedArray.map((currElement)=> (currElement.cashFlow)),
-        backgroundColor:chartColors,
-        }]
-    });
-    // label:"Free Cash Flow",
+      const arrayOfColorsAsc = arrayOfHistoricalColors.concat(arrayOfForecastedColors);
+      return arrayOfColorsAsc
+    } else {
+        return arrayOfForecastedColors
     }
-    
-    generateChartData();
-  },[forecastedFinancialData, isCheckedDescOrder])
+  }
+  
+  useEffect (()=> {
+    // setChartData({
+    //   labels:changeArrayOrder().map((currElement)=>(currElement.year)),
+    //   datasets:[{label:"Free Cash Flow to the Firm", data:changeArrayOrder().map((currElement)=> (currElement.cashFlow)),
+    //   backgroundColor:defineChartColors(),
+    //   }]
+
+    setChartData({
+      labels:combinedFinancialdata.map((currElement)=>(currElement.year)),
+      datasets:[{label:"Free Cash Flow to the Firm", data:combinedFinancialdata.map((currElement)=> (currElement.cashFlow)),
+      backgroundColor:defineChartColors(),
+    }]});
+},[combinedFinancialdata, isCheckedDescOrder, isCheckedShowPreviousYears, assumptions])
 
     return (
     <>
-    <Bar data = { chartData } />
+    {combinedFinancialdata ? <>
+      <Bar data = { chartData } />
+      </>  
+    : null}
     </>
   )
 }

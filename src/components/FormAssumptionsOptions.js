@@ -6,7 +6,10 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles( (mainTheme) => ({
   textCheckboxStyle:{
     color:mainTheme.palette.primary.main,
-    margingLeft:"20px"
+    margingLeft:"20px",
+    marginRight: "5px",
+    paddingRight: "2px",
+    fontSize:"9px"
   },  
   input: {
     // height: "20px",
@@ -14,8 +17,8 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
 }));
 
-export default function FormAssumptionsOptions ({isEstimateFcffOnly, setIsEstimateFcffOnly}){
-  
+export default function FormAssumptionsOptions ({isEstimateFcffOnly, setIsEstimateFcffOnly, isDisabledChkBox}){
+  const classes = useStyles();
   const handleChangeCheckEstimateFcffOnly = () => {
     if (isEstimateFcffOnly) {
       setIsEstimateFcffOnly(false);
@@ -24,15 +27,15 @@ export default function FormAssumptionsOptions ({isEstimateFcffOnly, setIsEstima
     }  
   };
   
-  const classes = useStyles();
   return (
   <>
   <Paper elevation={6}>
     <Grid contaner>
       <Grid item>
-        <FormControlLabel className={classes.textCheckboxStyle}
-                          control = {<Checkbox disableRipple style={{ paddingLeft: '20px' }} defaultChecked = {isEstimateFcffOnly} size = "small"/>} 
-                          label = "Estimate only FCFF and Perpetual Growth Rate" 
+        <FormControlLabel className = {classes.textCheckboxStyle}
+                          disabled = {isDisabledChkBox}
+                          control = {<Checkbox disableRipple style={{ paddingLeft: '20px' }}  defaultChecked = {false} checked = {isEstimateFcffOnly} size = "small"/>} 
+                          label = "Estimate only Free Cash Flow & Perpetuity Growth"
                           onChange = {handleChangeCheckEstimateFcffOnly}
         />
     </Grid>

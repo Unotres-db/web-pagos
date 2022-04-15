@@ -77,6 +77,15 @@ export default function useForm (callback) {
     }
   }
 
+  function isValidDiscretePeriod(value){
+    if (value === "" || value === 0 || value > 21) {
+      return {
+        valid: false, 
+        message: "Should be a numer between 1 and 20"
+      }
+    }
+  }
+  
   function isValidEmail (value) {
     if (value === "") {
       return {

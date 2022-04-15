@@ -22,16 +22,16 @@ TableRows : {
 TableRowsSubtitle : {
   fontSize: 11,
   height: 16,
-  backgroundColor: "#d3d3d3",//light gray
+  backgroundColor: mainTheme.palette.contrast.main, //light gray
   }, 
 TableValuationPrice:{
-  color: "orange",
+  color: mainTheme.palette.secondary.main,
   backgroundColor: mainTheme.palette.primary.main,
   fontSize: 11
 },
 TableCurrentPrice:{
   color: "white",
-  backgroundColor: "#3C6E76", //mainTheme.palette.primary.main,
+  backgroundColor: mainTheme.palette.tertiary.main, //mainTheme.palette.primary.main,
   fontSize: 11
 },
 }));
@@ -42,12 +42,20 @@ export default function TableDCFValuation ({valuation, historicalFinancialData, 
   const [ finalYear, setFinalYear ] = useState(0);
   const classes = useStyles();
   // console.count();
+  // useEffect (()=> {
+  //   if (historicalFinancialData){
+  //     setFirstYear(historicalFinancialData[0].year + 1)
+  //     setFinalYear (historicalFinancialData[0].year + assumptions.cashFlowDiscretePeriod) ;
+  //   } 
+  // },[]);  
+
   useEffect (()=> {
     if (historicalFinancialData){
       setFirstYear(historicalFinancialData[0].year + 1)
-      setFinalYear (historicalFinancialData[0].year + assumptions.cashFlowDiscretePeriod) ;
+      const calcFinalYear = historicalFinancialData[0].year + +assumptions.cashFlowDiscretePeriod
+      setFinalYear(calcFinalYear);
     } 
-  },[]);  
+  },[assumptions]);
 
   return (
   <>
@@ -55,7 +63,7 @@ export default function TableDCFValuation ({valuation, historicalFinancialData, 
     <Table className={classes.table} size="small" aria-label="stycky header">
       <TableHead className={classes.TableHeader}>
         <TableRow>
-          <TableCell className={classes.TableValuationPrice} align="left">Valuation</TableCell>
+          <TableCell className={classes.TableValuationPrice} style={{fontSize: 12}}align="left">Valuation</TableCell>
           <TableCell className={classes.TableValuationPrice} align="right"></TableCell>
         </TableRow>
       </TableHead>

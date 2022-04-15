@@ -37,43 +37,39 @@ export default function FormCostOfCapitalAssumptions ({assumptions, setAssumptio
         <TableBody>
           <TableRow>
             <Grid container>
-            <Grid item xs={12} sm={6}>
+              <Grid item xs={4} sm={4}>
+                <TextField
+                  label="Rf: Risk Free Return"
+                  size="small"
+                  value={assumptions.riskFreeReturn}
+                  type="number"
+                  onChange = {(e) => setAssumptions(prevState => ({...prevState, riskFreeReturn:e.target.value }))}
+                  variant="filled"
+                  fullWidth
+                  name="riskFreeReturn"
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4} sm={4}>
+                <TextField
+                  label="Rm: Market Return"
+                  size="small"
+                  value={assumptions.marketReturn}
+                  type="number"
+                  onChange = {(e) => setAssumptions(prevState => ({...prevState,marketReturn:e.target.value }))}
+                  variant="filled"
+                  fullWidth
+                  name="marketReturn"
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4} sm={4}>
               <TextField
-                label="Rf: Risk Free Return (%)"
-                size="small"
-                value={assumptions.riskFreeReturn}
-                type="number"
-                onChange = {(e) => setAssumptions(prevState => ({...prevState, riskFreeReturn:e.target.value }))}
-                variant="filled"
-                fullWidth
-                name="riskFreeReturn"
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">%</InputAdornment>,
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Rm: Market Return (%)"
-                size="small"
-                value={assumptions.marketReturn}
-                type="number"
-                onChange = {(e) => setAssumptions(prevState => ({...prevState,marketReturn:e.target.value }))}
-                variant="filled"
-                fullWidth
-                name="marketReturn"
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">%</InputAdornment>,
-                }}
-              />
-            </Grid>
-            </Grid>
-          </TableRow>
-          <TableRow>
-            <Grid container>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Unlevered Segment Beta"
+                label="Segment Beta"
                 size="small"
                 value={assumptions.companyBeta}
                 type="number"
@@ -83,9 +79,14 @@ export default function FormCostOfCapitalAssumptions ({assumptions, setAssumptio
                 name="companyBeta"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            </Grid>
+          </TableRow>
+          <TableRow>
+            <Grid container>
+
+            <Grid item xs={4} sm={4}>
               <TextField
-                label="Kd: Gross Cost of Debt (%)"
+                label="Kd: Gross Cost of Debt"
                 size="small"
                 value={assumptions.costOfDebt}
                 type="number"
@@ -98,13 +99,9 @@ export default function FormCostOfCapitalAssumptions ({assumptions, setAssumptio
                 }}
               />
             </Grid>
-            </Grid>
-          </TableRow>
-          <TableRow>
-            <Grid container>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={4} sm={4}>
             <TextField
-              label="Ke: Cost of Equity (%)"
+              label="Ke: Cost of Equity"
               size="small"
               value={calculatedCostOfCapital.costOfEquity}
               variant="filled"
@@ -115,9 +112,9 @@ export default function FormCostOfCapitalAssumptions ({assumptions, setAssumptio
               }}
             />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={4} sm={4}>
               <TextField
-                label="Cost of Capital (WACC) (%)"
+                label="WACC: Cost of Capital"
                 size="small"
                 value={calculatedCostOfCapital.costOfCapital}
                 variant="filled"
@@ -130,6 +127,7 @@ export default function FormCostOfCapitalAssumptions ({assumptions, setAssumptio
             </Grid>
             </Grid>
           </TableRow>
+
         </TableBody>
       </Table>
     </TableContainer>

@@ -62,6 +62,49 @@ const classes = useStyles();
 const [open, setOpen] = useState(false);
 const [ isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+const menuOptions = [
+  { id:0,
+    text:"Home",
+    route:"/home"
+  },
+  { id:1,
+    text:"Company Data",
+    route:"/dividend-yield"
+  },
+  { id:2,
+    text:"Dividend Yield",
+    route:"/dividend-yield"
+  },
+  { id:3,
+    text:"Graham Model",
+    route:"/graham"
+  },
+  { id:4,
+    text:"Valuation",
+    route:"/valuation"
+  },
+  { id:5,
+    text:"Books",
+    route:"/books"
+  },
+  { id:6,
+    text:"Blog",
+    route:"/blog"
+  },
+  { id:7,
+    text:"About Me",
+    route:"/who-we-are"
+  },
+  { id:8,
+    text:"Contact",
+    route:"/contact"
+  },
+  { id:9,
+    text:"Login",
+    route:"/login"
+  },
+]
+
 const handleDrawerOpen = () => {
   setOpen(true);
 };

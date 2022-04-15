@@ -1,15 +1,9 @@
 import React from 'react';
 
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+import { Grid, Paper, Typography} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 
 import picMcl from '../assets/mcl.jpg';
-import picTexaco from '../assets/logotexaco.png';
-import picNestle from '../assets/logonestle.jpg';
-import picAon from '../assets/logoaon.jpg';
-import picCsa from '../assets/logocsa.jpg';
 import picJs from '../assets/logojs2.png';
 import picReact from '../assets/logoreact2.png';
 import picNode from '../assets/logonode.png';
@@ -29,7 +23,6 @@ const useStyles = makeStyles((mainTheme) => ({
   },
   paper: {
     padding: mainTheme.spacing(2),
-    // backgroundColor:mainTheme.palette.secondary.main,
     margin: 'auto',
     minWidth: 350,
     maxWidth: 500,
@@ -52,8 +45,6 @@ const useStyles = makeStyles((mainTheme) => ({
     alignItems: "center",
     margin: "auto",
     marginTop: "10px",
-    // marginBottom:"10px",
-    // marginRight: "10px",
   }, 
   logoStyleNode:{
     height: '20px',
@@ -128,5 +119,5 @@ export default function Whoweare () {
       </Grid>
     </Grid>
   </>
-  )
+  );
 }

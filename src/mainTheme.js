@@ -4,11 +4,18 @@ import { createTheme } from '@material-ui/core';
 const mainTheme = createTheme ({
   palette: {
     primary: {
-      main: "#344955" //azul oscuro "#1C1C49"     "#344955" "#344955" 
+      main:  "#344955"
     },
     secondary: {
-      main: "#F9AA33"    //orangered  "#FF4500"  "#F9AA33" "#F57F17"
-    }
+      main: "#F9AA33" 
+    },
+    tertiary :{
+      main: "#3C6E76" 
+    },
+    contrast :{
+      main: "#d3d3d3"
+    },
+    
   },
   overrides: {
     MuiTextField: {
@@ -24,13 +31,13 @@ const mainTheme = createTheme ({
         "&$focused": {
           color: "#1C1C49"
         },
-        fontSize:'11px',
+        fontSize:'10px',
       },
     },  
     MuiFilledInput:{
       root: { 
         color: "#1C1C49", 
-        fontSize:'14px',
+        fontSize:'12px',
         backgroundColor: "white",
         "&:hover": {
           color:"#1C1C49",
@@ -46,24 +53,24 @@ const mainTheme = createTheme ({
         },  
       }
       },
-      MuiInput:{
-        root: { 
-          color: "344955", //#1C1C49
-          backgroundColor: "white",
-          "&:hover": {
-            color:"#1C1C49",
-            backgroundColor:"#D3D3D3",
-          },
-          "&$focused": { 
-            color:"blue",
-            backgroundColor: "white"
-          },
-          "&$disabled": { 
-            color:"#1C1C49",
-            backgroundColor: "white"
-          },  
+    MuiInput:{
+      root: { 
+        color: "344955", //#1C1C49
+        backgroundColor: "white",
+        "&:hover": {
+          color:"#1C1C49",
+          backgroundColor:"#D3D3D3",
         },
+        "&$focused": { 
+          color:"blue",
+          backgroundColor: "white"
+        },
+        "&$disabled": { 
+          color:"#1C1C49",
+          backgroundColor: "white"
+        },  
       },
+    },
     MuiSelectOutlined:{
       color: "#1C1C49",
       backgroundColor: "white"
@@ -104,7 +111,7 @@ const mainTheme = createTheme ({
 
           '&& $icon': {
             opacity: 1,
-            color: "orangered"
+            color: "white"
           },
         },
         "&$active": {
@@ -121,5 +128,6 @@ const mainTheme = createTheme ({
     }
     },   //overrides
 });
-
+mainTheme.palette.tertiary = mainTheme.palette.augmentColor(mainTheme.palette.tertiary);
+mainTheme.palette.contrast = mainTheme.palette.augmentColor(mainTheme.palette.contrast);
 export default mainTheme;

@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
 
-import { Grid, Paper, Box } from '@material-ui/core';
+import { Grid, Paper, Box, Hidden } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import api from '../services/api';
-import Header from '../components/Header'; 
-import DescriptionText from './DividendYield/DescriptionText';
-import TableDividendYield from './DividendYield/TableDividendYield';
-import FilterOptions from './DividendYield/FilterOptions';
+import api from '../../services/api';
+import Header from '../../components/Header'; 
+import DescriptionText from './DescriptionText';
+import TableDividendYield from './TableDividendYield';
+import FilterOptions from './FilterOptions';
 
 const useStyles = makeStyles( (mainTheme) => ({
   contentStyle: {
@@ -49,7 +49,6 @@ const [ companiesList, setCompaniesList ] = useState();
 
 useEffect ( ()=> {
   api.get('dividendyield')
-
   .then (response => {
     const allCompanies = response.data;
     setCompaniesList(allCompanies.filter(company => (company.dividendYield * 100) > minimumYield));
@@ -71,23 +70,47 @@ useEffect ( ()=> {
   { companiesList ? <div>
     <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}}  className={classes.container}>
       <Grid item xs={12} style = {{ minHeight: '69px'}} /> 
+
       <Grid item container direction="row" spacing={0}  >
 
-        <Grid item xs={12} md={3} >
-          <DescriptionText />
-        </Grid>  
+        <Hidden smDown>
+          <Grid item xs={12} md={3} >
+            <DescriptionText />
+          </Grid>  
 
-        <Grid item xs={12} md={6} > 
-          <Paper className={classes.TableContainerStyle} >
-            <TableDividendYield companiesList = {companiesList} />
-          </Paper>  
-        </Grid>
+          <Grid item xs={12} md={6} > 
+            <Paper className={classes.TableContainerStyle} >
+              <TableDividendYield companiesList = {companiesList} />
+            </Paper>  
+          </Grid>
 
-        <Grid item xs={12} md={3} > 
-          <FilterOptions marks = {marks} minimumYield = {minimumYield} setMinimumYield = {setMinimumYield}/>
-          <Box style={{height: "5px"}}/>
-        </Grid>
-      </Grid>
+          <Grid item xs={12} md={3} > 
+            <FilterOptions marks = {marks} minimumYield = {minimumYield} setMinimumYield = {setMinimumYield}/>
+            <Box style={{height: "5px"}}/>
+          </Grid>
+        </Hidden>
+
+        <Hidden mdUp>
+          <Grid  container direction="row" justifyContent="center" alignItems="center" >
+
+            <Grid item xs={12} sm={6} md={6} >
+              <DescriptionText />
+            </Grid>  
+            
+            <Grid item xs={12} sm={6} md={6} > 
+              <FilterOptions marks = {marks} minimumYield = {minimumYield} setMinimumYield = {setMinimumYield}/>
+            </Grid>
+
+          </Grid>
+
+          <Grid item xs={12}  > 
+            <Paper className={classes.TableContainerStyle} >
+              <TableDividendYield companiesList = {companiesList} />
+            </Paper>  
+          </Grid>
+
+        </Hidden>
+      </Grid>  
     </Grid>
 
     <Grid container direction="column" alignItems="center" style= {{ minHeight: '5vh'}} />

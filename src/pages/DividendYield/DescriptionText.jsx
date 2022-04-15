@@ -8,8 +8,11 @@ textAreaStyle: {
   marginTop:"5px",
   marginLeft:"5px",
   marginRight:"5px",
-  minHeight:"200px",
+  height:"220px",
   backgroundColor:mainTheme.palette.secondary.main, 
+  [mainTheme.breakpoints.down('xs')]: {
+    height:"120px"
+  },
 },
 boxStyle: {
   width: "98%",   

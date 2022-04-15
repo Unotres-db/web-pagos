@@ -73,8 +73,8 @@ export default function Contact (){
     }  else if (chkFormErrors()) {
         setAlertMessage(prevState => ( {...prevState, severity:"warning", title: "Error en entrada de datos", message:"Favor corregir los dados marcados como incorrectos, gracias!"}));
         setIsAlertOpen(true);
-       }  
-       else {
+      }  
+      else {
         setIsPristine();
         try {
           const data = { contactName, contactMobile, contactEmail, contactMsg } ;
