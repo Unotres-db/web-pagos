@@ -37,7 +37,9 @@ export default function AutoSearch({ placeholder, data }){
 
   return (
     <>
+        <div className="container"> 
     <Paper elevation={6} >
+
     <div className="search">
       <div className="searchInputs">
         <input
@@ -68,6 +70,8 @@ export default function AutoSearch({ placeholder, data }){
       )}
     </div>
     </Paper>
+    </div> 
+  
     </>
   )
 }

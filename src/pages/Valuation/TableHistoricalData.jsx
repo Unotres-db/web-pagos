@@ -27,7 +27,7 @@ TableRows : {
   }
 }));
 
-export default function TableHistoricalCompanyAverages ({calcHistoricalAverages, historicalFinancialData, historicalAverages}){   //, setHistoricalAverages
+export default function TableHistoricalData ({calcHistoricalAverages, historicalFinancialData, historicalAverages}){   //, setHistoricalAverages
   
   const classes = useStyles();
   // console.count();

@@ -4,7 +4,8 @@ import { BrowserRouter as Router , Route, Switch } from 'react-router-dom';
 import Blog from './pages/Blog';
 import Books from './pages/Books';
 import Contact from './pages/Contact';
-import DiscCashFlow from './pages/DiscCashFlow';
+import Valuation from './pages/Valuation';
+// import DiscCashFlow from './pages/DiscCashFlow';
 import DividendYield from './pages/DividendYield';
 import Graham from './pages/Graham';
 import Home from './pages/Home';
@@ -23,7 +24,7 @@ export default function Routes() {
         <Route path = "/blog" component = {Blog} />
         <Route path = "/books" component = {Books} />
         <Route path = "/contact" component = {Contact} />
-        <Route path = "/disccashflow" component = {DiscCashFlow} />
+        <Route path = "/valuation" component = {Valuation} />
         <Route path = "/dividendyield" component = {DividendYield} />
         <Route path = "/graham" component = {Graham} />
         <Route path = "/home" component = {Home} />

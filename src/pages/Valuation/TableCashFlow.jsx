@@ -68,7 +68,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
   }));
 
-export default function TableDCFCashFlow ({financialArray, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder, isEstimateFcffOnly}){ 
+export default function TableCashFlow ({combinedFinancialdata, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder, isEstimateFcffOnly}){ 
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -111,7 +111,7 @@ export default function TableDCFCashFlow ({financialArray, assumptions, isChecke
       dataField:"workingCapitalChanges"},
     { id: 5,
       rowText:"Free Cash Flow of the Firm",
-      rowMobileText:"Free Cash Flow",
+      rowMobileText:"FCFF",
       grayBackground:true,
       showAsBlankIfZero:false,
       style:"decimal",
@@ -174,7 +174,6 @@ export default function TableDCFCashFlow ({financialArray, assumptions, isChecke
     return Intl.NumberFormat('en-US',{style:style,minimumFractionDigits:1,maximumFractionDigits:1}).format(number); 
   } 
 
-
   return (
     <>
     <Paper>
@@ -183,8 +182,10 @@ export default function TableDCFCashFlow ({financialArray, assumptions, isChecke
 
         <TableHead >
           <TableRow>
-            <TableCell className={classes.tableTitle} align="left" >{isMobile || assumptions.cashFlowDiscretePeriod > 7 ? "Free Cash Flow": "Free Cash Flow of the Firm"}</TableCell>  
-            {financialArray.map ((currElement, index) => ( 
+            <Tooltip title="Free Cash Flow of the Firm">
+            <TableCell className={classes.tableTitle} align="left" >{isMobile || assumptions.cashFlowDiscretePeriod > 7 ? "FCFF": "Free Cash Flow of the Firm"}</TableCell>  
+            </Tooltip>
+            {combinedFinancialdata.map ((currElement, index) => ( 
               <TableCell className={classes.yearColumnStyle} align="right" style={{color:defineYearsColColor(index), backgroundColor:defineYearsColBackColor(index), width:defineYearsColWidth()}}>{currElement.year}</TableCell>
             ))} 
           </TableRow>
@@ -194,7 +195,7 @@ export default function TableDCFCashFlow ({financialArray, assumptions, isChecke
         {dataRows.map ((accountElement)=> (
           <TableRow>
             <TableCell align="left" className = {accountElement.grayBackground ? classes.firstColumnGrayStyle : classes.firstColumnWhiteStyle } >{isMobile || assumptions.cashFlowDiscretePeriod > 7 ? accountElement.rowMobileText: accountElement.rowText}</TableCell>
-            {financialArray.map ((yearElement) => ( 
+            {combinedFinancialdata.map ((yearElement) => ( 
               <TableCell align="right" className = {accountElement.grayBackground ? classes.dataColumnGrayStyle : classes.dataColumnWhiteStyle} style = {{ width:defineYearsColWidth()}} >{defineNumberFormat([yearElement[accountElement.dataField]], [accountElement.style], [accountElement.showAsBlankIfZero]) }</TableCell>
             ))}
           </TableRow>

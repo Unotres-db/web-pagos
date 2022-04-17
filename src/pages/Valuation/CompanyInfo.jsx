@@ -31,12 +31,13 @@ export default function CompanyInfo({ companyData, handleValuation }){
   return (
     <>
     <Grid container direction = "row" spacing = {1} >
-      <Grid item xs = {7} >
+      <Grid item xs = {2} >
         {/* <Box style = {{height: "5px"}}/>  
         <Typography align="center" variant="caption" className={classes.companyNameText}>{`${companyData.shortName} (${companyData.symbol})`}</Typography>
          */}
       </Grid>
-      <Grid item xs = {5}  >
+      <Grid item xs = {10}  >
+
         <Box display ="flex" justifyContent="flex-end">
           <Button 
             variant = "contained" 

@@ -3,25 +3,24 @@ import React, { useEffect, useState } from 'react';
 import { Container, Grid, Paper, Box, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import api from '../services/api';
-import useUnsavedWarning from '../hooks/useUnsavedWarning';
-import useDataHandling from '../hooks/useDataHandling';
-import useValuation from '../hooks/useValuation';
+import api from '../../services/api';
+import useUnsavedWarning from '../../hooks/useUnsavedWarning';
+import useDataHandling from '../../hooks/useDataHandling';
+import useValuation from '../../hooks/useValuation';
 
-import Header from '../components/Header'; 
-// import AutoSearch from '../components/AutoSearch';
-
-import TableHistoricalCompanyAverages from '../components/TableHistoricalCompanyAverages';
-import FormAssumptionsOptions from '../components/FormAssumptionsOptions';
-import FormFcffAssumption from '../components/FormFcffAssumption';
-import FormBusinessAssumptions from '../components/FormBusinessAssumptions';
-import FormCostOfCapitalAssumptions from '../components/FormCostOfCapitalAssumptions';
-import CompanySelect from './Valuation/CompanySelect';
-import CompanyInfo from './Valuation/CompanyInfo';
-import TableCheckBoxes from './Valuation/TableCheckBoxes';
-import TableDCFFinancials from '../components/TableDCFFinancials';
-import TableDCFValuation from '../components/TableDCFValuation';
-import ChartRevenueFcff from '../components/ChartRevenueFcff';
+import Header from '../../components/Header'; 
+import TableHistoricalData from './TableHistoricalData';
+import FormOptions from './FormOptions'; 
+import FormBusinessData from './FormBusinessData';
+import FormCashFlowData from './FormCashFlowData';
+import FormCostOfCapitalData from './FormCostOfCapitalData';
+import CompanySelect from './CompanySelect';
+import CompanyInfo from './CompanyInfo';
+import TableCheckBoxes from './TableCheckBoxes';
+import TableIncomeStatement from './TableIncomeStatement';
+import TableCashFlow from './TableCashFlow';
+import TableValuation from './TableValuation';
+import ChartFreeCashFlow from './ChartFreeCashFlow';
 
 const useStyles = makeStyles( (mainTheme) => ({
   contentStyle: {
@@ -34,7 +33,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   paperStyle: {
     position: 'sticky',
     width: "100%",   
-    minHeight: "640px",
+    minHeight: "668px",
     [mainTheme.breakpoints.down('xs')]: {
       minHeight: "200px"
     },
@@ -43,6 +42,14 @@ const useStyles = makeStyles( (mainTheme) => ({
     color: "white",
     backgroundColor: "#f0f8ff",
     padding: "10px",
+  },
+  boxSelectStyle:{
+    height: "30px",
+    width: "45%",
+    [mainTheme.breakpoints.down('xs')]: {
+      width: "100%"
+    },
+    // backgroundColor:'green'
   },
   CompanyInfo: {
     marginLeft: "3px",
@@ -53,7 +60,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   },
   TableContainerStyle: {
     width: "100%",
-    minHeight: "640px", 
+    minHeight: "668px", 
     marginLeft: "3px",
     marginRight: "0px",
     color: "white",
@@ -70,7 +77,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   // }
 }));
 
-export default function DiscCashFlow (){
+export default function Valuation (){
 
   const classes = useStyles();
   const [ Prompt, setIsDirty, setIsPristine ] = useUnsavedWarning();
@@ -85,10 +92,12 @@ export default function DiscCashFlow (){
   const [ isCheckedShowPreviousYears, setIsCheckedShowPreviousYears] = useState(true);
   const [ companiesList, setCompaniesList ] = useState([]);
   const [ companyIdSearch, setCompanyIdSearch] = useState("MMM");
+  const [ companySearchName, setCompanySearchName]= useState("")
   const [ historicalFinancialData, setHistoricalFinancialData ] = useState();
   const [ combinedFinancialdata, setCombinedFinancialData] = useState();
   const [ companyData, setCompanyData] = useState({symbol:"",shortName:"", sharesOustanding: 0, regularMarketPrice:0, marketCap:0, beta:0 });
   const [ assumptions, setAssumptions ] = useState({revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",cashFlowGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: 2, cashFlowDiscretePeriod:5, companyBeta:1.2, riskFreeReturn:2.715, marketReturn:10.05, debtTotalRatio:0, costOfDebt:5});
+  const [ formErrors, setFormErrors ] = useState({revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",cashFlowGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: "", cashFlowDiscretePeriod:"", companyBeta:"", riskFreeReturn:"", marketReturn:"",costOfDebt:""});
   const [ calculatedCostOfCapital, setCalculatedCostOfCapital] = useState({ costOfEquity:0, costOfCapital:0});
   const [ historicalAverages, setHistoricalAverages ] = useState({revenueGrowth:0, marginTarget:0, opexGrowth:0, interestGrowth:0, otherGrowth:0, taxRate:0, capexGrowth:0, nwcGrowth:0, cashFlowGrowth:0});
   const [ valuation, setValuation] = useState({cashFlowAvgGrowth:0, sumOfCashFlowPresentValue:0, perpetuityValue:0, perpetuityPresentValue:0, enterpriseValue:0, cash:0, debt:0, equityValue:0, sharesOutstanding:0, targetStockPrice:0, marketCap:0})
@@ -98,7 +107,7 @@ export default function DiscCashFlow (){
   const [ forecastedFinancialData, setForecastedFinancialData] = useState(forecastedInitialValues);
   // const companiesList = ['MMM','AOS','ABT','ABBV','AFL','APD','ALB','AMCR','ADM','T','ATO','ADP','BDX','CAH','CAT','CB','CINF','CTAS','CLX','CL','ED','DOV','ECL','EMR','ESS','EXPD','FRT','BEN','GD','GPC','HRL','ITW','IBM','KMB','LEG','LIN','LOW','MKC','MCD','MDT','NEE','NUE','PNR','PBCT','PPG','PG','ROP','SPGI','SHW','SWK','SYY','TROW','TGT','VFC','GWW','WBA','WMT','WST','PBR','BP','SHEL','FB','AMZN','TSLA','GOOG','MSFT'];
   const { calcForecastedCashFlow, calcValuation, calcHistoricalAverages, calcCostOfCapital } = useValuation ({assumptions, forecastedFinancialData, historicalFinancialData, isCheckedDescOrder, historicalAverages, setHistoricalAverages,calculatedCostOfCapital, companyData, isEstimateFcffOnly}); //
-  const {changeArrayOrder} = useDataHandling({ historicalFinancialData, forecastedFinancialData, isCheckedShowPreviousYears, isCheckedDescOrder })
+  const {createCombinedData} = useDataHandling({ historicalFinancialData, forecastedFinancialData, isCheckedShowPreviousYears, isCheckedDescOrder })
   // console.count();
   
   // useEffect(() => {
@@ -111,10 +120,16 @@ export default function DiscCashFlow (){
       api.get('companies')
         .then (response => {
           const allCompanies = response.data;
-          let symbolName = Array.from({ length: allCompanies.length } , () =>({symbol:"", shortName:"", searchString:""}));
+          // let symbolName = Array.from({ length: allCompanies.length } , () =>({symbol:"", shortName:"", searchString:""}));
+          let symbolName = Array.from({ length: allCompanies.length } , () =>({id:"", shortName:"", name:""}));
+
           for (let i = 0 ; i < allCompanies.length; i++){
-            symbolName[i].searchString = allCompanies[i].symbol + " - " + allCompanies[i].shortName
-            symbolName[i].symbol = allCompanies[i].symbol 
+            // symbolName[i].searchString = allCompanies[i].symbol + " - " + allCompanies[i].shortName
+            // symbolName[i].symbol = allCompanies[i].symbol 
+            // symbolName[i].shortName = allCompanies[i].shortName
+
+            symbolName[i].name = allCompanies[i].symbol + " - " + allCompanies[i].shortName
+            symbolName[i].id = allCompanies[i].symbol 
             symbolName[i].shortName = allCompanies[i].shortName
           }
           setCompaniesList(symbolName);
@@ -131,8 +146,9 @@ export default function DiscCashFlow (){
       api.get('companies', { headers :{ Authorization: companyIdSearch,}})
         .then (response => {
           const company = response.data;
-          setCompanyData({symbol:company.symbol,shortName:company.shortName, sharesOutstanding: company.marketCap/1000000/company.regularMarketPrice, regularMarketPrice:company.regularMarketPrice, marketCap:company.marketCap/1000000000, beta:company.beta})
-          setAssumptions (prevState => ({...prevState, companyBeta: company.beta, revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",taxRate:"",capexGrowth:"",nwcGrowth:"",cashFlowGrowthRate:"" }))
+          setCompanySearchName(company.symbol + " - " + company.shortName);
+          setCompanyData({symbol:company.symbol, shortName:company.shortName, sharesOutstanding: company.marketCap/1000000/company.regularMarketPrice, regularMarketPrice:company.regularMarketPrice, marketCap:company.marketCap/1000000000, beta:company.beta})
+          setAssumptions (prevState => ({...prevState, companyBeta: company.beta, revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",taxRate:"",capexGrowth:"",nwcGrowth:"",cashFlowGrowthRate:"",cashFlowDiscretePeriod:5 }))
           setForecastedFinancialData(forecastedInitialValues);
           setCombinedFinancialData(historicalFinancialData);
         }).catch (function (err){
@@ -231,19 +247,19 @@ useEffect (()=> {
     setCalculatedCostOfCapital(calcCostOfCapital());  // testar undefined na funcao
     // calcValuation();
     setForecastedFinancialData(calcForecastedCashFlow());
-    setCombinedFinancialData(changeArrayOrder());
-    if (forecastedFinancialData){
-      if (forecastedFinancialData[0].cashFlow <= 0){
-        // alert("Confirma ultimo flujo como negativo?");
-      } 
-    }
+    setCombinedFinancialData(createCombinedData());
+    // if (forecastedFinancialData){
+    //   if (forecastedFinancialData[0].cashFlow <= 0){
+    //     alert("Confirma ultimo flujo como negativo?");
+    //   } 
+    // }
   }
 },[historicalAverages]);  
 
 useEffect (()=> {
   if (historicalFinancialData){
     setValuation(calcValuation());
-    setCombinedFinancialData(changeArrayOrder());
+    setCombinedFinancialData(createCombinedData());
   }
 },[forecastedFinancialData]);  
 
@@ -252,7 +268,7 @@ useEffect (()=> {
     setCalculatedCostOfCapital(calcCostOfCapital());
     setForecastedFinancialData(calcForecastedCashFlow());
     setValuation(calcValuation());
-    setCombinedFinancialData(changeArrayOrder());
+    setCombinedFinancialData(createCombinedData());
     // if (checkValuationMinRequirements) {
     //   localStorage.setItem('valuation', JSON.stringify(valuation));
     //   localStorage.setItem('forecastedFinancialData', JSON.stringify(forecastedFinancialData));
@@ -262,7 +278,7 @@ useEffect (()=> {
 },[assumptions]);  
 
 useEffect (()=> {
-  setCombinedFinancialData(changeArrayOrder());
+  setCombinedFinancialData(createCombinedData());
 },[isCheckedDescOrder, isCheckedShowPreviousYears]);  
 
 async function handleValuation (){
@@ -345,7 +361,7 @@ async function handleValuation (){
       <Grid item xs={12} md={3} >
         <Paper className={classes.paperStyle} elevation={3}>
         { ! isLoading ? (
-          <TableHistoricalCompanyAverages 
+          <TableHistoricalData 
             calcHistoricalAverages = {calcHistoricalAverages}
             historicalFinancialData = {historicalFinancialData}
             historicalAverages = {historicalAverages}
@@ -354,7 +370,7 @@ async function handleValuation (){
 
         <Box style={{height:"5px"}}/>
           { ! isLoading ? (
-            <FormAssumptionsOptions 
+            <FormOptions 
               isEstimateFcffOnly = {isEstimateFcffOnly}
               setIsEstimateFcffOnly = {setIsEstimateFcffOnly}
               isDisabledChkBox = {isDisabledChkBox}
@@ -364,23 +380,24 @@ async function handleValuation (){
           {  ! isEstimateFcffOnly ? <div>
           <Box style={{height:"5px"}}/>  
           { ! isLoading ? (
-            <FormBusinessAssumptions 
+            <FormBusinessData 
               assumptions = {assumptions} 
               setAssumptions = {setAssumptions}
+              formErrors = {formErrors}
+              setFormErrors = {setFormErrors}
             />
           ) : 0 }
           </div> : <div> 
           <Box style={{height:"5px"}}/>    
-          <FormFcffAssumption 
+          <FormCashFlowData
             assumptions = {assumptions} 
             setAssumptions = {setAssumptions}
-            
           />
           </div>
           }
           <Box style={{height:"5px"}}/>
           { ! isLoading ? (
-          <FormCostOfCapitalAssumptions 
+          <FormCostOfCapitalData 
             assumptions = {assumptions} 
             setAssumptions = {setAssumptions}
             calculatedCostOfCapital = {calculatedCostOfCapital}
@@ -395,9 +412,10 @@ async function handleValuation (){
           <Box style={{height:"2px"}}/>
           <Paper className = {classes.CompanyInfo}>
             {companyData && companiesList? <div>
-              <Box style={{height: "30px", width: "50%"}}>
-                <CompanySelect companiesList={companiesList} companyIdSearch={companyIdSearch} setCompanyIdSearch={setCompanyIdSearch} />
+              <Box className = {classes.boxSelectStyle} >
+                <CompanySelect companiesList={companiesList} companyIdSearch={companyIdSearch} companySearchName={companySearchName} setCompanyIdSearch={setCompanyIdSearch} />
               </Box>
+              <Box style={{height:"5px"}}  />
               <CompanyInfo companyData={companyData} handleValuation = {handleValuation} />
             </div> :0}
 
@@ -409,26 +427,34 @@ async function handleValuation (){
               isCheckedShowPreviousYears = {isCheckedShowPreviousYears}
               setIsCheckedShowPreviousYears = {setIsCheckedShowPreviousYears}
             />
-            <Box style={{height:"8px"}}/>
+            <Box style={{height:"3px"}}/>
 
           </Paper>
           <Box style={{height:"5px"}}/>
-            <TableDCFFinancials 
-              historicalFinancialData = {historicalFinancialData} 
+          { combinedFinancialdata ? <>
+            <TableIncomeStatement
+              combinedFinancialdata = {combinedFinancialdata}
               assumptions = {assumptions}
-              forecastedFinancialData = {forecastedFinancialData} 
-              isCheckedDescOrder = {isCheckedDescOrder}
-              isCheckedShowIncStatement = {isCheckedShowIncStatement}
               isCheckedShowPreviousYears = {isCheckedShowPreviousYears}
+              isCheckedDescOrder = {isCheckedDescOrder}
               isEstimateFcffOnly = {isEstimateFcffOnly}
             />
+            <Box style={{height:"5px"}}/>
+            <TableCashFlow
+              combinedFinancialdata = {combinedFinancialdata}
+              assumptions = {assumptions}
+              isCheckedShowPreviousYears = {isCheckedShowPreviousYears}
+              isCheckedDescOrder = {isCheckedDescOrder}
+              isEstimateFcffOnly = {isEstimateFcffOnly}
+            />
+          </>: null}
         </Paper>
       </Grid>
 
       <Grid item xs={12} md={3} >
         <Paper className={classes.paperStyle} elevation={3}>
           { ! isLoading ? <div>
-          <TableDCFValuation 
+          <TableValuation 
             valuation = {valuation} 
             historicalFinancialData = {historicalFinancialData} 
             calculatedCostOfCapital = {calculatedCostOfCapital}
@@ -438,7 +464,7 @@ async function handleValuation (){
           <Box style={{height:"8px"}}/>
           <Paper elevation ={6} style={{height:'180px'}}>
             { combinedFinancialdata ? 
-              <ChartRevenueFcff 
+              <ChartFreeCashFlow
                 // historicalFinancialData = {historicalFinancialData}
                 // assumptions = {assumptions}
                 // forecastedFinancialData = {forecastedFinancialData} 

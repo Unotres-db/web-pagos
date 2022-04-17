@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 
 const useStyles = makeStyles((mainTheme) => ({
   formControl: {
@@ -11,18 +12,58 @@ const useStyles = makeStyles((mainTheme) => ({
   },
 }));
 
-export default function CompanySelect ({ companiesList, companyIdSearch, setCompanyIdSearch }){
+export default function CompanySelect ({ companiesList, companyIdSearch, companySearchName, setCompanyIdSearch }){
   const classes = useStyles();
   const [wordEntered, setWordEntered] = useState("");
+  console.log(companySearchName);
+  // function onChange(e){
+  //   setCompanyIdSearch(e.target.value)
+  // }
 
-  function onChange(e){
-    // setWordEntered(e.target.value);
-    setCompanyIdSearch(e.target.value)
+  const handleOnSelect = (item) => {
+    // the item selected
+    console.log(item)
+    setCompanyIdSearch(item.id)
+  }
+  const handleOnSearch = (item) => {
+    // the item selected
+    console.log(item)
+    setWordEntered(item.name)
+  }
+  const handleOnHover = (result) => {
+    console.log(result);
+  };
+  const handleOnFocus = () => {
+    console.log("Focused");
+  };
+  const handleOnClear = () => {
+    // setCompanyIdSearch()
+    console.log("Cleared");
+  };
+  const formatResult = (item) => {
+    return (
+      <>
+        <span style={{ display: 'block', textAlign: 'left' }}>{item.id}</span>
+      </>
+    )
   }
 
   return (
     <>
-    <FormControl variant="filled" margin="none" inputProps={{style: {fontSize: 9}}} className={classes.formControl} fullWidth>
+    <ReactSearchAutocomplete
+      items={companiesList}
+      placeholder={"Enter Company Name or Symbol"}
+      inputSearchString={companySearchName}
+      onSearch={handleOnSearch}
+      onHover={handleOnHover}
+      onSelect={handleOnSelect}
+      onFocus={handleOnFocus}
+      onClear={handleOnClear}
+      styling={{ zIndex: 4, height: "25px", fontSize: "11px", iconColor: "#344955", color: "#344955", searchIconMargin: '0 0 0 8px',clearIconMargin: '3px 8px 0 0' }} // To display it on top of the search box below
+      autoFocus
+    />  
+
+    {/* <FormControl variant="filled" margin="none" inputProps={{style: {fontSize: 9}}} className={classes.formControl} fullWidth>
     <InputLabel id="demo-simple-select-outlined-label" style={{backgroundColor:"white"}} fullwidth>Company</InputLabel>
       <Select
         inputProps={{style: {fontSize: 9}}}
@@ -39,7 +80,7 @@ export default function CompanySelect ({ companiesList, companyIdSearch, setComp
           </MenuItem>
         ))}
       </Select>
-    </FormControl>
+    </FormControl> */}
     </>
   )  
 }

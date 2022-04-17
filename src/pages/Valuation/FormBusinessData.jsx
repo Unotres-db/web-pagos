@@ -3,6 +3,8 @@ import React from 'react';
 import { Paper, Grid, Tooltip, TextField, InputAdornment,Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+// import useForm from '../../hooks/useForm';
+
 const useStyles = makeStyles( (mainTheme) => ({
   table: {
     minWidth: 300,
@@ -21,9 +23,8 @@ const useStyles = makeStyles( (mainTheme) => ({
     }
   }));
 
-export default function FormBusinessAssumptions ({assumptions, setAssumptions}){
+export default function FormBusinessData ({assumptions, setAssumptions}){
   const classes = useStyles();  
-
   const handleChange = (e) => {
     setAssumptions (prevState => ({...prevState, [e.target.name]:e.target.value, cashFlowGrowthRate:0 }))
   }; 
@@ -266,7 +267,9 @@ export default function FormBusinessAssumptions ({assumptions, setAssumptions}){
                   variant="filled"
                   fullWidth
                   name="cashFlowDiscretePeriod"
+                  // error={formErrors.cashFlowDiscretePeriod} 
                 />
+                {/* {formErrors.cashFlowDiscretePeriod ? <div >{formErrors.cashFlowDiscretePeriod}</div> : null} */}
               </Tooltip>
             </Grid>
 

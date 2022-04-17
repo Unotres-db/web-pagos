@@ -36,7 +36,7 @@ TableCurrentPrice:{
 },
 }));
 
-export default function TableDCFValuation ({valuation, historicalFinancialData, calculatedCostOfCapital, assumptions, companyData}){
+export default function TableValuation ({valuation, historicalFinancialData, calculatedCostOfCapital, assumptions, companyData}){
 
   const [ firstYear, setFirstYear ] = useState(0);
   const [ finalYear, setFinalYear ] = useState(0);

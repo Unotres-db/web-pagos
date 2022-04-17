@@ -127,7 +127,7 @@ const handleDrawerClose = () => {
           <Button component={Link} to={'/dividendyield'} className={classes.buttonMenuStyle} size="small" disableRipple>Company Data</Button>
           <Button component={Link} to={'/dividendyield'} className={classes.buttonMenuStyle} size="small" disableRipple>Dividend Yield Model</Button>
           <Button component={Link} to={'/graham'} className={classes.buttonMenuStyle} size="small" disableRipple>Graham Model</Button>
-          <Button component={Link} to={'/disccashflow'} className={classes.buttonMenuStyle} size="small" disableRipple>Valuation</Button>
+          <Button component={Link} to={'/valuation'} className={classes.buttonMenuStyle} size="small" disableRipple>Valuation</Button>
           <Button component={Link} to={'/books'} className={classes.buttonMenuStyle} size="small" disableRipple>Books</Button>
           <Button component={Link} to={'/blog'} className={classes.buttonMenuStyle} size="small" disableRipple>Blog</Button>
           <div className={classes.grow} />
@@ -171,7 +171,7 @@ const handleDrawerClose = () => {
           <ListItem button component={Link} to={'/graham'} disableRipple className={classes.buttonDrawerStyle} >
             <ListItemText primary="Graham Model" />
           </ListItem> 
-          <ListItem button component={Link} to={'/disccashflow'} disableRipple className={classes.buttonDrawerStyle}>
+          <ListItem button component={Link} to={'/valuation'} disableRipple className={classes.buttonDrawerStyle}>
             <ListItemText primary="Valuation" />
           </ListItem> 
           <ListItem button component={Link} to={'/books'} disableRipple className={classes.buttonDrawerStyle} >

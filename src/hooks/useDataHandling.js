@@ -1,6 +1,6 @@
 export default function useDataHandling({ historicalFinancialData, forecastedFinancialData, isCheckedShowPreviousYears, isCheckedDescOrder }){
   // console.count();
-  function changeArrayOrder (){   // createCombinedArray
+  function createCombinedData (){   // createCombinedArray
     if (historicalFinancialData){
       const historicalArray = historicalFinancialData.slice(0,3);
       const forecastedArray = forecastedFinancialData.map((x) => x);
@@ -16,5 +16,5 @@ export default function useDataHandling({ historicalFinancialData, forecastedFin
       }
     }
   }
-  return {changeArrayOrder} 
+  return {createCombinedData} 
 }

@@ -21,21 +21,13 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
   }));
 
-export default function FormFcffAssumption ({assumptions, setAssumptions}){
+export default function FormCashFlowData ({assumptions, setAssumptions}){
   const classes = useStyles();
 
   const handleChange = (e) => {
     setAssumptions (prevState => ({...prevState, [e.target.name]:e.target.value, revenueGrowth:"",marginTarget:"",opexGrowth:"", interestGrowth:"",otherGrowth:"",taxRate:"", capexGrowth:"", nwcGrowth:""}))
   };
   
-  const handleChangeDiscretePeriod = (e) => {
-    if (e.target.value > 0 && e.target.value < 21){
-      setAssumptions (prevState => ({...prevState, [e.target.name]:e.target.value }))
-    } else{
-      setAssumptions (prevState => ({...prevState, [e.target.name]:1 }))
-    }
-  } 
-
   return (
   <>
   <TableContainer component={Paper}>
@@ -105,7 +97,7 @@ export default function FormFcffAssumption ({assumptions, setAssumptions}){
                   size="small"
                   value={assumptions.cashFlowDiscretePeriod}
                   type="number"
-                  onChange={(e) => { handleChangeDiscretePeriod (e)}}
+                  onChange={(e) => { handleChange (e)}}
                   variant="filled"
                   fullWidth
                   name="cashFlowDiscretePeriod"

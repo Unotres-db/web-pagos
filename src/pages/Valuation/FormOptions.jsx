@@ -17,7 +17,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
 }));
 
-export default function FormAssumptionsOptions ({isEstimateFcffOnly, setIsEstimateFcffOnly, isDisabledChkBox}){
+export default function FormOptions ({isEstimateFcffOnly, setIsEstimateFcffOnly, isDisabledChkBox}){
   const classes = useStyles();
   const handleChangeCheckEstimateFcffOnly = () => {
     if (isEstimateFcffOnly) {
@@ -29,16 +29,17 @@ export default function FormAssumptionsOptions ({isEstimateFcffOnly, setIsEstima
   
   return (
   <>
-  <Paper elevation={6}>
+  <Paper elevation = {6}>
     <Grid contaner>
       <Grid item>
-        <FormControlLabel className = {classes.textCheckboxStyle}
-                          disabled = {isDisabledChkBox}
-                          control = {<Checkbox disableRipple style={{ paddingLeft: '20px' }}  defaultChecked = {false} checked = {isEstimateFcffOnly} size = "small"/>} 
-                          label = "Estimate only Free Cash Flow & Perpetuity Growth"
-                          onChange = {handleChangeCheckEstimateFcffOnly}
+        <FormControlLabel 
+          className = {classes.textCheckboxStyle}
+          disabled = {isDisabledChkBox}
+          control = {<Checkbox disableRipple style={{ paddingLeft: '20px' }}  defaultChecked = {false} checked = {isEstimateFcffOnly} size = "small"/>} 
+          label = "Estimate only Free Cash Flow & Perpetuity Growth"
+          onChange = {handleChangeCheckEstimateFcffOnly}
         />
-    </Grid>
+      </Grid>
     </Grid>
   </Paper>
   </>

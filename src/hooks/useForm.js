@@ -1,12 +1,12 @@
-import { useState, useContext } from 'react';
-import { LoginContext } from '../helpers/Context.js';
+// import { useState, useContext } from 'react';
+// import { LoginContext } from '../helpers/Context.js';
 
-export default function useForm (callback) {
+export default function useForm ({setAssumptions, formErrors, setFormErrors}) {
   
-  const { userId, setUserId, setUserName, setSponsorName} = useContext (LoginContext);
-  const [ values, setValues ] = useState ({ contactName: "", contactMobile: "", contactEmail: "", contactMsg:"", userPassword:"" });
-  const [ formErrors, setFormErrors ] = useState({ contactName: "", contactMobile: "", contactEmail: "", contactMsg:"", userId:"", userPassword:"" });
-  const { contactName, contactMobile, contactEmail, contactMsg, userPassword } = values;
+  // const { userId, setUserId, setUserName, setSponsorName} = useContext (LoginContext);
+  // const [ values, setValues ] = useState ({ contactName: "", contactMobile: "", contactEmail: "", contactMsg:"", userPassword:"" });
+  // const [ formErrors, setFormErrors ] = useState({revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",cashFlowGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: "", cashFlowDiscretePeriod:"", companyBeta:"", riskFreeReturn:"", marketReturn:"",costOfDebt:""});
+  // const { contactName, contactMobile, contactEmail, contactMsg, userPassword } = values;
 
   function noBlanks (value) {
     if (value === "") {
@@ -110,48 +110,49 @@ export default function useForm (callback) {
     return isError;
   }
   
-  function chkBlankFormContact () {
-    let isError = false;
-    const valuesToCheck={ contactName, contactEmail, contactMsg }
-    Object.keys(valuesToCheck).forEach( (key) => {   // key es el nombre del key
-      if (values [key] === ""){                      //values[key] es el contenido del key
-        setFormErrors(prevState => ( {...prevState, [key]:  "Esta información es requerida"}));
-        isError=true;
-      }
-    })
-    return isError;
-  }
+  // function chkBlankFormContact () {
+  //   let isError = false;
+  //   const valuesToCheck={ contactName, contactEmail, contactMsg }
+  //   Object.keys(valuesToCheck).forEach( (key) => {   // key es el nombre del key
+  //     if (values [key] === ""){                      //values[key] es el contenido del key
+  //       setFormErrors(prevState => ( {...prevState, [key]:  "Esta información es requerida"}));
+  //       isError=true;
+  //     }
+  //   })
+  //   return isError;
+  // }
 
-  function chkBlankFormLogin () {
-    let isError = false;
-    const valuesToCheck = { userId, userPassword }
-    Object.keys(valuesToCheck).forEach( (key) => {   // key es el nombre del key
-      if (values [key] === "") {                     //values[key] es el contenido del key
-        setFormErrors(prevState => ( {...prevState, [key]:  "Esta información es requerida"}));
-        isError=true;
-      }
-    })
-    return isError;
-  }
+  // function chkBlankFormLogin () {
+  //   let isError = false;
+  //   const valuesToCheck = { userId, userPassword }
+  //   Object.keys(valuesToCheck).forEach( (key) => {   // key es el nombre del key
+  //     if (values [key] === "") {                     //values[key] es el contenido del key
+  //       setFormErrors(prevState => ( {...prevState, [key]:  "Esta información es requerida"}));
+  //       isError=true;
+  //     }
+  //   })
+  //   return isError;
+  // }
 
   function handleSubmit (event) {
     event.preventDefault();
-    callback(); // executa a funcao que recebe do formulario
+    {setAssumptions(); // executa a funcao que recebe do formulario
   }
-
-  const handleChange = (e, validators) =>{
+}
+  const handleChangeHook = (e, validators) =>{
     const target = e.target;
-    setValues (prevState => ({...prevState, [target.name]:target.value }))
+    setAssumptions (prevState => ({...prevState, [target.name]:target.value }))
     handleValidators(target, validators);
   }
 
 
-  const handleChangeUserId = (e, validators) =>{
-    const target=e.target;
-    // setUserId (prevState => ({...prevState, [target.name]:target.value }))
-    setUserId(e.target.value)
-    handleValidators(target, validators);
-  }
+  // const handleChangeUserId = (e, validators) =>{
+  //   const target=e.target;
+  //   // setUserId (prevState => ({...prevState, [target.name]:target.value }))
+  //   setUserId(e.target.value)
+  //   handleValidators(target, validators);
+  // }
+
   const handleValidators = (target, validators) => {
     validators.forEach(validation => {         // array 
     const result = validation (target.value)    // value="martin" ou "0985 290979"...
@@ -168,5 +169,5 @@ export default function useForm (callback) {
     })
   }
 
-  return { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, formErrors }
+  return { handleChangeHook, handleSubmit,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, isValidDiscretePeriod, formErrors }
 }

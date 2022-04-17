@@ -20,7 +20,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     fontSize: 11
     }
   }));
-export default function FormCostOfCapitalAssumptions ({assumptions, setAssumptions, calculatedCostOfCapital}){
+export default function FormCostOfCapitalData ({assumptions, setAssumptions, calculatedCostOfCapital}){
 
   const classes = useStyles();
   return (
