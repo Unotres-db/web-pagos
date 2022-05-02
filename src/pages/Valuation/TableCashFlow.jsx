@@ -68,7 +68,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
   }));
 
-export default function TableCashFlow ({combinedFinancialdata, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder, isEstimateFcffOnly}){ 
+export default function TableCashFlow ({combinedFinancialData, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder, isEstimateFcffOnly}){ 
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -161,7 +161,7 @@ export default function TableCashFlow ({combinedFinancialdata, assumptions, isCh
   } return theme.palette.primary.main;
   }
 
-  function defineNumberFormat(number, style, showAsBlankIfZero){
+  function defineNumberFormat(number, style, showAsBlankIfZero, dataField){
     if (isEstimateFcffOnly && showAsBlankIfZero[0])  {
       if (number[0] === 0.00 ) {
         return ""
@@ -170,6 +170,11 @@ export default function TableCashFlow ({combinedFinancialdata, assumptions, isCh
     } 
     if (number[0] === 0.00 ) {
       return ""
+    }
+    // if depreciation, change sign (note: only in the cash flow, not income statement)
+    if (dataField[0] === "depreciation" ) {
+      return Intl.NumberFormat('en-US',{style:style,minimumFractionDigits:1,maximumFractionDigits:1}).format(number*-1);  
+      
     }
     return Intl.NumberFormat('en-US',{style:style,minimumFractionDigits:1,maximumFractionDigits:1}).format(number); 
   } 
@@ -185,7 +190,7 @@ export default function TableCashFlow ({combinedFinancialdata, assumptions, isCh
             <Tooltip title="Free Cash Flow of the Firm">
             <TableCell className={classes.tableTitle} align="left" >{isMobile || assumptions.cashFlowDiscretePeriod > 7 ? "FCFF": "Free Cash Flow of the Firm"}</TableCell>  
             </Tooltip>
-            {combinedFinancialdata.map ((currElement, index) => ( 
+            {combinedFinancialData.map ((currElement, index) => ( 
               <TableCell className={classes.yearColumnStyle} align="right" style={{color:defineYearsColColor(index), backgroundColor:defineYearsColBackColor(index), width:defineYearsColWidth()}}>{currElement.year}</TableCell>
             ))} 
           </TableRow>
@@ -195,8 +200,8 @@ export default function TableCashFlow ({combinedFinancialdata, assumptions, isCh
         {dataRows.map ((accountElement)=> (
           <TableRow>
             <TableCell align="left" className = {accountElement.grayBackground ? classes.firstColumnGrayStyle : classes.firstColumnWhiteStyle } >{isMobile || assumptions.cashFlowDiscretePeriod > 7 ? accountElement.rowMobileText: accountElement.rowText}</TableCell>
-            {combinedFinancialdata.map ((yearElement) => ( 
-              <TableCell align="right" className = {accountElement.grayBackground ? classes.dataColumnGrayStyle : classes.dataColumnWhiteStyle} style = {{ width:defineYearsColWidth()}} >{defineNumberFormat([yearElement[accountElement.dataField]], [accountElement.style], [accountElement.showAsBlankIfZero]) }</TableCell>
+            {combinedFinancialData.map ((yearElement) => ( 
+              <TableCell align="right" className = {accountElement.grayBackground ? classes.dataColumnGrayStyle : classes.dataColumnWhiteStyle} style = {{ width:defineYearsColWidth()}} >{defineNumberFormat([yearElement[accountElement.dataField]], [accountElement.style], [accountElement.showAsBlankIfZero],[accountElement.dataField]) }</TableCell>
             ))}
           </TableRow>
         ))}

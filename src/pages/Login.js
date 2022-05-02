@@ -55,7 +55,7 @@ const useStyles = makeStyles((mainTheme) => ({
   export default function Login () {
 
     const classes = useStyles();  
-    const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormLogin, noBlanks, userId, values, formErrors } = useForm (handleLogon);
+    const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormLogin, noBlanks, userId, values, formErrors } = useForm (submit);
     const { userPassword } = values;
     const [ isAlertOpen, setIsAlertOpen ] = useState(false);
     const [ alertMessage, setAlertMessage ] = useState({severity:"", title:"", message:""});
@@ -63,7 +63,7 @@ const useStyles = makeStyles((mainTheme) => ({
     const { setUserId, setUserName } = useContext (LoginContext);
     const history = useHistory();
 
-    async function handleLogon () {
+    async function submit () {
 
     if (chkBlankFormLogin ()){
       setAlertMessage({severity:"warning", title: "Error en entrada de datos", message:"Favor completar los dados marcados como requeridos, gracias !"});

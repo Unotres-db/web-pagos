@@ -68,7 +68,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
   }));
 
-export default function TableIncomeStatement ({ combinedFinancialdata, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder, isEstimateFcffOnly }){
+export default function TableIncomeStatement ({ combinedFinancialData, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder, isEstimateFcffOnly }){
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -219,7 +219,7 @@ export default function TableIncomeStatement ({ combinedFinancialdata, assumptio
           <TableHead>
             <TableRow>
               <TableCell className = {classes.tableTitle} align = "left" >{isMobile || assumptions.cashFlowDiscretePeriod > 7 ? "Inc. Statement": "Income Statement"}</TableCell>  
-              {combinedFinancialdata.map ((currElement, index) => ( 
+              {combinedFinancialData.map ((currElement, index) => ( 
                 <TableCell className = {classes.yearColumnStyle} align = "right" style = {{color:defineYearsColColor(index), backgroundColor:defineYearsColBackColor(index), width:defineYearsColWidth()}} >{currElement.year}</TableCell>
               ))} 
             </TableRow>
@@ -229,7 +229,7 @@ export default function TableIncomeStatement ({ combinedFinancialdata, assumptio
           {dataRows.map ((accountElement)=> (
             <TableRow>
               <TableCell align="left" className = {accountElement.grayBackground ? classes.firstColumnGrayStyle : classes.firstColumnWhiteStyle } >{isMobile || assumptions.cashFlowDiscretePeriod > 7 ? accountElement.rowMobileText: accountElement.rowText}</TableCell>
-              {combinedFinancialdata.map ((yearElement) => ( 
+              {combinedFinancialData.map ((yearElement) => ( 
                 <TableCell align="right" className = {accountElement.grayBackground ? classes.dataColumnGrayStyle : classes.dataColumnWhiteStyle} style = {{ width:defineYearsColWidth()}} >{defineNumberFormat([yearElement[accountElement.dataField]], [accountElement.style], [accountElement.showAsBlankIfZero]) }</TableCell>
               ))}
             </TableRow>

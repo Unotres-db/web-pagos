@@ -3,9 +3,9 @@ import { BrowserRouter as Router , Route, Switch } from 'react-router-dom';
 
 import Blog from './pages/Blog';
 import Books from './pages/Books';
+import CompanyData from './pages/CompanyData';
 import Contact from './pages/Contact';
 import Valuation from './pages/Valuation';
-// import DiscCashFlow from './pages/DiscCashFlow';
 import DividendYield from './pages/DividendYield';
 import Graham from './pages/Graham';
 import Home from './pages/Home';
@@ -21,17 +21,18 @@ export default function Routes() {
     <Router>
       <Switch>
         <Route path = "/" exact component = {Home} />
-        <Route path = "/blog" component = {Blog} />
-        <Route path = "/books" component = {Books} />
-        <Route path = "/contact" component = {Contact} />
-        <Route path = "/valuation" component = {Valuation} />
-        <Route path = "/dividendyield" component = {DividendYield} />
-        <Route path = "/graham" component = {Graham} />
         <Route path = "/home" component = {Home} />
+        <Route path = "/company-data" component = {CompanyData} />
+        <Route path = "/dividend-yield" component = {DividendYield} />
+        <Route path = "/graham" component = {Graham} />
+        <Route path = "/valuation" component = {Valuation} />
+        <Route path = "/books" component = {Books} />
+        <Route path = "/blog" component = {Blog} />
+        <Route path = "/who-we-are" component = {Whoweare} />
+        <Route path = "/contact" component = {Contact} />
         <Route path = "/login" component = {Login} />
-        <Route path = "/update" component = {Update} />
-        <Route path = "/updatebk" component = {Updatebk} />
-        <Route path = "/whoweare" component = {Whoweare} />
+        {/* <Route path = "/update" component = {Update} />
+        <Route path = "/updatebk" component = {Updatebk} /> */}
       </Switch>
     </Router>  
 

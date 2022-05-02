@@ -3,6 +3,8 @@ import React from 'react';
 import { Paper, Grid, TextField, InputAdornment, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import useValuationForm from '../../hooks/useValuationForm';
+
 const useStyles = makeStyles( (mainTheme) => ({
   table: {
     minWidth: 300,
@@ -23,11 +25,25 @@ const useStyles = makeStyles( (mainTheme) => ({
 
 export default function FormCashFlowData ({assumptions, setAssumptions}){
   const classes = useStyles();
+  const { formErrors, handleChange, noBlanks, isValidDiscretePeriod } = useValuationForm({ assumptions, setAssumptions })
+  const formTitle =   "Business Assumptions"
+  // const formTitlePt = "Premissas de Negocio"
+  // const formTitleEs = "Supuestos del Negocio"
+  const formLabels = [
+    { id:0,
+      label: "Free Cash Flow Growth Rate", 
+    //label: "Cresc. Fluxo de Caixa Livre",
+    },
+    { id:1,
+      label: "Perpetual Growth Rate", 
+   // label: "Cresc. na Perpetuidade"
+    },
+    { id:2,
+      label: "FCFF Discrete Period (Years)",   
+   // label: "Periodo do Fluxo Discreto"
+    }
+  ]
 
-  const handleChange = (e) => {
-    setAssumptions (prevState => ({...prevState, [e.target.name]:e.target.value, revenueGrowth:"",marginTarget:"",opexGrowth:"", interestGrowth:"",otherGrowth:"",taxRate:"", capexGrowth:"", nwcGrowth:""}))
-  };
-  
   return (
   <>
   <TableContainer component={Paper}>
@@ -39,21 +55,6 @@ export default function FormCashFlowData ({assumptions, setAssumptions}){
       </TableHead>
 
       <TableBody>
-        {/* <TableRow>
-          <TextField
-            label="Free Cash Flow Growth"
-            size="small"
-            value={assumptions.cashFlowGrowthRate}
-            type="number"
-            onChange={(e) => { handleChange (e)}}
-            variant="filled"
-            fullWidth
-            name="cashFlowGrowthRate"
-            InputProps={{
-              startAdornment: <InputAdornment position="start">%</InputAdornment>,
-            }}
-          />
-        </TableRow> */}
 
         <TableRow>
           <Grid container>
@@ -64,14 +65,17 @@ export default function FormCashFlowData ({assumptions, setAssumptions}){
                 size="small"
                 value={assumptions.cashFlowGrowthRate}
                 type="number"
-                onChange={(e) => { handleChange (e)}}
+                onChange={(e) => {handleChange (e,[])}}
                 variant="filled"
                 fullWidth
                 name="cashFlowGrowthRate"
+                error={formErrors.cashFlowGrowthRate}
+                helperText={formErrors.cashFlowGrowthRate}
                 InputProps={{
                   startAdornment: <InputAdornment position="start">%</InputAdornment>,
                 }}
               />
+              {/* {formErrors.cashFlowGrowthRate ? <div className="error-helper-text">{formErrors.cashFlowGrowthRate}</div> : null} */}
             </Grid>
 
             <Grid item xs = {4} >
@@ -80,10 +84,13 @@ export default function FormCashFlowData ({assumptions, setAssumptions}){
                 size="small"
                 value={assumptions.perpetualGrowthRate}
                 type="number"
-                onChange={(e) => { handleChange (e)}}
+                // onChange={(e) => { handleChange (e)}}
+                onChange={(e) => {handleChange (e,[noBlanks])}}
                 variant="filled"
                 fullWidth
                 name="perpetualGrowthRate"
+                error={formErrors.perpetualGrowthRate}
+                helperText={formErrors.perpetualGrowthRate}
                 InputProps={{
                   startAdornment: <InputAdornment position="start">%</InputAdornment>,
                 }}
@@ -91,19 +98,22 @@ export default function FormCashFlowData ({assumptions, setAssumptions}){
             </Grid>
             
             <Grid item xs={4} >
-              <Tooltip title="Free Cash Flow Discrete Period (in Years)">
+              <Tooltip title="Free Cash Flow discrete period, in years, before perpetuity">
                 <TextField
                   label="FCFF Discrete Period (Years)"
                   size="small"
                   value={assumptions.cashFlowDiscretePeriod}
                   type="number"
-                  onChange={(e) => { handleChange (e)}}
+                  placeholder="Value ?"
+                  onChange={(e) => {handleChange (e,[isValidDiscretePeriod])}}
                   variant="filled"
                   fullWidth
                   name="cashFlowDiscretePeriod"
+                  error={formErrors.cashFlowDiscretePeriod}
+                  helperText={formErrors.cashFlowDiscretePeriod}
                   InputProps={{
                     inputProps: { 
-                        max: 20, min: 1 
+                        max: 30, min: 1 
                     }}}
                 />
               </Tooltip>

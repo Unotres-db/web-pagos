@@ -20,7 +20,7 @@ TableHeader:{
 },
 TableTitle:{
   color: "white",
-  fontSize: 11
+  fontSize: 12
 },
 TableRows : {
   fontSize: 9

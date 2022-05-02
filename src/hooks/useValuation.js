@@ -77,7 +77,7 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
   }
 
   function calcCostOfCapital (){
-    // uses CAPM model
+    // Note: uses CAPM (Capital Assets Pricing Model) formulas
     if (historicalFinancialData){
       let taxFactor = 0;
       if (assumptions.taxRate > 0) {
@@ -93,16 +93,13 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
   };
   
   function calcForecastedCashFlow () {
-    // console.log(assumptions.cashFlowDiscretePeriod);
-    // let discretePeriod = 5
-    // if (assumptions.cashFlowDiscretePeriod = 0 || assumptions.cashFlowDiscretePeriod === "" ){
-    //   discretePeriod = 1
-    // }
-    let estFinancialDataArr = Array.from({ length: assumptions.cashFlowDiscretePeriod } , () => ({ year: 0, period:0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, grossProfitPercent:0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0 }));
-    // if (assumptions.cashFlowDiscretePeriod !=="" && assumptions.cashFlowDiscretePeriod > 0) {
-    // if ( !! assumptions.cashFlowDiscretePeriod ) {
+    let defaultValue = 5
+    if (assumptions.cashFlowDiscretePeriod){
+      defaultValue = assumptions.cashFlowDiscretePeriod
+    }  
+
+    let estFinancialDataArr = Array.from({ length: defaultValue } , () => ({ year: 0, period:0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, grossProfitPercent:0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0 }));
     if (assumptions.cashFlowDiscretePeriod !=null && assumptions.cashFlowDiscretePeriod !=undefined && assumptions.cashFlowDiscretePeriod !=="" && assumptions.cashFlowDiscretePeriod > 0) {
-      // alert("--entrou em calcForecastedCashFlow c teste ");
       
       estFinancialDataArr[0].year = historicalFinancialData[0].year + 1;
       // estFinancialDataArr[0].period = 0;
@@ -206,14 +203,15 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
             estFinancialDataArr[i].discountedCashFlow = estFinancialDataArr[i].cashFlow/(Math.pow((1+parseFloat(calculatedCostOfCapital.costOfCapital/100)),(i+1))); 
           }
         }
-      estFinancialDataArr.reverse(); // to show numbers in descending order (default)
+      estFinancialDataArr.reverse(); // to show array in descending order (default option)
       }
       return estFinancialDataArr
     } 
 
   function calcValuation() {
-  // alert("--entrou em calcValuation: ");
-    if (forecastedFinancialData ){
+
+    if (forecastedFinancialData && assumptions.cashFlowDiscretePeriod !==undefined && assumptions.cashFlowDiscretePeriod !==null ){
+      // alert(assumptions.cashFlowDiscretePeriod);
       if (historicalFinancialData[0].cashFlow !== null && historicalFinancialData[0].cashFlow !== undefined){
       let valuationResultsArr = { cashFlowAvgGrowth:0, sumOfCashFlowPresentValue:0, perpetuityValue:0, perpetuityPresentValue:0, enterpriseValue:0, cash:0, debt:0, equityValue:0, sharesOutstanding:0, targetStockPrice:0, marketCap:0 };
       if (assumptions.cashFlowDiscretePeriod !=null && assumptions.cashFlowDiscretePeriod !=undefined && assumptions.cashFlowDiscretePeriod !=="" && assumptions.cashFlowDiscretePeriod > 0) {

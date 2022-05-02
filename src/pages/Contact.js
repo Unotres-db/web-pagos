@@ -23,10 +23,14 @@ const useStyles = makeStyles( (mainTheme) => ({
     minWidth: 350,
     maxWidth: 500,
     backgroundColor:mainTheme.palette.secondary.main,  
+    // backgroundColor:mainTheme.palette.tertiary.main,  
+
   },
   buttonStyle:{
     color: "white",
     backgroundColor:mainTheme.palette.primary.main,
+    // backgroundColor:mainTheme.palette.secondary.main,
+
     textTransform:"none",
     fontSize:12,
     margin: "10px",
@@ -42,7 +46,9 @@ const useStyles = makeStyles( (mainTheme) => ({
     AlignItems: 'center',
   },
   iconStyle:{
+    // color: mainTheme.palette.secondary.main, 
     color: mainTheme.palette.primary.main, 
+
   },
   formStyle:{
     backgroundColor:'white'
@@ -52,7 +58,11 @@ const useStyles = makeStyles( (mainTheme) => ({
 export default function Contact (){
   
   const classes = useStyles();  
-  const { handleChange, handleSubmit, chkBlankFormContact, chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword,values, formErrors} = useForm (handleContact);
+  // const [ values, setValues ] = useState ({ contactName: "", contactMobile: "", contactEmail: "", contactMsg:"", userPassword:"" });
+
+  // const { handleChange, handleSubmit, chkBlankFormContact, chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, values, formErrors} = useForm (submit);
+  const { handleChange, handleSubmit, chkBlankFormContact, chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, values, formErrors} = useForm (submit);
+
   const { contactName, contactMobile, contactEmail, contactMsg, userId, userPassword } = values;
   const [ isAlertOpen, setIsAlertOpen ] = useState(false);
   const [ alertMessage, setAlertMessage ] = useState({severity:"",title:"",message:""});
@@ -62,16 +72,16 @@ export default function Contact (){
   const handleAlertClose = () => {
     setIsAlertOpen(false);
     if (alertMessage.severity==="success"){
-      history.push('/main');  
+      history.push('/home');  
     }
   };
 
-  async function handleContact() {
+  async function submit() {
     if (chkBlankFormContact ()){
-      setAlertMessage(prevState => ( {...prevState, severity:"warning", title: "Error en entrada de datos", message:"Favor completar los dados marcados como requeridos, gracias!"}));
+      setAlertMessage(prevState => ( {...prevState, severity:"warning", title: "Some required data is missing", message:"Please complete the values, thank you!"}));
       setIsAlertOpen(true);
     }  else if (chkFormErrors()) {
-        setAlertMessage(prevState => ( {...prevState, severity:"warning", title: "Error en entrada de datos", message:"Favor corregir los dados marcados como incorrectos, gracias!"}));
+        setAlertMessage(prevState => ( {...prevState, severity:"error", title: "Some required data is incorrect", message:"Please correct the values, thank you!"}));
         setIsAlertOpen(true);
       }  
       else {
@@ -79,12 +89,12 @@ export default function Contact (){
         try {
           const data = { contactName, contactMobile, contactEmail, contactMsg } ;
           const response = await api.post('/messages', data );
-          setAlertMessage(prevState => ( {...prevState, severity:"success", title: "Mensaje enviado con exito", message: "En la brevedad nos comunicaremos con usted" }));
+          setAlertMessage(prevState => ( {...prevState, severity:"success", title: "Thank you for contacting us!", message: "We've received your message. Someone from our team will contact you soon." }));
           setIsAlertOpen(true);
       
         } catch (err) {
             const errorMsg = Object.values(err.response.data);
-            setAlertMessage(prevState => ( {...prevState, severity:"warning", title: "Error en inicio de sessión", message: errorMsg }));
+            setAlertMessage(prevState => ( {...prevState, severity:"warning", title: "Our server is unavaliable now. Please try later.", message: errorMsg }));
             setIsAlertOpen(true);
           }
       }
@@ -107,10 +117,11 @@ export default function Contact (){
             </Box>
             <Grid item xs={12}> 
               <TextField id="contactName" label="Name *" 
+                style={{borderRadius:"24px"}}
                 variant ="filled" margin="dense" size="small" fullWidth  
                 name="contactName" value={contactName} 
                 onChange={ (e) => {
-                  handleChange (e,[noBlanks]);
+                  handleChange (e,[isValidName]);
                   setIsDirty();
                 }}
                 error={formErrors.contactName} ></TextField>
@@ -121,14 +132,14 @@ export default function Contact (){
                 variant ="filled" margin="dense" size="small" fullWidth
                 name="contactMobile" value={values.contactMobile} 
                 onChange={ (e) => {
-                  handleChange (e,[noBlanks]);
+                  handleChange (e,[isValidPhone]);
                   setIsDirty();
                 }}
                 error={formErrors.contactMobile}></TextField>
                 {formErrors.contactMobile ? <div className="error-helper-text">{formErrors.contactMobile}</div> : null}
             </Grid>  
             <Grid item xs={12}>
-            <TextField id="contactEmail" label="E-mail *" 
+            <TextField id="contactEmail" label="Email *" 
               variant ="filled" margin="dense" size="small" fullWidth 
               name="contactEmail" value={values.contactEmail} 
               onChange={ (e) => {
@@ -140,7 +151,7 @@ export default function Contact (){
               {formErrors.contactEmail ? <div className="error-helper-text">{formErrors.contactEmail}</div> : null}
             </Grid>
             <Grid item xs={12}>
-              <Typography align="left" variant="subtitle1" style={{color:'white'}} gutterBottom>Message *</Typography>
+              <Typography align="left" variant="subtitle2" style={{color:'white'}} gutterBottom>Message *</Typography>
               <div>
                 <textarea name="contactMsg" placeholder="Write your message" rows="4" 
                   onChange={ (e) => {

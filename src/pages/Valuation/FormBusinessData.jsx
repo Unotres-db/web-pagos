@@ -3,7 +3,7 @@ import React from 'react';
 import { Paper, Grid, Tooltip, TextField, InputAdornment,Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-// import useForm from '../../hooks/useForm';
+import useValuationForm from '../../hooks/useValuationForm';
 
 const useStyles = makeStyles( (mainTheme) => ({
   table: {
@@ -25,9 +25,10 @@ const useStyles = makeStyles( (mainTheme) => ({
 
 export default function FormBusinessData ({assumptions, setAssumptions}){
   const classes = useStyles();  
-  const handleChange = (e) => {
-    setAssumptions (prevState => ({...prevState, [e.target.name]:e.target.value, cashFlowGrowthRate:0 }))
-  }; 
+  const { formErrors, handleChange, noBlanks, isValidTaxRate, isValidDiscretePeriod } = useValuationForm({ assumptions, setAssumptions })
+  // const handleChange = (e) => {
+  //   setAssumptions (prevState => ({...prevState, [e.target.name]:e.target.value, cashFlowGrowthRate:0 }))
+  // }; 
 
   return (
   <>
@@ -47,7 +48,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
                 size="small"
                 value={assumptions.revenueGrowth}
                 type="number"
-                onChange={(e) => { handleChange (e)}}
+                onChange={(e) => {handleChange (e,[])}}
                 variant="filled"
                 fullWidth
                 name="revenueGrowth"
@@ -63,7 +64,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
                   size="small"
                   value={assumptions.marginTarget}
                   type="number"
-                  onChange={(e) => { handleChange (e)}}
+                  onChange={(e) => {handleChange (e,[])}}
                   variant="filled"
                   fullWidth
                   name="marginTarget"
@@ -79,7 +80,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
                 size="small"
                 value={assumptions.opexGrowth}
                 type="number"
-                onChange={(e) => { handleChange (e)}}
+                onChange={(e) => {handleChange (e,[])}}
                 variant="filled"
                 fullWidth
                 name="opexGrowth"
@@ -113,7 +114,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
                 size="small"
                 value={assumptions.interestGrowth}
                 type="number"
-                onChange={(e) => { handleChange (e)}}
+                onChange={(e) => {handleChange (e,[])}}
                 variant="filled"
                 fullWidth
                 name="interestGrowth"
@@ -128,7 +129,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
                   size="small"
                   value={assumptions.otherGrowth}
                   type="number"
-                  onChange={(e) => { handleChange (e)}}
+                  onChange={(e) => {handleChange (e,[])}}
                   variant="filled"
                   fullWidth
                   name="otherGrowth"
@@ -143,10 +144,12 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
                 size="small"
                 value={assumptions.taxRate}
                 type="number"
-                onChange={(e) => { handleChange (e)}}
+                onChange={(e) => {handleChange (e,[isValidTaxRate])}}
                 variant="filled"
                 fullWidth
                 name="taxRate"
+                error={formErrors.taxRate}
+                helperText={formErrors.taxRate}
                 InputProps={{
                   startAdornment: <InputAdornment position="start">%</InputAdornment>,
                 }}
@@ -196,7 +199,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
                 size="small"
                 value={assumptions.capexGrowth}
                 type="number"
-                onChange={(e) => { handleChange (e)}}
+                onChange={(e) => {handleChange (e,[])}}
                 variant="filled"
                 fullWidth
                 name="capexGrowth"
@@ -212,7 +215,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
                   size="small"
                   value={assumptions.nwcGrowth}
                   type="number"
-                  onChange={(e) => { handleChange (e)}}
+                  onChange={(e) => {handleChange (e,[])}}
                   variant="filled"
                   fullWidth
                   name="nwcGrowth"
@@ -228,7 +231,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
                 size="small"
                 value={assumptions.perpetualGrowthRate}
                 type="number"
-                onChange={(e) => { handleChange (e)}}
+                onChange={(e) => {handleChange (e,[])}}
                 variant="filled"
                 fullWidth
                 name="perpetualGrowthRate"
@@ -263,7 +266,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
                   size="small"
                   value={assumptions.cashFlowDiscretePeriod}
                   type="number"
-                  onChange={(e) => { handleChange (e)}}
+                  onChange={(e) => {handleChange (e,[])}}
                   variant="filled"
                   fullWidth
                   name="cashFlowDiscretePeriod"

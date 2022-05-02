@@ -53,6 +53,11 @@ const mainTheme = createTheme ({
         },  
       }
       },
+    MuiFormHelperText: {
+      root: {
+      fontSize:'8px',
+    }
+  },
     MuiInput:{
       root: { 
         color: "344955", //#1C1C49

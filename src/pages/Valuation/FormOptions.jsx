@@ -37,6 +37,9 @@ export default function FormOptions ({isEstimateFcffOnly, setIsEstimateFcffOnly,
           disabled = {isDisabledChkBox}
           control = {<Checkbox disableRipple style={{ paddingLeft: '20px' }}  defaultChecked = {false} checked = {isEstimateFcffOnly} size = "small"/>} 
           label = "Estimate only Free Cash Flow & Perpetuity Growth"
+          // label=  "Estimar somente Flx. de Caixa Livre e Perpetuidade"
+          // label=  "Estimar solamente Flujo de Caja Libre e Perpetuidad"
+
           onChange = {handleChangeCheckEstimateFcffOnly}
         />
       </Grid>

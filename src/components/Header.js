@@ -58,82 +58,80 @@ drawerContainer: {
 
 export default function Header() {
 
-const classes = useStyles();
-const [open, setOpen] = useState(false);
-const [ isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const classes = useStyles();
+  const [ isDrawerOpen, setIsDrawerOpen ] = useState(false);
+  const menuOptions = [
+    { id:0,
+      title:"Home",                   //  "Home"  //  "Principal"  //  "Principal"
+      route:"/home"
+    },
+    { id:1,
+      title:"Company Data",           //  "Company Data"  //  "Dados de Empresas"  //  "Datos de Empresas"
+      route:"/company-data"
+    },
+    { id:2,
+      title:"Dividend Yield Model",   //  "Dividend Yield Model"  //  "Modelo Bazin"  //  "Dividendos"
+      route:"/dividend-yield"
+    },
+    { id:3,
+      title:"Graham Model",           //  "Graham Model"  //  "Modelo Graham"  //  "Modelo Graham"
+      route:"/graham"
+    },
+    { id:4,
+      title:"Valuation",              // 
+      route:"/valuation"
+    },
+    { id:5,
+      title:"Books",                 //  "Books"  //  Livros"  //  "Libros"
+      route:"/books"
+    },
+    { id:6,
+      title:"Blog",
+      route:"/blog"
+    },
+    { id:7,
+      title:"Who Am I",             //  "Quem Sou"  //  "Quien Soy"
+      route:"/who-we-are"
+    },
+    { id:8,
+      title:"Contact",              //  "Contato"  //  "Contacto"
+      route:"/contact"
+    },
+    { id:9,
+      title:"Login",               //  "Login"  //  "Iniciar Sessão"  //  "Iniciar Sesión"
+      route:"/login"
+    },
+  ]
 
-const menuOptions = [
-  { id:0,
-    text:"Home",
-    route:"/home"
-  },
-  { id:1,
-    text:"Company Data",
-    route:"/dividend-yield"
-  },
-  { id:2,
-    text:"Dividend Yield",
-    route:"/dividend-yield"
-  },
-  { id:3,
-    text:"Graham Model",
-    route:"/graham"
-  },
-  { id:4,
-    text:"Valuation",
-    route:"/valuation"
-  },
-  { id:5,
-    text:"Books",
-    route:"/books"
-  },
-  { id:6,
-    text:"Blog",
-    route:"/blog"
-  },
-  { id:7,
-    text:"About Me",
-    route:"/who-we-are"
-  },
-  { id:8,
-    text:"Contact",
-    route:"/contact"
-  },
-  { id:9,
-    text:"Login",
-    route:"/login"
-  },
-]
+  const handleDrawerOpen = () => {
+    setIsDrawerOpen(true);
+  };
 
-const handleDrawerOpen = () => {
-  setOpen(true);
-};
-
-const handleDrawerClose = () => {
-  setOpen(false);
-};
+  const handleDrawerClose = () => {
+    setIsDrawerOpen(false);
+  };
 
   return (
   <>
   <AppBar position="fixed" style={{top:'0px', height: '64px'}}>
     <Toolbar style={{minWidth:'360',height: '64px',paddingLeft:'24px'}}>
 
-      <Link to={'/home'}>
+      <Link to={menuOptions[0].route}>
         <img src = {mainLogo} alt="Logo" className={classes.logoStyle} style={{ height: '50px'}}/>
       </Link>
       <Hidden smDown>
         <Box style={{ width: '20px' }}/>    
-          <Button component={Link} to={'/home'} className={classes.buttonMenuStyle} size="small" disableRipple>Home</Button>
-          <Button component={Link} to={'/dividendyield'} className={classes.buttonMenuStyle} size="small" disableRipple>Company Data</Button>
-          <Button component={Link} to={'/dividendyield'} className={classes.buttonMenuStyle} size="small" disableRipple>Dividend Yield Model</Button>
-          <Button component={Link} to={'/graham'} className={classes.buttonMenuStyle} size="small" disableRipple>Graham Model</Button>
-          <Button component={Link} to={'/valuation'} className={classes.buttonMenuStyle} size="small" disableRipple>Valuation</Button>
-          <Button component={Link} to={'/books'} className={classes.buttonMenuStyle} size="small" disableRipple>Books</Button>
-          <Button component={Link} to={'/blog'} className={classes.buttonMenuStyle} size="small" disableRipple>Blog</Button>
+          <Button component={Link} to={menuOptions[0].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[0].title}</Button>
+          <Button component={Link} to={menuOptions[1].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[1].title}</Button>
+          <Button component={Link} to={menuOptions[2].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[2].title}</Button>
+          <Button component={Link} to={menuOptions[3].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[3].title}</Button>
+          <Button component={Link} to={menuOptions[4].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[4].title}</Button>
+          <Button component={Link} to={menuOptions[5].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[5].title}</Button>
+          <Button component={Link} to={menuOptions[6].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[6].title}</Button>
           <div className={classes.grow} />
-          <Button component={Link} to={'/whoweare'} className={classes.buttonMenuStyle} size="small" disableRipple>About Me</Button>
-          <Button component={Link} to={'/contact'} className={classes.buttonMenuStyle} size="small" disableRipple>Contact</Button>
-          <Button component={Link} to={'/login'} className={classes.buttonMenuStyle} size="small" disableRipple>Login</Button>
+          <Button component={Link} to={menuOptions[7].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[7].title}</Button>
+          <Button component={Link} to={menuOptions[8].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[8].title}</Button>
+          <Button component={Link} to={menuOptions[9].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[9].title}</Button>
       </Hidden>
 
       <div className={classes.toolbarButtons}> 
@@ -142,7 +140,7 @@ const handleDrawerClose = () => {
             <MenuIcon />
           </IconButton>
         </Hidden>
-    </div> 
+      </div> 
     </Toolbar>
   </AppBar>
 
@@ -151,7 +149,7 @@ const handleDrawerClose = () => {
       className={classes.drawer}
       variant="temporary"
       anchor="right"
-      open={open}
+      open={isDrawerOpen}
       onClose={handleDrawerClose}
       classes={{
         paper: classes.drawerPaper,
@@ -159,38 +157,38 @@ const handleDrawerClose = () => {
     >
     <div className={classes.drawerContainer}>
         <List>
-          <ListItem button component={Link} to={'/home'} disableRipple className={classes.buttonDrawerStyle}>
-            <ListItemText primary="Home" />
+          <ListItem button component={Link} to={menuOptions[0].route} disableRipple className={classes.buttonDrawerStyle}>
+            <ListItemText primary={menuOptions[0].title} />
           </ListItem>
-          <ListItem button component={Link} to={'/dividendyield'} disableRipple className={classes.buttonDrawerStyle}>
-            <ListItemText primary="Company Data" />
+          <ListItem button component={Link} to={menuOptions[1].route} disableRipple className={classes.buttonDrawerStyle}>
+            <ListItemText primary={menuOptions[1].title} />
           </ListItem> 
-          <ListItem button component={Link} to={'/dividendyield'} disableRipple className={classes.buttonDrawerStyle}>
-            <ListItemText primary="Dividend Yield Model" />
+          <ListItem button component={Link} to={menuOptions[2].route} disableRipple className={classes.buttonDrawerStyle}>
+            <ListItemText primary={menuOptions[2].title} />
           </ListItem> 
-          <ListItem button component={Link} to={'/graham'} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary="Graham Model" />
+          <ListItem button component={Link} to={menuOptions[3].route} disableRipple className={classes.buttonDrawerStyle} >
+            <ListItemText primary={menuOptions[3].title} />
           </ListItem> 
-          <ListItem button component={Link} to={'/valuation'} disableRipple className={classes.buttonDrawerStyle}>
-            <ListItemText primary="Valuation" />
+          <ListItem button component={Link} to={menuOptions[4].route} disableRipple className={classes.buttonDrawerStyle}>
+            <ListItemText primary={menuOptions[4].title} />
           </ListItem> 
-          <ListItem button component={Link} to={'/books'} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary="Books" />
+          <ListItem button component={Link} to={menuOptions[5].route} disableRipple className={classes.buttonDrawerStyle} >
+            <ListItemText primary={menuOptions[5].title} />
           </ListItem> 
-          <ListItem button component={Link} to={'/blog'} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary="Blog" />
+          <ListItem button component={Link} to={menuOptions[6].route} disableRipple className={classes.buttonDrawerStyle} >
+            <ListItemText primary={menuOptions[6].title} />
           </ListItem> 
         </List>
         <Divider />
         <List>
-          <ListItem button component={Link} to={'/whoweare'} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary="About me" />
+          <ListItem button component={Link} to={menuOptions[7].route} disableRipple className={classes.buttonDrawerStyle} >
+            <ListItemText primary={menuOptions[7].title} />
           </ListItem> 
-          <ListItem button component={Link} to={'/contact'} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary="Contact" />
+          <ListItem button component={Link} to={menuOptions[8].route} disableRipple className={classes.buttonDrawerStyle} >
+            <ListItemText primary={menuOptions[8].title} />
           </ListItem> 
-          <ListItem button component={Link} to={'/login'} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary="Login" />
+          <ListItem button component={Link} to={menuOptions[9].route} disableRipple className={classes.buttonDrawerStyle} >
+            <ListItemText primary={menuOptions[9].title} />
           </ListItem> 
       </List>
       </div>

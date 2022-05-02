@@ -18,9 +18,9 @@ const useStyles = makeStyles( (mainTheme) => ({
   buttonStyle:{
     backgroundColor:"white",
     textTransform:"none",
-    fontSize: 11,
+    fontSize: 12,
     margin: "10px",
-    minWidth:"130px",
+    minWidth:"60px",
     "&:hover": {
       color:mainTheme.palette.primary.main,
       backgroundColor:"white",
@@ -30,7 +30,7 @@ const useStyles = makeStyles( (mainTheme) => ({
 
 const AlertDialog = ({open, onClose, severity, title, buttons, children}) => {
   
-  const classes = useStyles();  
+  const classes = useStyles();
   if (buttons === undefined){
     buttons={button1:"Ok"}
   }
@@ -71,41 +71,41 @@ const AlertDialog = ({open, onClose, severity, title, buttons, children}) => {
   }
 
   return (
-      <>
-      <Dialog 
-        open={open}
-        onClose={onClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-       <Box className={classes.iconBox} style={{color:'white'},{backgroundColor:bkColor}}>
-         <Box style={{height:10}} />
-           {selectIcon()}
-       </Box>
-       <DialogTitle id="alert-dialog-title" style={{backgroundColor:bkColor}}><Typography align="center" variant="h6" style={{color:'white'}}>{title}</Typography></DialogTitle>
-         <DialogContent style={{color:'white'},{backgroundColor:bkColor}}>
-           <DialogContentText id="alert-dialog-description">
-           <Typography align="center" variant="subtitle1" style={{ color: 'white' }}>
+    <>
+    <Dialog 
+      open={open}
+      onClose={onClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <Box className={classes.iconBox} style={{color:'white',backgroundColor:bkColor}}>
+      <Box style={{height:20}} />
+        {selectIcon()}
+      </Box>
+      <DialogTitle id="alert-dialog-title" style={{backgroundColor:bkColor, paddingTop:"0px", paddingBottom:"0px"}}><Typography align="center" variant="subtitle2" style={{color:'white'}}>{title}</Typography></DialogTitle>
+      <DialogContent style={{color:'white', paddingTop:"0px", paddingBottom:"0px", backgroundColor:bkColor}}>
+        <DialogContentText id="alert-dialog-description">
+          <Typography align="center" variant="caption" style={{ color: 'white' }}>
             {children}
-           </Typography> 
-           </DialogContentText>
-         </DialogContent>
-         
-         <DialogActions style={{color:'white'},{backgroundColor:bkColor}}>
-           <Grid container direction="row" xs={12} style={{textAlign:'center'}}>
-           {Object.keys(buttons).map( key => {
-             return (
-             <Grid item direction="row" xs={gridSpace} >  
-               <Button type="submit" className={classes.buttonStyle} style={{color:bkColor}} onClick={() => onClose (buttons[key])} variant="outlined" disableRipple>{buttons[key]}</Button>
-             </Grid>
-             )
-             
-           })}
-           </Grid>
-         </DialogActions>
+          </Typography> 
+        </DialogContentText>
+      </DialogContent>
+        
+      <DialogActions style={{color:'white', backgroundColor:bkColor, paddingTop:"0px", paddingBottom:"0px"}}>
+        <Grid container direction="row" xs={12} style={{textAlign:'center'}}>
+          {Object.keys(buttons).map( key => {
+            return (
+            <Grid item direction="row" xs={gridSpace} >  
+              <Button type="submit" className={classes.buttonStyle} style={{color:bkColor}} onClick={() => onClose (buttons[key])} variant="outlined" disableRipple>{buttons[key]}</Button>
+            </Grid>
+            )
+            
+          })}
+        </Grid>
+      </DialogActions>
 
-      </Dialog>
-      </>
+    </Dialog>
+    </>
     )
 }
 export default AlertDialog
