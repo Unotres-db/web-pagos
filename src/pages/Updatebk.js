@@ -183,7 +183,9 @@ export default function Update () {
     trailingAnnualDividendRate:"",
     trailingAnnualDividendYield:"",
     forwardPE:"", 
-    trailingPE:""
+    trailingPE:"",
+    totalCash:"",
+    totalDebt:""
   } 
 
   async function handleFinancials (i){
@@ -344,12 +346,13 @@ export default function Update () {
     // const companiesList = ['CVX','XOM'];
 
     // const companiesList = ['CVX','XOM','PBR','BP','SHEL','FB','AMZN','TSLA','GOOG','MSFT'];
-    const companiesList = ['MMM','AOS','ABT','ABBV','AFL','APD','ALB','AMCR','ADM','T','ATO','ADP','BDX','CAH','CAT','CB','CINF','CTAS','CLX','CL','ED','DOV','ECL','EMR','ESS','EXPD','FRT','BEN','GD','GPC','HRL','ITW','IBM','KMB','LEG','LIN','LOW','MKC','MCD','MDT','NEE','NUE','PNR','PBCT','PPG','PG','ROP','SPGI','SHW','SWK','SYY','TROW','TGT','VFC','GWW','WBA','WMT','WST','PBR','BP','SHEL','FB','AMZN','TSLA','GOOG','MSFT'];
+    // const companiesList = ['MMM','AOS','ABT','ABBV','AFL','APD','ALB','AMCR','ADM','T','ATO','ADP','BDX','CAH','CAT','CB','CINF','CTAS','CLX','CL','ED','DOV','ECL','EMR','ESS','EXPD','FRT','BEN','GD','GPC','HRL','ITW','IBM','KMB','LEG','LIN','LOW','MKC','MCD','MDT','NEE','NUE','PNR','PBCT','PPG','PG','ROP','SPGI','SHW','SWK','SYY','TROW','TGT','VFC','GWW','WBA','WMT','WST','PBR','BP','SHEL','FB','AMZN','TSLA','GOOG','MSFT'];
+    const companiesList = ['CVX','XOM','PCBT'];
 
     for (let i = 0; i < companiesList.length; i++) {
       console.log(i/companiesList.length);
       var companySymbol = companiesList[i];
-      var options = {
+      var financialEndPoint = {
         method: 'GET',
         url: 'https://yh-finance.p.rapidapi.com/stock/v2/get-financials',
         params: {symbol: companySymbol, region: 'US'},
@@ -358,8 +361,18 @@ export default function Update () {
             'x-rapidapi-key': '057477ec51mshd7404991ea3c956p1dc241jsn2fbfbe21b657'
         }
       };
- 
-      await axios.request(options).then(function (response) {
+      const statisticsEndPoint = {
+        method: 'GET',
+        url: 'https://yh-finance.p.rapidapi.com/stock/v3/get-statistics',
+        params:  {symbol: companySymbol, region: 'US'},
+        headers: {
+          'X-RapidAPI-Host': 'yh-finance.p.rapidapi.com',
+          'X-RapidAPI-Key': '057477ec51mshd7404991ea3c956p1dc241jsn2fbfbe21b657'
+        }
+      };
+      
+
+      await axios.request(financialEndPoint).then(function (response) {
         var yfData =  response.data;
         // const { meta: {symbol}} = yfData;
         // const { price: {marketCap: {raw}}} = yfData;
@@ -2739,29 +2752,30 @@ export default function Update () {
           financialQtrData[3].totalRevenue = yfData.incomeStatementHistoryQuarterly.incomeStatementHistory[3].totalRevenue.raw; 
         } else { financialQtrData[3].totalRevenue = 0 }
 
-        // if (yfData.incomeStatementHistoryQuarterly.incomeStatementHistory[3].costOfRevenue !== undefined && yfData.incomeStatementHistoryQuarterly.incomeStatementHistory[3].costOfRevenue !== null ){
-        //   financialQtrData[3].costOfRevenue = yfData.incomeStatementHistoryQuarterly.incomeStatementHistory[3].costOfRevenue.raw; 
-        // } else { financialQtrData[3].costOfRevenue = 0 }
 
-        // if (yfData.incomeStatementHistoryQuarterly.incomeStatementHistory[3].netIncome !== undefined && yfData.incomeStatementHistoryQuarterly.incomeStatementHistory[3].netIncome !== null ){
-        //   financialQtrData[3].netIncome = yfData.incomeStatementHistoryQuarterly.incomeStatementHistory[3].netIncome.raw; 
-        // } else { financialQtrData[3].netIncome = 0 }
-
-        // if (yfData.incomeStatementHistoryQuarterly.incomeStatementHistory[3].totalRevenue !== undefined && yfData.incomeStatementHistoryQuarterly.incomeStatementHistory[3].totalRevenue !== null ){
-        //   financialQtrData[3].totalRevenue = yfData.incomeStatementHistoryQuarterly.incomeStatementHistory[3].totalRevenue.raw; 
-        // } else { financialQtrData[3].totalRevenue = 0 }
-
-        console.log(financialQtrData[0]);
-        console.log(financialQtrData[1]);
-        console.log(financialQtrData[2]);
-        console.log(financialQtrData[3]);
-
-        handleCreate();
+        // console.log(financialQtrData[0]);
+        // console.log(financialQtrData[1]);
+        // console.log(financialQtrData[2]);
+        // console.log(financialQtrData[3]);
+    
       }).catch(function (error) {
         // alert (error);
         console.error(error);
       });
     
+      await axios.request(statisticsEndPoint).then(function (response) {
+        var yfStatisticsData =  response.data;
+        if (yfStatisticsData.financialData.totalCash !== undefined && yfStatisticsData.financialData.totalCash !== null ){
+          companyData.totalCash = yfStatisticsData.financialData.totalCash.raw;
+        }  
+        if (yfStatisticsData.financialData.totalDebt !== undefined && yfStatisticsData.financialData.totalDebt !== null ){
+          companyData.totalDebt = yfStatisticsData.financialData.totalDebt.raw;
+        } 
+      }).catch(function (error) {
+        // alert (error);
+        console.error(error);
+      });
+      handleCreate();
     } //for
   }
 

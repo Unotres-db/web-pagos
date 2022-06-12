@@ -151,7 +151,6 @@ export default function Books () {
         <Grid item direction="row" spacing={1} xs={12} sm={6} md={3} >
           <Paper elevation={9} className={classes.paperStyle} style={{minHeight:'30vh'}} >
             <Typography align="center" variant="subtitle2" className={classes.boxStyle}>{book.title}</Typography>              
-            {/* <Typography align="center" variant="subtitle2" className={classes.boxStyle} gutterBottom>Price: {Intl.NumberFormat('en-US',{style:'decimal'}).format(book.price)}</Typography> */}
 
             <Box className={classes.innerBoxStyle}> 
               <img src = {book.picture} alt="Book picture" className={classes.photoStyle} /> 
@@ -162,10 +161,6 @@ export default function Books () {
               <Button variant="outlined" size="small" disableRipple startIcon={<FileCopyIcon />} className={classes.buttonStyle} style={{justifyContent: 'center',width:'150px'}} onClick={() => handleBuyingBook(book)}>Buy Book</Button>
             </Box>
               <Grid container spacing={0} >
-
-                {/* <Grid item xs={6} style={{textAlign:'center'}}>
-                  <Button variant="outlined" size="small" disableRipple startIcon={<FileCopyIcon />} className={classes.buttonStyle} style={{justifyContent: 'center',width:'150px'}} onClick={() => handleBuyingBook(book)}>Buy Book</Button>
-                </Grid> */}
               </Grid>
           </Paper>
         </Grid>

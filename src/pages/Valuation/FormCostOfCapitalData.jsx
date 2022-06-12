@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Paper, Grid, TextField, InputAdornment,Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import { Paper, Grid, Tooltip, TextField, InputAdornment,Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useValuationForm from '../../hooks/useValuationForm';
@@ -77,7 +77,7 @@ export default function FormCostOfCapitalData ({assumptions, setAssumptions, cal
               </Grid>
               <Grid item xs={4} sm={4}>
               <TextField
-                label="Segment Beta"
+                label="Beta"
                 // label="Beta do Segmento"
                 size="small"
                 value={assumptions.companyBeta}

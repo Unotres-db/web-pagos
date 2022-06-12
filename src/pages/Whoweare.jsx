@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Grid, Paper, Typography} from '@material-ui/core';
+import { Grid, Paper, Typography, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import picMcl from '../assets/mcl.jpg';
@@ -29,6 +29,7 @@ const useStyles = makeStyles((mainTheme) => ({
   },
   photoStyle:{
     height: '90px',
+    width: "90px",
     textAlign: "center",
     display: "block",
     justifyContent: "center",
@@ -73,22 +74,23 @@ export default function Whoweare () {
           <Typography gutterBottom variant="subtitle1" align='center'>
             Martin Calcena Simões Lopes
           </Typography>
-            <img src = {picMcl} alt="Martin" className={classes.photoStyle} /> 
+            {/* <img src = {picMcl} alt="Martin" className={classes.photoStyle} />  */}
+            <Avatar src={picMcl} alt="Martin Calcena Picture"  className={classes.photoStyle} />
           <Typography gutterBottom variant="subtitle2">
             Education: BS in Business Administration and MBA in Finance
           </Typography>
           <Typography gutterBottom variant="subtitle2" align='justify'> 
-            27+ years of work experience in Business, Sales, Finance, DCF Analysis, Financial Modeling, Projects, Planning, Reports and New Products Development in companies such as Texaco, DPA (Nestlé) and AON Affinity, among others, working in Brazil, Paraguay and USA. 
+            27+ years of work experience in Business, Sales, Finance, Financial Modeling, Projects, FP&A and New Products Development in companies such as Chevron, Dairy Partners Americas (Nestlé & Fonterra JV), AON Affinity, among others, working in Brazil, Paraguay and USA. 
           </Typography>
             {/* <img src = {picTexaco} alt="Texaco" className={classes.logoStyle} /> 
             <img src = {picNestle} alt="Nestle" style = {{height:35}} /> 
             <img src = {picAon} alt="Aon" style = {{height:40}} /> 
             <img src = {picCsa} alt="Csa" className={classes.logoStyle} />  */}
           <Typography gutterBottom variant="subtitle2"  align='justify'>
-            Co-founder and CEO of Quo Fintech S.A. and ValuationWeb.
+            {/* Co-founder and CEO of Quo Valuation. */}
           </Typography>  
           <Typography gutterBottom variant="subtitle2" align='justify'>
-            Self-taught full stack developer working with HTML, CSS, Javascript, React Js, Node.js, SQL, Material Ui, Figma and Git. 
+            Self-taught full stack developer working with HTML, CSS, Javascript, React Js, Node.Js, Next Js, Typescript, SQL, Material Ui, Figma and Git. 
           </Typography> 
             <Grid container direction="row" alignItems="center" spacing={1}> 
               <Grid item xs={1}  />

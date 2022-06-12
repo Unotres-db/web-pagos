@@ -20,6 +20,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "react-search-autocomplete": "^6.1.1",
+    "react-to-pdf": "^0.0.14",
     "web-vitals": "^1.0.1",
     "yahoo-finance2": "^2.0.1"
   },

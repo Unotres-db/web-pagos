@@ -2,15 +2,17 @@ import React from 'react';
 import { BrowserRouter as Router , Route, Switch } from 'react-router-dom';
 
 import Blog from './pages/Blog';
-import Books from './pages/Books';
+// import Books from './pages/Books';
 import CompanyData from './pages/CompanyData';
 import Contact from './pages/Contact';
 import Valuation from './pages/Valuation';
+import Test from './pages/Valuation/Test';
 import DividendYield from './pages/DividendYield';
 import Graham from './pages/Graham';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Update from './pages/Update';
+// import { RenderingTest } from './pages/RenderingTest';
+// import Update from './pages/Update';
 import Updatebk from './pages/Updatebk';
 import Whoweare from './pages/Whoweare';
 
@@ -26,13 +28,13 @@ export default function Routes() {
         <Route path = "/dividend-yield" component = {DividendYield} />
         <Route path = "/graham" component = {Graham} />
         <Route path = "/valuation" component = {Valuation} />
-        <Route path = "/books" component = {Books} />
+        <Route path = "/books" component = {Test} />
         <Route path = "/blog" component = {Blog} />
         <Route path = "/who-we-are" component = {Whoweare} />
         <Route path = "/contact" component = {Contact} />
         <Route path = "/login" component = {Login} />
-        {/* <Route path = "/update" component = {Update} />
-        <Route path = "/updatebk" component = {Updatebk} /> */}
+        {/* <Route path = "/update" component = {Update} /> */}
+        <Route path = "/updatebk" component = {Updatebk} />
       </Switch>
     </Router>  
 

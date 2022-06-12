@@ -50,7 +50,7 @@ export default function CompanyData () {
   // const { data: financials, isLoading: isLoadingFinancials, error: errorFinancials } = useFetch(api.get('financials',{ headers :{Authorization: companyIdSearch,}}));
 
   useEffect ( ()=> {   // ok, funciona corretamente
-    console.count();
+    // console.count();
     if (allCompanies) {
       // Uses react-search-autocomplete parameters (name, id) not the state names such as shortName, companyId...
       let searchListCompanies = Array.from({ length: allCompanies.length } , () =>({id:"", shortName:"", name:""}));
@@ -105,6 +105,7 @@ export default function CompanyData () {
         </Paper>  
       </Grid>  
     </Grid>
+
     </>
   )
 }

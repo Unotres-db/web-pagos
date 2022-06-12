@@ -1,4 +1,6 @@
-export default function useValuation({assumptions, forecastedFinancialData, historicalFinancialData, historicalAverages, setHistoricalAverages, calculatedCostOfCapital, companyData, isEstimateFcffOnly }) {   //
+export default function useValuation({assumptions, forecastedFinancialData, historicalFinancialData, calculatedCostOfCapital, companyData, isEstimateFcffOnly }) {   //
+// +++
+  // export default function useValuation({assumptions, forecastedFinancialData, historicalFinancialData, historicalAverages, setHistoricalAverages, calculatedCostOfCapital, companyData, isEstimateFcffOnly }) {   //
   
   function round (num) {
     var m = Number((Math.abs(num) * 100).toPrecision(15));
@@ -21,75 +23,80 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
     else return 0
   }
 
-  function calcHistoricalAverages(){
-  
-    let averagesIndicators = {revenueCAGR: 0, opexCAGR: 0, interestCAGR: 0, otherCAGR: 0, capexCAGR:0, nwcCAGR:0, sumOfRevenue: 0, sumOfGrossProfit: 0, marginAvg: 0, sumOfIncomeBeforeTax: 0, sumOfIncomeTaxExpense: 0, taxRateAvg:0, cashFlowGrowth:0}
-
-    // if (  historicalFinancialData[0].totalRevenue !== undefined &&  historicalFinancialData[0].totalRevenue !== null ){ 
-      // CAGR = Compound Annual Growth Rate
-      
-      for (let i = 0; i < historicalFinancialData.length-1 ; i++) {
-
-        if (  historicalFinancialData[i].totalRevenue !== undefined &&  historicalFinancialData[i].totalRevenue !== null ){
-          averagesIndicators.sumOfRevenue = averagesIndicators.sumOfRevenue + historicalFinancialData[i].totalRevenue;
-        } else { averagesIndicators.sumOfRevenue = 0 }
-        averagesIndicators.sumOfGrossProfit = averagesIndicators.sumOfGrossProfit + historicalFinancialData[i].grossProfit;
-        averagesIndicators.sumOfIncomeBeforeTax = averagesIndicators.sumOfIncomeBeforeTax + historicalFinancialData[i].incomeBeforeTax;
-        averagesIndicators.sumOfIncomeTaxExpense = averagesIndicators.sumOfIncomeTaxExpense + historicalFinancialData[i].incomeTaxExpense;
-        }
-        if ( historicalFinancialData[3].totalRevenue !== undefined &&  historicalFinancialData[2].totalRevenue !== null ){
-          averagesIndicators.revenueCAGR = round((((historicalFinancialData[2].totalRevenue/historicalFinancialData[0].totalRevenue)**(1/2)) -1)*-100);
-        } else { averagesIndicators.revenueCAGR = 0 }
-        averagesIndicators.revenueCAGR = calcGrowthRate(historicalFinancialData[2].totalRevenue,historicalFinancialData[0].totalRevenue, 2);
-        averagesIndicators.marginAvg = round((averagesIndicators.sumOfGrossProfit/averagesIndicators.sumOfRevenue)*100);
-        averagesIndicators.opexCAGR = calcGrowthRate(historicalFinancialData[2].operatingExpense,historicalFinancialData[0].operatingExpense, 2) *-1;
-        averagesIndicators.interestCAGR = calcGrowthRate(historicalFinancialData[2].interestExpense,historicalFinancialData[0].interestExpense, 2)
-        averagesIndicators.otherCAGR = calcGrowthRate(historicalFinancialData[2].other,historicalFinancialData[0].other,2)
-        averagesIndicators.taxRateAvg =  round((averagesIndicators.sumOfIncomeTaxExpense/averagesIndicators.sumOfIncomeBeforeTax)*-100);
-        averagesIndicators.capexCAGR = calcGrowthRate(historicalFinancialData[2].capitalExpenditures,historicalFinancialData[0].capitalExpenditures, 2)
-        averagesIndicators.nwcCAGR = calcGrowthRate(historicalFinancialData[2].workingCapitalChanges,historicalFinancialData[0].workingCapitalChanges, 2);
-        averagesIndicators.cashFlowCAGR = calcGrowthRate(historicalFinancialData[2].cashFlow,historicalFinancialData[0].cashFlow, 2);
-
-        setHistoricalAverages(prevState => ({...prevState, 
-          revenueGrowth:averagesIndicators.revenueCAGR, 
-          marginTarget:averagesIndicators.marginAvg,
-          opexGrowth:averagesIndicators.opexCAGR,
-          interestGrowth:averagesIndicators.interestCAGR,
-          otherGrowth:averagesIndicators.otherCAGR,
-          taxRate:averagesIndicators.taxRateAvg,
-          capexGrowth:averagesIndicators.capexCAGR,
-          nwcGrowth:averagesIndicators.nwcCAGR,
-          cashFlowGrowth:averagesIndicators.cashFlowCAGR,
-
-        }));
-      // setAssumptions(prevState => ({...prevState, 
-      //   revenueGrowth:averagesIndicators.revenueCAGR, 
-      //   marginTarget:averagesIndicators.marginAvg,
-      //   opexGrowth:averagesIndicators.opexCAGR,
-      //   interestGrowth:averagesIndicators.interestCAGR,
-      //   otherGrowth:averagesIndicators.otherCAGR,
-      //   taxRate:averagesIndicators.taxRateAvg,
-      //   capexGrowth:averagesIndicators.capexCAGR,
-      //   nwcGrowth:averagesIndicators.nwcCAGR
-      // }));
-  // }
-    // console.log(historicalAverages) ;
-  }
-
-  function calcCostOfCapital (){
-    // Note: uses CAPM (Capital Assets Pricing Model) formulas
+  function calcTaxRate(){
     if (historicalFinancialData){
       let taxFactor = 0;
       if (assumptions.taxRate > 0) {
         taxFactor = (100-assumptions.taxRate)/100
-      } else {
-          taxFactor = (100-historicalAverages.taxRate)/100
+        return taxFactor
+      } 
+      let sumOfIncomeBeforeTax = 0
+      let sumOfIncomeTaxExpense = 0;
+      let calculatedTaxRate = 0;
+      for (let i = 0; i < historicalFinancialData.length-1 ; i++) {
+        sumOfIncomeBeforeTax = sumOfIncomeBeforeTax + historicalFinancialData[i].incomeBeforeTax;
+        sumOfIncomeTaxExpense = sumOfIncomeTaxExpense + historicalFinancialData[i].incomeTaxExpense;
+      } 
+      calculatedTaxRate=((sumOfIncomeTaxExpense/sumOfIncomeBeforeTax)*-100);
+      if (calculatedTaxRate != 0) {
+        return (100-calculatedTaxRate)/100 
       }
-      const debtRatio = (historicalFinancialData[0].longTermDebt + historicalFinancialData[0].shortLongTermDebt)/(historicalFinancialData[0].longTermDebt + historicalFinancialData[0].shortLongTermDebt + companyData.marketCap)
-      let ke = round((parseFloat(assumptions.riskFreeReturn/100) + (assumptions.companyBeta*(parseFloat(assumptions.marketReturn/100)-parseFloat(assumptions.riskFreeReturn/100))))*100);
-      let calculatedWacc = round((assumptions.costOfDebt * parseFloat(taxFactor) * parseFloat(debtRatio)) + (ke * parseFloat(1 - debtRatio)));
+      return 0.70
+    }
+  }
+
+  function calcHistoricalAverages(){
+  // Note: CAGR = Compound Annual Growth Rate
+    // let averagesIndicators = {revenueCAGR: 0, opexCAGR: 0, interestCAGR: 0, otherCAGR: 0, capexCAGR:0, nwcCAGR:0, sumOfRevenue: 0, sumOfGrossProfit: 0, marginAvg: 0, sumOfIncomeBeforeTax: 0, sumOfIncomeTaxExpense: 0, taxRateAvg:0, cashFlowGrowth:0}
+
+    // if ( historicalFinancialData[0].totalRevenue !== undefined &&  historicalFinancialData[0].totalRevenue !== null ){ 
+    //   for (let i = 0; i < historicalFinancialData.length-1 ; i++) {
+    //     if (  historicalFinancialData[i].totalRevenue !== undefined &&  historicalFinancialData[i].totalRevenue !== null ){
+    //       averagesIndicators.sumOfRevenue = averagesIndicators.sumOfRevenue + historicalFinancialData[i].totalRevenue;
+    //     } else { averagesIndicators.sumOfRevenue = 0 }
+    //     averagesIndicators.sumOfGrossProfit = averagesIndicators.sumOfGrossProfit + historicalFinancialData[i].grossProfit;
+    //     averagesIndicators.sumOfIncomeBeforeTax = averagesIndicators.sumOfIncomeBeforeTax + historicalFinancialData[i].incomeBeforeTax;
+    //     averagesIndicators.sumOfIncomeTaxExpense = averagesIndicators.sumOfIncomeTaxExpense + historicalFinancialData[i].incomeTaxExpense;
+    //   }
+    //     if ( historicalFinancialData[3].totalRevenue !== undefined &&  historicalFinancialData[2].totalRevenue !== null ){
+    //       averagesIndicators.revenueCAGR = round((((historicalFinancialData[2].totalRevenue/historicalFinancialData[0].totalRevenue)**(1/2)) -1)*-100);
+    //     } else { averagesIndicators.revenueCAGR = 0 }
+    //     averagesIndicators.revenueCAGR = calcGrowthRate(historicalFinancialData[2].totalRevenue,historicalFinancialData[0].totalRevenue, 2);
+    //     averagesIndicators.marginAvg = round((averagesIndicators.sumOfGrossProfit/averagesIndicators.sumOfRevenue)*100);
+    //     averagesIndicators.opexCAGR = calcGrowthRate(historicalFinancialData[2].operatingExpense,historicalFinancialData[0].operatingExpense, 2) *-1;
+    //     averagesIndicators.interestCAGR = calcGrowthRate(historicalFinancialData[2].interestExpense,historicalFinancialData[0].interestExpense, 2)
+    //     averagesIndicators.otherCAGR = calcGrowthRate(historicalFinancialData[2].other,historicalFinancialData[0].other,2)
+    //     averagesIndicators.taxRateAvg =  round((averagesIndicators.sumOfIncomeTaxExpense/averagesIndicators.sumOfIncomeBeforeTax)*-100);
+    //     averagesIndicators.capexCAGR = calcGrowthRate(historicalFinancialData[2].capitalExpenditures,historicalFinancialData[0].capitalExpenditures, 2)
+    //     averagesIndicators.nwcCAGR = calcGrowthRate(historicalFinancialData[2].workingCapitalChanges,historicalFinancialData[0].workingCapitalChanges, 2);
+    //     averagesIndicators.cashFlowCAGR = calcGrowthRate(historicalFinancialData[2].cashFlow,historicalFinancialData[0].cashFlow, 2);
+    // }
+
+    // historicalAverages.revenueGrowth = averagesIndicators.revenueCAGR
+    // historicalAverages.marginTarget = averagesIndicators.marginAvg
+    // historicalAverages.opexGrowth = averagesIndicators.opexCAGR
+    // historicalAverages.interestGrowth = averagesIndicators.interestCAGR
+    // historicalAverages.otherGrowth = averagesIndicators.otherCAGR
+    // historicalAverages.taxRate = averagesIndicators.taxRateAvg
+    // historicalAverages.capexGrowth = averagesIndicators.capexCAGR
+    // historicalAverages.nwcGrowth = averagesIndicators.nwcCAGR
+    // historicalAverages.cashFlowGrowth = averagesIndicators.cashFlowCAGR
+  }
+
+  function calcCostOfCapital (){   // nao usa o % da media...
+    // Note: uses CAPM (Capital Assets Pricing Model) formulas: Ke = Rf + beta * ( Rm - Rf) ; Kd = Cost of debt * (100% - Tax Rate)
+    let ke = 0;
+    let calculatedWacc = 0;
+    if (historicalFinancialData && companyData.marketCap > 0){
+      // const debtRatio = (historicalFinancialData[0].longTermDebt + historicalFinancialData[0].shortLongTermDebt)/(historicalFinancialData[0].longTermDebt + historicalFinancialData[0].shortLongTermDebt + companyData.marketCap)
+      const debtRatio = (companyData.totalDebt)/(companyData.totalDebt + companyData.marketCap)
+      // console.log( calcTaxRate());
+      ke = round((parseFloat(assumptions.riskFreeReturn/100) + (assumptions.companyBeta*(parseFloat(assumptions.marketReturn/100)-parseFloat(assumptions.riskFreeReturn/100))))*100);
+      // let kd = round((assumptions.costOfDebt * parseFloat(calcTaxRate())));
+       calculatedWacc = round((assumptions.costOfDebt * parseFloat(calcTaxRate()) * parseFloat(debtRatio)) + (ke * parseFloat(1 - debtRatio)));
       return {costOfEquity:ke, costOfCapital:calculatedWacc}
     }
+    return {costOfEquity:ke, costOfCapital:calculatedWacc}
   };
   
   function calcForecastedCashFlow () {
@@ -176,7 +183,12 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
               estFinancialDataArr[0].workingCapitalChanges = historicalFinancialData[0].workingCapitalChanges*(1 + parseFloat(assumptions.nwcGrowth/100));
           }  
           estFinancialDataArr[0].cashFlow = round(estFinancialDataArr[0].ebit - estFinancialDataArr[0].depreciation + estFinancialDataArr[0].incomeTaxExpense + estFinancialDataArr[0].capitalExpenditures + estFinancialDataArr[0].workingCapitalChanges);
-          estFinancialDataArr[0].discountedCashFlow = (estFinancialDataArr[0].cashFlow)/(1+parseFloat(calculatedCostOfCapital.costOfCapital/100));
+          if (estFinancialDataArr[0].discountedCashFlow != 0){
+            estFinancialDataArr[0].discountedCashFlow = (estFinancialDataArr[0].cashFlow)/(1+parseFloat(calculatedCostOfCapital.costOfCapital/100));
+
+          } else {
+            estFinancialDataArr[0].discountedCashFlow=0
+          }
 
           for (let i = 1; i < estFinancialDataArr.length ; i++){
             estFinancialDataArr[i].year = estFinancialDataArr[i-1].year + 1 ;
@@ -200,7 +212,12 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
             estFinancialDataArr[i].capitalExpenditures = estFinancialDataArr[i-1].capitalExpenditures * (1 + parseFloat(assumptions.capexGrowth/100));
             estFinancialDataArr[i].workingCapitalChanges = estFinancialDataArr[i-1].workingCapitalChanges * (1 + parseFloat(assumptions.nwcGrowth/100));
             estFinancialDataArr[i].cashFlow = round(estFinancialDataArr[i].ebit - estFinancialDataArr[i].depreciation + estFinancialDataArr[i].incomeTaxExpense + estFinancialDataArr[i].capitalExpenditures + estFinancialDataArr[i].workingCapitalChanges);
-            estFinancialDataArr[i].discountedCashFlow = estFinancialDataArr[i].cashFlow/(Math.pow((1+parseFloat(calculatedCostOfCapital.costOfCapital/100)),(i+1))); 
+            if ( estFinancialDataArr[i].cashFlow != 0){
+              estFinancialDataArr[i].discountedCashFlow = estFinancialDataArr[i].cashFlow/(Math.pow((1+parseFloat(calculatedCostOfCapital.costOfCapital/100)),(i+1))); 
+            } else{
+              estFinancialDataArr[i].discountedCashFlow = 0; 
+
+            }
           }
         }
       estFinancialDataArr.reverse(); // to show array in descending order (default option)
@@ -213,7 +230,7 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
     if (forecastedFinancialData && assumptions.cashFlowDiscretePeriod !==undefined && assumptions.cashFlowDiscretePeriod !==null ){
       // alert(assumptions.cashFlowDiscretePeriod);
       if (historicalFinancialData[0].cashFlow !== null && historicalFinancialData[0].cashFlow !== undefined){
-      let valuationResultsArr = { cashFlowAvgGrowth:0, sumOfCashFlowPresentValue:0, perpetuityValue:0, perpetuityPresentValue:0, enterpriseValue:0, cash:0, debt:0, equityValue:0, sharesOutstanding:0, targetStockPrice:0, marketCap:0 };
+      let valuationResultsArr = {valuationId:"none", cashFlowAvgGrowth:0, sumOfCashFlowPresentValue:0, perpetuityValue:0, perpetuityPresentValue:0, enterpriseValue:0, cash:0, debt:0, equityValue:0, sharesOutstanding:0, targetStockPrice:0, marketCap:0, published:"", publishedDate:""};;
       if (assumptions.cashFlowDiscretePeriod !=null && assumptions.cashFlowDiscretePeriod !=undefined && assumptions.cashFlowDiscretePeriod !=="" && assumptions.cashFlowDiscretePeriod > 0) {
         forecastedFinancialData.map ( (currElement) => (
           valuationResultsArr.sumOfCashFlowPresentValue = valuationResultsArr.sumOfCashFlowPresentValue + currElement.discountedCashFlow
@@ -223,10 +240,16 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
         }
         valuationResultsArr.perpetuityPresentValue = valuationResultsArr.perpetuityValue/(Math.pow((1+parseFloat(calculatedCostOfCapital.costOfCapital/100)),(assumptions.cashFlowDiscretePeriod))); 
         valuationResultsArr.enterpriseValue = valuationResultsArr.sumOfCashFlowPresentValue + valuationResultsArr.perpetuityPresentValue;
-        valuationResultsArr.cash = historicalFinancialData[0].cash;
-        valuationResultsArr.debt = historicalFinancialData[0].longTermDebt + historicalFinancialData[0].shortLongTermDebt;
-        valuationResultsArr.equityValue = valuationResultsArr.enterpriseValue + historicalFinancialData[0].cash - historicalFinancialData[0].longTermDebt - historicalFinancialData[0].shortLongTermDebt;
-        valuationResultsArr.sharesOutstanding = companyData.sharesOutstanding*1000;
+        // valuationResultsArr.cash = historicalFinancialData[0].cash;
+        // valuationResultsArr.debt = historicalFinancialData[0].longTermDebt + historicalFinancialData[0].shortLongTermDebt;
+        valuationResultsArr.cash = companyData.totalCash;
+        valuationResultsArr.debt = companyData.totalDebt;
+        if (valuationResultsArr.enterpriseValue > 0){
+          valuationResultsArr.equityValue = valuationResultsArr.enterpriseValue + valuationResultsArr.cash - valuationResultsArr.debt;
+        }
+        if (companyData.sharesOutstanding > 0){
+          valuationResultsArr.sharesOutstanding = companyData.sharesOutstanding*1000;
+        }
         valuationResultsArr.marketCap = companyData.marketCap;
         if (valuationResultsArr.equityValue > 0){
           valuationResultsArr.targetStockPrice = (valuationResultsArr.equityValue)/companyData.sharesOutstanding*1000;

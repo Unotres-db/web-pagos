@@ -1,8 +1,8 @@
-import React, { useState, useEffect }  from 'react';
+import React, { useState }  from 'react';
 
 import { Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel, Button, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import TablePaginationActions from './TablePaginationActions';
+import TablePaginationActions from '../../components/TablePaginationActions';
 
 const useStyles = makeStyles( (mainTheme) => ({
   table: {
@@ -35,14 +35,37 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
 }));
 
+
+// array.sort(function(a, b){
+//   var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
+//   if (nameA < nameB) 
+//     return -1;
+//   if (nameA > nameB)
+//     return 1;
+//   return 0; 
+//   }
+//   );
+
 function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
+  if (typeof a[orderBy] === 'string' || a instanceof String ) {
+    // console.log("entrou com Lowercase Test")
+    var stringA = a[orderBy].toLowerCase(), stringB = b[orderBy].toLowerCase()
+    if (stringB < stringA) {
+      return -1;
+    }
+    if (stringB > stringA) {
+      return 1;
+    }
+    return 0;
+  } else {
+      if (b[orderBy] < a[orderBy]) {
+        return -1;
+      }
+      if (b[orderBy] > a[orderBy]) {
+        return 1;
+      }
+      return 0;
+    }
 }
 
 function getComparator(order, orderBy) {
@@ -116,15 +139,15 @@ export default function TableDividendYield ({companiesList}) {
             {/* </Tooltip> */}
           </TableRow>
         </TableHead>
+        
         <TableBody>
+          
           {(rowsPerPage > 0 ? 
+          
             companiesList.slice().sort(getComparator(orderDirection, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : companiesList
           ).map((company) => (
             <TableRow key={company.companyId}>
-              {/* <TableCell component="th" scope="row" className={classes.TableRows}>
-                <Button variant="text" size="small" disableRipple className={classes.ButtonTable} >{company.shortName}</Button>
-              </TableCell> */}
               <TableCell align="left" className={classes.TableRows} style={{width:"50%",position:"sticky", left:0,  paddingLeft:"6px", paddingRight:"0px", backgroundColor:"white"}} >{company.shortName}</TableCell>  
               <TableCell align="right" className={classes.TableRows} >{company.companyId}</TableCell>
               <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(company.dividendRate)}</TableCell>

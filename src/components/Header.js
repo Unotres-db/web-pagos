@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { AppBar, Toolbar, IconButton, Box, Button, Hidden, Drawer, List, ListItem, ListItemText, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import MenuIcon from '@material-ui/icons/Menu';
-import mainLogo from '../assets/logovw.svg';
+import mainLogo from '../assets/logo-valuationsweb-min.svg';
+// import mainLogo from '../assets/logo-valuationsweb2.svg';
+// import mainLogo from '../assets/logovw.svg';
+// import mainLogo from '../assets/quo.png';
 
 const useStyles = makeStyles( (mainTheme) => ({
 buttonMenuStyle: {
@@ -30,6 +33,7 @@ buttonDrawerStyle: {
 },
 logoStyle: {
   position: "relative",
+  height: "45px",
   // padding: "24px",
   top:"2px"
 },
@@ -56,7 +60,7 @@ drawerContainer: {
 }
 })); 
 
-export default function Header() {
+function Header() {
 
   const classes = useStyles();
   const [ isDrawerOpen, setIsDrawerOpen ] = useState(false);
@@ -117,7 +121,7 @@ export default function Header() {
     <Toolbar style={{minWidth:'360',height: '64px',paddingLeft:'24px'}}>
 
       <Link to={menuOptions[0].route}>
-        <img src = {mainLogo} alt="Logo" className={classes.logoStyle} style={{ height: '50px'}}/>
+        <img src = {mainLogo} alt="Logo" className={classes.logoStyle} />
       </Link>
       <Hidden smDown>
         <Box style={{ width: '20px' }}/>    
@@ -197,3 +201,4 @@ export default function Header() {
   </>
   )
 }
+export default memo(Header)

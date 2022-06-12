@@ -32,22 +32,17 @@ TableValuationPrice:{
 TableCurrentPrice:{
   color: "white",
   backgroundColor: mainTheme.palette.tertiary.main, //mainTheme.palette.primary.main,
-  fontSize: 11
+  fontSize: 11,
 },
 }));
 
 export default function TableValuation ({valuation, historicalFinancialData, calculatedCostOfCapital, assumptions, companyData}){
 
+  const classes = useStyles();
   const [ firstYear, setFirstYear ] = useState(0);
   const [ finalYear, setFinalYear ] = useState(0);
-  const classes = useStyles();
-  // console.count();
-  // useEffect (()=> {
-  //   if (historicalFinancialData){
-  //     setFirstYear(historicalFinancialData[0].year + 1)
-  //     setFinalYear (historicalFinancialData[0].year + assumptions.cashFlowDiscretePeriod) ;
-  //   } 
-  // },[]);  
+  const priceRange = `${Intl.NumberFormat('en-US',{style:'currency',currency:'USD' }).format(companyData.fiftyTwoWeekLow)} - ${Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(companyData.fiftyTwoWeekHigh)}`
+
 
   useEffect (()=> {
     if (historicalFinancialData){
@@ -63,7 +58,7 @@ export default function TableValuation ({valuation, historicalFinancialData, cal
     <Table className={classes.table} size="small" aria-label="stycky header">
       <TableHead className={classes.TableHeader}>
         <TableRow>
-          <TableCell className={classes.TableValuationPrice} style={{fontSize: 12}}align="left">Valuation</TableCell>
+          <TableCell className={classes.TableValuationPrice} style={{fontSize: 12}}align="left">Valuation (Us$ billions)</TableCell>
           <TableCell className={classes.TableValuationPrice} align="right"></TableCell>
         </TableRow>
       </TableHead>
@@ -89,15 +84,19 @@ export default function TableValuation ({valuation, historicalFinancialData, cal
           <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(valuation.perpetuityPresentValue)}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell align="left" className={classes.TableRowsSubtitle}>Enterprise Value </TableCell>
+          <TableCell align="left" className={classes.TableRowsSubtitle}>Enterprise Value</TableCell>
           <TableCell align="right" className={classes.TableRowsSubtitle} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(valuation.enterpriseValue)}</TableCell>
         </TableRow>
+        {/* <TableRow>
+          <TableCell align="left" className={classes.TableCurrentPrice}>Current Enterprise Value</TableCell>
+          <TableCell align="right" className={classes.TableCurrentPrice} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(companyData.marketCap - valuation.cash + valuation.debt)}</TableCell>
+        </TableRow> */}
         <TableRow>
-          <TableCell align="left" className={classes.TableRows}>(+) Cash</TableCell>
+          <TableCell align="left" className={classes.TableRows}>(+) Cash and Short Term Investments</TableCell>
           <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(valuation.cash)}</TableCell>   
         </TableRow>
         <TableRow>
-          <TableCell align="left" className={classes.TableRows}>(-) Debt</TableCell>
+          <TableCell align="left" className={classes.TableRows}>(-) Debt and Leasing Obligations</TableCell>
           <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(valuation.debt)}</TableCell>
         </TableRow>
         <TableRow>
@@ -105,20 +104,30 @@ export default function TableValuation ({valuation, historicalFinancialData, cal
           <TableCell align="right" className={classes.TableValuationPrice} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(valuation.equityValue)}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell align="left" className={classes.TableCurrentPrice}>Current Market Capitalization</TableCell>
-          <TableCell align="right" className={classes.TableCurrentPrice} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(companyData.marketCap)}</TableCell>
-        </TableRow>
-        <TableRow>
           <TableCell align="left" className={classes.TableValuationPrice}>Target Stock Price </TableCell>
           <TableCell align="right" className={classes.TableValuationPrice} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(valuation.targetStockPrice)}</TableCell>
         </TableRow>
         <TableRow>
+          <TableCell align="left" className={classes.TableCurrentPrice}>Current Equity Value</TableCell>
+          <TableCell align="right" className={classes.TableCurrentPrice} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(companyData.marketCap)}</TableCell>
+        </TableRow>
+
+        <TableRow>
           <TableCell className={classes.TableCurrentPrice} align="left">Current Stock Price</TableCell>
           <TableCell align="right" className={classes.TableCurrentPrice} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(companyData.regularMarketPrice)}</TableCell>
         </TableRow>
+        {/* <TableRow>
+          <TableCell className={classes.TableCurrentPrice} align="left">52 Week Price Range</TableCell>
+          <TableCell align="right" className={classes.TableCurrentPrice} style={{ padding:"0px", marginRight:"5px", fontSize:9}}>{priceRange}</TableCell>
+        </TableRow> */}
         <TableRow>
           <TableCell align="left" className={classes.TableRows}>Total Shares Outstanding (millions)</TableCell>
-          <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(companyData.sharesOutstanding)}</TableCell>
+          { companyData.sharesOutstanding ? <>
+            <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(companyData.sharesOutstanding)}</TableCell>
+          </>: <>
+            <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(0)}</TableCell>
+          </>
+        }
         </TableRow>
       </TableBody>
     </Table>
