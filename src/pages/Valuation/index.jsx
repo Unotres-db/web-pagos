@@ -311,7 +311,7 @@ useEffect (()=> {
               setIsEstimateFcffOnly = {setIsEstimateFcffOnly}
               isDisabledChkBox = {isDisabledChkBox}
             />
-          ) : 0 }  
+          ) : null }  
 
           {  ! isEstimateFcffOnly ? <div>
           <Box style={{height:"5px"}}/>  
@@ -320,7 +320,7 @@ useEffect (()=> {
               assumptions = {assumptions} 
               setAssumptions = {setAssumptions}
             />
-          ) : 0 }
+          ) : null }
           </div> : <div> 
           <Box style={{height:"5px"}}/>    
           <FormCashFlowData
@@ -330,13 +330,13 @@ useEffect (()=> {
           </div>
           }
           <Box style={{height:"5px"}}/>
-          { ! isLoading ? (
-          <FormCostOfCapitalData 
-            assumptions = {assumptions} 
-            setAssumptions = {setAssumptions}
-            calculatedCostOfCapital = {calculatedCostOfCapital}
-          />
-          ) : 0 }
+          { ! isLoading ? <>
+            <FormCostOfCapitalData 
+              assumptions = {assumptions} 
+              setAssumptions = {setAssumptions}
+              calculatedCostOfCapital = {calculatedCostOfCapital}
+            />
+          </> : null }
         </Paper>
       </Grid>  
 
@@ -417,7 +417,7 @@ useEffect (()=> {
               />
           : null}
           </Paper>
-          </div> :0} 
+          </div> : null} 
         </Paper>
       </Grid>
     </Grid>

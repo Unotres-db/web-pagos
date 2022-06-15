@@ -41,7 +41,7 @@ export default function TableValuation ({valuation, historicalFinancialData, cal
   const classes = useStyles();
   const [ firstYear, setFirstYear ] = useState(0);
   const [ finalYear, setFinalYear ] = useState(0);
-  const priceRange = `${Intl.NumberFormat('en-US',{style:'currency',currency:'USD' }).format(companyData.fiftyTwoWeekLow)} - ${Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(companyData.fiftyTwoWeekHigh)}`
+  // const priceRange = `${Intl.NumberFormat('en-US',{style:'currency',currency:'USD' }).format(companyData.fiftyTwoWeekLow)} - ${Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(companyData.fiftyTwoWeekHigh)}`
 
 
   useEffect (()=> {

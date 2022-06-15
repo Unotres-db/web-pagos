@@ -127,6 +127,7 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
         } else {
           estFinancialDataArr[0].cashFlow = baseFcff * (1 + parseFloat(assumptions.cashFlowGrowthRate/100));
           estFinancialDataArr[0].discountedCashFlow = (estFinancialDataArr[0].cashFlow)/(1 + parseFloat(calculatedCostOfCapital.costOfCapital/100));
+
           for (let i = 1; i < estFinancialDataArr.length ; i++){
             estFinancialDataArr[i].year = estFinancialDataArr[i-1].year + 1 ;
             estFinancialDataArr[i].period = Math.abs(i-estFinancialDataArr.length)-1;
@@ -183,7 +184,8 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
               estFinancialDataArr[0].workingCapitalChanges = historicalFinancialData[0].workingCapitalChanges*(1 + parseFloat(assumptions.nwcGrowth/100));
           }  
           estFinancialDataArr[0].cashFlow = round(estFinancialDataArr[0].ebit - estFinancialDataArr[0].depreciation + estFinancialDataArr[0].incomeTaxExpense + estFinancialDataArr[0].capitalExpenditures + estFinancialDataArr[0].workingCapitalChanges);
-          if (estFinancialDataArr[0].discountedCashFlow != 0){
+          // ????
+          if (estFinancialDataArr[0].cashFlow != 0){
             estFinancialDataArr[0].discountedCashFlow = (estFinancialDataArr[0].cashFlow)/(1+parseFloat(calculatedCostOfCapital.costOfCapital/100));
 
           } else {

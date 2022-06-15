@@ -5,10 +5,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-
-
 import api from '../../services/api';
 import Header from '../../components/Header.js';
+import AlertDialog from '../../components/modals/AlertDialog';
+
 import MyProfile from './MyProfile';
 import OldTableMyValuationsList from './OldTableMyValuationsList';
 import TableMyValuationsList from './TableMyValuationsList';
@@ -27,8 +27,8 @@ const useStyles = makeStyles( (mainTheme) => ({
     },
     backgroundColor: mainTheme.palette.secondary.main,
     textTransform: "none",
-    width:"120px",
-    height: "30px",
+    width:"95px",
+    height:"30px",
     marginTop: "2px",
     marginLeft:"2px",
     "&:hover": {
@@ -80,6 +80,22 @@ const useStyles = makeStyles( (mainTheme) => ({
 export default function Home (){
   const classes = useStyles();
   const [ valuationsList, setValuationsList] = useState();
+  const [ isDialogOpen, setIsDialogOpen]= useState(false);
+  const [ dialogMessage,setDialogMessage ] = useState({severity:"",title:"",message:"",buttons:{}});
+
+  function handleDeleteAll (){
+    setDialogMessage({severity:"error", title:"Alert", message:"Are you sure you want to delete all valuations ?",buttons:{button1:"Cancel",button2:"Confirm"}})
+    setIsDialogOpen (true);
+  }
+
+
+  const handleDialogClose = (value) => {
+    setIsDialogOpen (false);
+    setDialogMessage({severity:"",title:"",message:"",buttons:{}});
+    if (value === "Confirm"){
+      alert ("delete all");
+    } 
+  }
 
   useEffect ( ()=> {
     api.get('valuations')
@@ -131,7 +147,7 @@ export default function Home (){
                   startIcon={<AddCircleIcon />} 
                   disableRipple
                   // onClick = {handleNewValuation} 
-                  >New Valuation 
+                  >New 
                 </Button>
                 <Button 
                   variant = "contained" 
@@ -139,7 +155,7 @@ export default function Home (){
                   className = {classes.buttonStyle} 
                   startIcon={<DeleteIcon />} 
                   disableRipple
-                  // onClick = {handleNewValuation} 
+                  onClick = {handleDeleteAll} 
                   >Delete All 
                 </Button>
 
@@ -148,8 +164,7 @@ export default function Home (){
             </Grid>
             <Box style={{height:"5px"}}/>
             { valuationsList ? <>
-              {/* <TestTable valuationsList = {valuationsList}/> */}
-              <TableMyValuationsList valuationsList = {valuationsList}/>
+              <TableMyValuationsList valuationsList = {valuationsList} />
             </>: null}
             
           </Paper>
@@ -168,6 +183,10 @@ export default function Home (){
     </Grid>
 
     <Grid container direction="column" alignItems="center" style= {{ minHeight: '5vh'}} />
+
+    <AlertDialog open={isDialogOpen} onClose={handleDialogClose} severity={dialogMessage.severity} title={dialogMessage.title} buttons={dialogMessage.buttons}>
+      {dialogMessage.message}
+    </AlertDialog>
     </>
   )
 }

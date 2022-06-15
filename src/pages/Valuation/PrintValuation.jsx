@@ -8,13 +8,14 @@ import TableHistoricalData from './TableHistoricalData';
 import FormBusinessData from './FormBusinessData';
 import FormCostOfcapitalData from './FormCostOfCapitalData';
 
-export default function PrintValuation({open, onClose}) {
-  // ver passagem de parametros
+export default function PrintValuation({isOpen, onClose}) {
+  console.log("entrou em Print");
+  // ver passagem de parametros desde companyInfo
   const ref = React.createRef();
   return (
     <>
     <Dialog 
-      open={open}
+      open={isOpen}
       onClose={onClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
@@ -24,15 +25,16 @@ export default function PrintValuation({open, onClose}) {
         <DialogContent style={{color:'white'}}>
           <DialogContentText id="alert-dialog-description">
             <div className="Post" ref={ref}>
-              <TableHistoricalData />
+              <Typography>Testeando Print</Typography>
+              {/* <TableHistoricalData />
               <FormBusinessData />
-              <FormCostOfcapitalData />
+              <FormCostOfcapitalData /> */}
             </div>
           </DialogContentText>
         </DialogContent>
       <DialogActions >
-        <Pdf targetRef={ref} filename="post.pdf">
-          {({ toPdf }) => <Button disableRipple onClick={toPdf}>Generar Archivo Pdf</Button>}
+        <Pdf targetRef={ref} filename="valuation.pdf">
+          {({ toPdf }) => <Button disableRipple onClick={toPdf}>Create Pdf File</Button>}
         </Pdf>
       </DialogActions>
     </Dialog>  

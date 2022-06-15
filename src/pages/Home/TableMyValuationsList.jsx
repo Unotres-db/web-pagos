@@ -7,7 +7,7 @@ import PublishIcon from '@mui/icons-material/Publish';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-
+import AlertDialog from '../../components/modals/AlertDialog';
 import TablePaginationActions from '../../components/TablePaginationActions';
 
 const useStyles = makeStyles( (mainTheme) => ({
@@ -108,6 +108,23 @@ export default function TableMyValuationsList ({valuationsList}) {
   const [ rowsPerPage, setRowsPerPage ] = useState(12);
   const [ orderDirection, setOrderDirection ] = useState('desc');
   const [ orderBy, setOrderBy ] = useState('updated_at');
+  const [ isDialogOpen, setIsDialogOpen]= useState(false);
+  const [ dialogMessage,setDialogMessage ] = useState({severity:"",title:"",message:"",buttons:{}});
+
+  function handleDelete (valuationId){
+    setDialogMessage({severity:"error", title:"Alert", message:"Are you sure you want to delete this valuation ?",buttons:{button1:"Cancel",button2:"Confirm"}})
+    setIsDialogOpen (true);
+  }
+
+  const handleDialogClose = (value) => {
+    setIsDialogOpen (false);
+    setDialogMessage({severity:"",title:"",message:"",buttons:{}});
+    if (value === "Confirm"){
+      alert ("delete this valuation");
+    } 
+  }
+
+
 
   const handleRequestSort = (event, property) => {
     const isAscending = (orderBy === property && orderDirection === 'asc');
@@ -154,6 +171,7 @@ export default function TableMyValuationsList ({valuationsList}) {
     ]
 
   return (
+    <>
     <TableContainer component={Paper} >
       <Table className={classes.table} size="small" aria-label="stycky header" >
         <TableHead className={classes.TableHeader}>
@@ -182,6 +200,7 @@ export default function TableMyValuationsList ({valuationsList}) {
               <TableCell className={classes.TableTitle} style={{width:"12%", paddingLeft:"5px", paddingRight:"5px"}} align="right">Target Price</TableCell>
               <TableCell className={classes.TableTitle} style={{width:"14%", paddingLeft:"5px", paddingRight:"15px"}} align="right">Equity Value ($ b)</TableCell>
               <TableCell className={classes.TableTitle} style={{width:"14%", paddingLeft:"5px", paddingRight:"5px"}} align="right">Cost of Capital</TableCell>
+              <TableCell className={classes.TableTitle} style={{width:"7%", paddingLeft:"5px", paddingRight:"5px"}} align="right"></TableCell>
               {/* <TableCell className={classes.TableTitle} style={{width:"16%", paddingLeft:"20px", paddingRight:"20px"}} align="center">Actions</TableCell> */}
 
           </TableRow>
@@ -213,7 +232,14 @@ export default function TableMyValuationsList ({valuationsList}) {
               </TableCell>
               <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
                 <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(currValuation.costOfCapital/100)}</Button>
-              </TableCell>   
+              </TableCell>  
+              <TableCell>
+                <Tooltip title={`Delete this ${currValuation.shortName} Valuation`}>
+                  <IconButton className={classes.iconButtonStyle} click={(e) => (handleDelete (currValuation.valuationId))} disableRipple size="small" aria-label="delete">
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </TableCell>  
               {/* <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}> 
                 <Button disableRipple fullWidth="false" className = {classes.buttonStyle}  startIcon={<DeleteIcon />} >Delete</Button>
               </TableCell> */}
@@ -242,7 +268,7 @@ export default function TableMyValuationsList ({valuationsList}) {
             </TableRow>
           ))}
           {emptyRows > 0 && (
-            <TableRow style={{ height: 28.72 * emptyRows }}>
+            <TableRow style={{ height: 19.25 * emptyRows }}>
               <TableCell colSpan={6} />
             </TableRow>
           )}
@@ -271,5 +297,9 @@ export default function TableMyValuationsList ({valuationsList}) {
         </TableFooter>
       </Table>
     </TableContainer>
+    <AlertDialog open={isDialogOpen} onClose={handleDialogClose} severity={dialogMessage.severity} title={dialogMessage.title} buttons={dialogMessage.buttons}>
+      {dialogMessage.message}
+    </AlertDialog>
+    </>
   );
 }

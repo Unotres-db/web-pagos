@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Button, Typography, Grid } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import WarningIcon from '@material-ui/icons/Warning';
-import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles( (mainTheme) => ({
   iconBox:{
@@ -29,8 +29,7 @@ const useStyles = makeStyles( (mainTheme) => ({
 }))
 
 const AlertDialog = ({open, onClose, severity, title, buttons, children}) => {
-  
-  const classes = useStyles();
+  console.log(buttons);
   if (buttons === undefined){
     buttons={button1:"Ok"}
   }
@@ -44,13 +43,13 @@ const AlertDialog = ({open, onClose, severity, title, buttons, children}) => {
   let numberOfButtons = Object.keys(buttons).length;
   let gridSpace=0
   if (numberOfButtons === 1) {
-    gridSpace=12
+    gridSpace = 12
   } else if (numberOfButtons === 2){
-    gridSpace=6
+    gridSpace = 6
   } else if (numberOfButtons === 3) {
-    gridSpace=4
+    gridSpace = 4
   } else {
-    gridSpace=3
+    gridSpace = 3
   }
 
   function selectIcon (){
@@ -70,6 +69,7 @@ const AlertDialog = ({open, onClose, severity, title, buttons, children}) => {
     }
   }
 
+  const classes = useStyles();
   return (
     <>
     <Dialog 
@@ -95,13 +95,16 @@ const AlertDialog = ({open, onClose, severity, title, buttons, children}) => {
         <Grid container direction="row" xs={12} style={{textAlign:'center'}}>
           {Object.keys(buttons).map( key => {
             return (
-            <Grid item direction="row" xs={gridSpace} >  
+            
+            <Grid item direction="row" xs={gridSpace}  >  
               <Button type="submit" className={classes.buttonStyle} style={{color:bkColor}} onClick={() => onClose (buttons[key])} variant="outlined" disableRipple>{buttons[key]}</Button>
             </Grid>
             )
             
           })}
+
         </Grid>
+        <Box style={{height:"2px"}}/>
       </DialogActions>
 
     </Dialog>

@@ -390,11 +390,13 @@ useEffect (()=> {
             { companyData ? <>
               <CompanyInfo 
                 companyData = {companyData} 
+                historicalFinancialData={historicalFinancialData}
                 handleValuation = {handleValuation} 
                 handlePublication = {handlePublication}
                 editMode = {editMode}
                 setEditMode = {setEditMode}
-                // valuationIdText ={valuationIdText}
+                assumptions={assumptions}
+                calculatedCostOfCapital={calcCostOfCapital}
                 valuation = {valuation}
                 setValuation = {setValuation}
                 handleNewValuation = {handleNewValuation}

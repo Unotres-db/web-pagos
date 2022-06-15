@@ -13,6 +13,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 // import { RenderingTest } from './pages/RenderingTest';
 // import Update from './pages/Update';
+import Pricing from './pages/Pricing';
 import Updatebk from './pages/Updatebk';
 import Whoweare from './pages/Whoweare';
 
@@ -29,7 +30,8 @@ export default function Routes() {
         <Route path = "/graham" component = {Graham} />
         <Route path = "/valuation" component = {Valuation} />
         <Route path = "/books" component = {Test} />
-        <Route path = "/blog" component = {Blog} />
+        {/* <Route path = "/blog" component = {Blog} /> */}
+        <Route path = "/pricing" component = {Pricing} />
         <Route path = "/who-we-are" component = {Whoweare} />
         <Route path = "/contact" component = {Contact} />
         <Route path = "/login" component = {Login} />

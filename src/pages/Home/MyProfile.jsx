@@ -12,7 +12,7 @@ const useStyles = makeStyles((mainTheme) => ({
 buttonStyle: {
   color: mainTheme.palette.primary.main,
   fontSize: "11px",
-  width:"110px",
+  width:"105px",
   height: "30px",
   [mainTheme.breakpoints.down('xs')]: {
     fontSize: "10px"
@@ -33,6 +33,7 @@ export default function MyProfile (){
     <>
     <Grid container >
       <Grid item xs={3}>
+      <Box style={{height:"5px"}}/>
         <Avatar 
           alt="Martin Calcena"
           src={picMcl}
@@ -40,13 +41,17 @@ export default function MyProfile (){
 
       </Grid>
       <Grid item xs={9} >
-        <Typography gutterBottom style={{fontSize: 12}}>Martin Calcena Simoes Lopes</Typography>
-        <Typography gutterBottom style={{fontSize: 11}}>Investidor interessado em Valuations</Typography>
-        <Typography style={{fontSize: 11}}>martincsl@hotmail.com</Typography>
+        <Typography gutterBottom style={{fontSize: 11}}>Martin Calcena Simoes Lopes</Typography>
+        {/* <Typography gutterBottom style={{fontSize: 11}}>Investor interested in Financial markets and valuations</Typography> */}
+        <Typography style={{fontSize: 9}}>martincsl@hotmail.com</Typography>
  
       </Grid>
     </Grid>
-    <Box style={{height:"5px"}}/>
+    <Box style={{height:"2px"}}/>
+    <Box>
+      <Typography gutterBottom style={{fontSize: 11}}>Investor interested in Financial markets and valuations</Typography>
+    </Box>
+    <Box style={{height:"2px"}}/>
     <Grid container justify="center">
       <Button disableRipple fullWidth="false" startIcon={<ModeEditIcon />} className = {classes.buttonStyle}>Edit Profile</Button>
     </Grid>

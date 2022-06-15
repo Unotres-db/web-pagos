@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import AlertDialog from '../../components/modals/AlertDialog';
 import PrintValuation from './PrintValuation';
+import TestPrint from './TestPrint';
 
 const useStyles = makeStyles( (mainTheme) => ({
 buttonStyle: {
@@ -45,17 +46,23 @@ companyMarketText:{
 }
 }));
 
-export default function CompanyInfo({ companyData, handleValuation, handlePublication, editMode, setEditMode, valuation, setValuation, handleNewValuation }){
+export default function CompanyInfo({ companyData, historicalFinancialData, handleValuation, handlePublication, editMode, setEditMode, assumptions, calculatedCostOfCapital, valuation, setValuation, handleNewValuation }){
+
   const [ isAlertOpen, setIsAlertOpen ] = useState(false);
   const [ alertMessage, setAlertMessage ] = useState({severity:"",title:"",message:"",buttons:{}});
+  const [ isDialogPdfOpen, setIsDialogPdfOpen] = useState(false);
 
   function handleAlertClose () {
     setIsAlertOpen(false);
     setAlertMessage( {title: "", message:""});
   }
 
+  function handleDialogPdfClose(){
+    setIsDialogPdfOpen(false);
+  }
   function handlePrintValuation (){
     console.log("entrou em Printvaluation");
+    setIsDialogPdfOpen(true)
     // <PrintValuation />
   }
 
@@ -172,6 +179,15 @@ export default function CompanyInfo({ companyData, handleValuation, handlePublic
     <AlertDialog open={isAlertOpen} onClose={handleAlertClose} severity={alertMessage.severity} title={alertMessage.title}>
       {alertMessage.message}
     </AlertDialog>
+    <TestPrint 
+      open={isDialogPdfOpen} 
+      onClose={handleDialogPdfClose} 
+      companyData={companyData}
+      historicalFinancialData={historicalFinancialData} 
+      assumptions={assumptions} 
+      calculatedCostOfCapital={calculatedCostOfCapital} 
+      valuation={valuation}
+    />
     </>
   )
 }

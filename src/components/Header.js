@@ -35,7 +35,7 @@ logoStyle: {
   position: "relative",
   height: "45px",
   // padding: "24px",
-  top:"2px"
+  top:"0px"
 },
 grow:{
   flexGrow: 1
@@ -90,8 +90,8 @@ function Header() {
       route:"/books"
     },
     { id:6,
-      title:"Blog",
-      route:"/blog"
+      title:"Pricing",
+      route:"/pricing"
     },
     { id:7,
       title:"Who Am I",             //  "Quem Sou"  //  "Quien Soy"
