@@ -1,12 +1,9 @@
-
 import React, { useState }  from 'react';
 
-import { Grid, Typography,  Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel, Button, IconButton, Tooltip, Avatar } from '@material-ui/core';
+import { Grid, Paper, Box, Typography, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 import picBBarbosa from '../../assets/bbarbosa-nord.jpg';
-import picLogoNord from '../../assets/logo-nord.jpg';
 import picPedroFerrari from '../../assets/pedroferrari.jpg';
 import picJPPacheco from '../../assets/jppacheco.jpg';
 import picNicolasCooper from '../../assets/nicolascooper.jpg';
@@ -14,30 +11,20 @@ import picMarcoRochaLima from '../../assets/marcorochalima.jpg';
 import picLucilaCooper from '../../assets/lucilacooper.jpg';
 
 const useStyles = makeStyles( (mainTheme) => ({
-  table: {
-    minWidth: 370,
-    maxHeight: 900
+  sectionTitleStyle:{
+    fontSize: mainTheme.sectionTitle.fontSize,
+    color: mainTheme.sectionTitle.color
   },
-  TableHeader:{
-    color: "white",
-    backgroundColor: mainTheme.palette.primary.main
+  connectionsTitleStyle:{
+    width:"100%",
+    marginTop:"3px", 
+    marginRight:"5px",
+    fontSize:11, 
   },
-  TableTitle:{
-    color: "white",
-    fontSize: 11
-  },
-  ButtonTable:{
-    display: 'inline-block',
-    padding:0,
-    minHeight: 0,
-    minWidth: 0,
-    color: mainTheme.palette.primary.main,
-    fontSize: "11px",
-    textTransform:"none",
-    "&:hover": {
-      color:mainTheme.palette.secondary.main,
-      backgroundColor:"whitesmoke"
-    },
+  contactNameText:{
+    width:"100%",
+    marginLeft:"5px", 
+    fontSize: 11, 
   },
   photoStyle:{
     // height: '90px',
@@ -52,42 +39,6 @@ const useStyles = makeStyles( (mainTheme) => ({
     marginLeft:"5px",
     marginRigth:"5px"
   },
-  buttonStyle: {
-    color: mainTheme.palette.primary.main,
-    fontSize: "11px",
-    height:"20px",
-    width:"60px",
-    [mainTheme.breakpoints.down('xs')]: {
-      fontSize: "10px"
-    },
-    backgroundColor: mainTheme.palette.secondary.main,
-    textTransform: "none",
-    marginTop: "2px",
-    marginLeft:"2px",
-    "&:hover": {
-      backgroundColor: "#F49506ed"
-    },
-    grow:{
-      flexGrow: 1
-    },
-  },
-  iconButtonStyle: {
-    color: mainTheme.palette.primary.main,
-    // fontSize: "11px",
-    // [mainTheme.breakpoints.down('xs')]: {
-    //   fontSize: "10px"
-    // },
-    backgroundColor: mainTheme.palette.secondary.main,
-    textTransform: "none",
-    marginTop: "2px",
-    marginLeft:"2px",
-    "&:hover": {
-      backgroundColor: "#F49506ed"
-    },
-  },
-  TableRows : {
-    fontSize: 11
-  }
 }));
 
 const rowsData = [
@@ -128,27 +79,38 @@ const rowsData = [
     avatar:picLucilaCooper,
   },
 ]
+
 export default function TableYourNetwork() {
   const classes = useStyles()
   return (
     <>
-    {/* <Box style={{height: "20px"}}/> */}
-    {rowsData.map ((currUser) => (
-      <Grid container>
-
-        <Grid item>
-          <Avatar className={classes.photoStyle}
-            alt={currUser.name}
-            src={currUser.avatar}
-          />
+    <Paper elevation={6} style={{padding:"5px"}}>
+      <Grid container direction="row">
+        <Grid item xs={6}>
+          <Typography align = "left" className={classes.sectionTitleStyle} >My Network</Typography>
         </Grid>
-        <Grid item>
-          <Box style={{height: "15px"}}/>
-          <Typography align = "center" style={{marginLeft:"5px", fontSize: 11, width:"100%"}}>{currUser.name}</Typography>
+        <Grid item xs={6}>
+          <Typography align = "right" className={classes.connectionsTitleStyle}>{`Connections: ${rowsData.length}`}</Typography>
         </Grid>
       </Grid>
 
-    ))}
+      {rowsData.map ((currUser) => (
+        <Grid container>
+
+          <Grid item>
+            <Avatar className={classes.photoStyle}
+              alt={currUser.name}
+              src={currUser.avatar}
+            />
+          </Grid>
+
+          <Grid item>
+            <Box style={{height: "15px"}}/>
+            <Typography align = "center" className={classes.contactNameText}>{currUser.name}</Typography>
+          </Grid>
+        </Grid>
+      ))}
+    </Paper>
     </>
   )
 }

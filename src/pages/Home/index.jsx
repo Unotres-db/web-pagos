@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
-import { Grid, Paper, Box, Typography, Button } from '@material-ui/core';
+import { Paper, Grid, Box, Button, Typography, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 import api from '../../services/api';
-import Header from '../../components/Header.js';
-import AlertDialog from '../../components/modals/AlertDialog';
 
+import Header from '../../components/Header.js';
+import DialogModal from '../../components/modals/DialogModal';
 import MyProfile from './MyProfile';
-import OldTableMyValuationsList from './OldTableMyValuationsList';
 import TableMyValuationsList from './TableMyValuationsList';
 import RecommendedValuations from './RecommendedValuations.jsx';
+import TableYourNetwork from './TableYourNetwork';
 
 const useStyles = makeStyles( (mainTheme) => ({
   contentStyle: {
@@ -20,31 +20,24 @@ const useStyles = makeStyles( (mainTheme) => ({
     top: '65px',
   },
   buttonStyle: {
-    color: mainTheme.palette.primary.main,
-    fontSize: "11px",
     [mainTheme.breakpoints.down('xs')]: {
       fontSize: "10px"
     },
-    backgroundColor: mainTheme.palette.secondary.main,
-    textTransform: "none",
-    width:"95px",
-    height:"30px",
-    marginTop: "2px",
-    marginLeft:"2px",
-    "&:hover": {
-      backgroundColor: "#F49506ed"
-    },
+  },
+  sectionTitleStyle:{
+    fontSize: mainTheme.sectionTitle.fontSize,
+    color: mainTheme.sectionTitle.color
   },
   titleStyle: {
-    width: "100%",   
-    padding: "15px",   
+    width: "100%",
+    padding: "15px",
     color: mainTheme.palette.secondary.main,
     backgroundColor: "white",
     marginBottom: "10px",
   },
   boxStyle: {
-    width: "100%",   
-    padding: "1px",   
+    width: "100%",
+    padding: "1px",
     color: "white",
     backgroundColor: mainTheme.palette.secondary.main,
     marginBottom: "1px",
@@ -56,7 +49,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     marginRight:"0px",
     color: mainTheme.palette.primary.main,
     backgroundColor: "whitesmoke",
-    padding: "10px",
+    padding: "5px",
   },
   TableContainerStyle: {
     width: "100%",   
@@ -79,46 +72,40 @@ const useStyles = makeStyles( (mainTheme) => ({
 
 export default function Home (){
   const classes = useStyles();
-  const [ valuationsList, setValuationsList] = useState();
-  const [ isDialogOpen, setIsDialogOpen]= useState(false);
-  const [ dialogMessage,setDialogMessage ] = useState({severity:"",title:"",message:"",buttons:{}});
+  const [ valuationsList, setValuationsList ] = useState();
+  const [ isDialogOpen, setIsDialogOpen ] = useState(false);
+  const [ dialogOptions, setDialogOptions ] = useState({severity:"",title:"",message:"",buttons:{},action:""});
+  const history = useHistory();
 
-  function handleDeleteAll (){
-    setDialogMessage({severity:"error", title:"Alert", message:"Are you sure you want to delete all valuations ?",buttons:{button1:"Cancel",button2:"Confirm"}})
-    setIsDialogOpen (true);
+  function handleDialogClose(){
+    setIsDialogOpen(false);
   }
 
-
-  const handleDialogClose = (value) => {
-    setIsDialogOpen (false);
-    setDialogMessage({severity:"",title:"",message:"",buttons:{}});
-    if (value === "Confirm"){
-      alert ("delete all");
-    } 
+  function handleNewValuation(){
+    history.push('/valuation')
   }
 
   useEffect ( ()=> {
     api.get('valuations')
     .then (response => {
       const allValuations = response.data;
-      // colocar em maiusculas para ver se existe diferenca
       setValuationsList(allValuations);
-      
-    }).catch (function (err){
+    })
+    .catch (function (err){
       if (err.response) {
         const errorMsg = Object.values(err.response.data);
-        alert("Warning - Database access error" + errorMsg)
+        setDialogOptions({severity:"error", title:"Oops", message:"There was an error in the database access. Please try later.",buttons:{button1:"Ok"},action:""})
       } else if (err.request) {
-          alert("Warning - Server access error")
+        setDialogOptions({severity:"error", title:"Oops", message:"There was an error in the server access. Please try later.",buttons:{button1:"Ok"},action:""})
         } else {
-            alert("Warning - Unexpected error")
+          setDialogOptions({severity:"error", title:"Oops", message:"There was an unexpected error in the server. Please try later.",buttons:{button1:"Ok"},action:""})
           }
+      setIsDialogOpen (true);   
     });
   },[]) 
   
   return (
     <>
-    { console.log(valuationsList)}
     <Header />
     <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}} >
 
@@ -128,8 +115,8 @@ export default function Home (){
 
         <Grid item xs={12} md={2} >
           <Paper className={classes.paperStyle} >
-            {/* <Typography>My Profile</Typography> */}
             <MyProfile />
+            <TableYourNetwork />
           </Paper>
         </Grid>
 
@@ -137,42 +124,34 @@ export default function Home (){
           <Paper className={classes.paperStyle} >
             <Grid container>
               <Grid item xs={2}>
-                <Typography style={{fontSize:14}}>My Valuations</Typography>
+                <Typography className={classes.sectionTitleStyle}>My Valuations</Typography>
               </Grid>
               <Grid item xs={10}>
-                <Button 
-                  variant = "contained" 
-                  size = "small" 
-                  className = {classes.buttonStyle} 
-                  startIcon={<AddCircleIcon />} 
-                  disableRipple
-                  // onClick = {handleNewValuation} 
-                  >New 
-                </Button>
-                <Button 
-                  variant = "contained" 
-                  size = "small" 
-                  className = {classes.buttonStyle} 
-                  startIcon={<DeleteIcon />} 
-                  disableRipple
-                  onClick = {handleDeleteAll} 
-                  >Delete All 
-                </Button>
-
+                <Tooltip title="Create a new valuation">
+                  <Button 
+                    variant = "contained" 
+                    startIcon = {<AddCircleIcon />} 
+                    disableRipple
+                    onClick = {handleNewValuation} 
+                    className = {classes.buttonStyle}
+                    >New Valuation
+                  </Button>
+                </Tooltip>
               </Grid>
               
             </Grid>
             <Box style={{height:"5px"}}/>
             { valuationsList ? <>
-              <TableMyValuationsList valuationsList = {valuationsList} />
-            </>: null}
-            
+              <TableMyValuationsList valuationsList = {valuationsList} setValuationsList={setValuationsList} />
+            </>: 
+              <Typography style={{fontSize:14, marginTop:"15px"}}>You don't have any saved valuation</Typography>
+            }
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={3} > 
           <Paper className={classes.paperStyle} >
-            <Typography style={{fontSize:14}}>Published Valuations</Typography>
+            <Typography className={classes.sectionTitleStyle} >Published Valuations</Typography>
             <Box style={{height:"5px"}}/>
             <Paper>
               <RecommendedValuations />
@@ -181,12 +160,9 @@ export default function Home (){
         </Grid>
       </Grid>
     </Grid>
-
-    <Grid container direction="column" alignItems="center" style= {{ minHeight: '5vh'}} />
-
-    <AlertDialog open={isDialogOpen} onClose={handleDialogClose} severity={dialogMessage.severity} title={dialogMessage.title} buttons={dialogMessage.buttons}>
-      {dialogMessage.message}
-    </AlertDialog>
+    <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
+      {dialogOptions.message}
+    </DialogModal> 
     </>
   )
 }

@@ -35,17 +35,6 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
 }));
 
-
-// array.sort(function(a, b){
-//   var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
-//   if (nameA < nameB) 
-//     return -1;
-//   if (nameA > nameB)
-//     return 1;
-//   return 0; 
-//   }
-//   );
-
 function descendingComparator(a, b, orderBy) {
   if (typeof a[orderBy] === 'string' || a instanceof String ) {
     // console.log("entrou com Lowercase Test")

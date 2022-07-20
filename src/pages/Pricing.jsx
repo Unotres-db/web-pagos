@@ -10,7 +10,8 @@ import CommentIcon from '@mui/icons-material/Comment';
 import RecommendIcon from '@mui/icons-material/Recommend';
 
 import Header from '../components/Header';
-import { ClassNames } from '@emotion/react';
+// import { ClassNames } from '@emotion/react';
+
 const useStyles = makeStyles((mainTheme) => ({
   root: {
     flexGrow: 1,
@@ -55,18 +56,21 @@ const useStyles = makeStyles((mainTheme) => ({
   },
 
   })); 
+
 export default function Pricing (){
   const classes = useStyles();
   return (
     <>
     <Header />
-    <Grid container spacing={0} direction="row"  justify="center" className={classes.contentStyle} style={{ minHeight: '85vh' }} >
-      <Grid item xs={12} sm={3} >
+    <Grid container spacing={0} direction="row" justify="center" className={classes.contentStyle} style={{ minHeight: '85vh' }} >
+
+      <Grid item xs={12} sm={4} md={3} >
+
         <Paper className= {classes.paperStyle} elevation={6}>
           <Typography align="center" gutterBottom>Free</Typography>
           <Box style={{height:"60px"}}/>
           <Typography align="center" gutterBottom>What will you get</Typography>
-          <Box className={classes.boxLineStyle}>
+          <Box className={classes.boxLineStyle} >
             <Grid container style={{backgroundColor:"green"}}>
               <Grid item xs={1}>
                 <FindInPageIcon style={{marginTop:"7px"}}/>
@@ -77,9 +81,9 @@ export default function Pricing (){
             </Grid>
           </Box>
           <Box className={classes.boxLineStyle}>
-          <Grid container spacing={3}  style={{backgroundColor:"blue"}}>
+          <Grid container spacing={1} >
               <Grid item xs={1}>
-                <AddCircleIcon />
+                <AddCircleIcon style={{width:"12px",height:"12px"}}/>
               </Grid>
               <Grid item xs={11}>
                 <Typography variant="caption" gutterBottom>Create up to 4 valuations per month</Typography>
@@ -111,7 +115,8 @@ export default function Pricing (){
 
         </Paper>
       </Grid>
-      <Grid item xs={12} sm={3}>
+
+      <Grid item xs={12} sm={4} md={3} >
         <Paper className = {classes.paperStyle} elevation={6}>
           <Typography align="center" gutterBottom>Montly Subscription</Typography>
           <Box style ={{height: "30px"}}>
@@ -132,7 +137,7 @@ export default function Pricing (){
         </Paper>
 
       </Grid>
-      <Grid item xs={12} sm={3}>
+      <Grid item xs={12} sm={4} md={3} >
         <Paper  className={classes.paperStyle} elevation={6}>
           <Typography align="center" gutterBottom >Annual Subscription</Typography>
           <Box style={{height:"30px"}}>

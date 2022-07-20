@@ -5,16 +5,18 @@ import { AppBar, Toolbar, IconButton, Box, Button, Hidden, Drawer, List, ListIte
 import { makeStyles } from '@material-ui/core/styles';
 
 import MenuIcon from '@material-ui/icons/Menu';
-import mainLogo from '../assets/logo-valuationsweb-min.svg';
-// import mainLogo from '../assets/logo-valuationsweb2.svg';
-// import mainLogo from '../assets/logovw.svg';
-// import mainLogo from '../assets/quo.png';
+import mainLogo from '../assets/Group 292.svg';
 
 const useStyles = makeStyles( (mainTheme) => ({
+  root: {
+    display: 'flex',
+  },  
+  grow:{
+    flexGrow: 1
+  },
 buttonMenuStyle: {
   display: 'inline-block',
   padding: 6,
-  // minHeight: 0,
   minWidth: 0,
   color: "white",
   backgroundColor:mainTheme.palette.primary.main,
@@ -22,6 +24,7 @@ buttonMenuStyle: {
   margin: "2px",
   "&:hover": {
     color:mainTheme.palette.secondary.main,
+    backgroundColor:mainTheme.palette.primary.main,
   }
 },
 buttonDrawerStyle: {
@@ -37,15 +40,11 @@ logoStyle: {
   // padding: "24px",
   top:"0px"
 },
-grow:{
-  flexGrow: 1
-},
+
 toolbarButtons: {
   marginLeft: 'auto',
 },
-root: {
-  display: 'flex',
-},
+
 drawer: {
   width: '240',
   flexShrink: 0,

@@ -8,25 +8,18 @@ import PublishIcon from '@mui/icons-material/Publish';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import AlertDialog from '../../components/modals/AlertDialog';
+import { format } from 'date-fns'
+
+import useTest from '../../hooks/useTest';
+import DialogModal from '../../components/modals/DialogModal';
 import PrintValuation from './PrintValuation';
 import TestPrint from './TestPrint';
 
 const useStyles = makeStyles( (mainTheme) => ({
 buttonStyle: {
-  color: mainTheme.palette.primary.main,
-  fontSize: "11px",
+  width:"80px",
   [mainTheme.breakpoints.down('xs')]: {
     fontSize: "10px"
-  },
-  backgroundColor: mainTheme.palette.secondary.main,
-  textTransform: "none",
-  width:"80px",
-  height:"30px",
-  marginTop: "2px",
-  marginLeft:"2px",
-  "&:hover": {
-    backgroundColor: "#F49506ed"
   },
 },
 companyNameText:{
@@ -37,72 +30,96 @@ companyNameText:{
   [mainTheme.breakpoints.down('xs')]: {
     fontSize: "12px"
   },
-},
-companyMarketText:{
-  fontSize: "11px",
-  [mainTheme.breakpoints.down('xs')]: {
-    fontSize: "9px"
-  },
 }
 }));
 
-export default function CompanyInfo({ companyData, historicalFinancialData, handleValuation, handlePublication, editMode, setEditMode, assumptions, calculatedCostOfCapital, valuation, setValuation, handleNewValuation }){
+export default function CompanyInfo({ companyData, historicalFinancialData, forecastedFinancialData, handleValuation, handlePublication, editMode, setEditMode, assumptions, calculatedCostOfCapital, valuation, setValuation, handleNewValuation }){
 
-  const [ isAlertOpen, setIsAlertOpen ] = useState(false);
-  const [ alertMessage, setAlertMessage ] = useState({severity:"",title:"",message:"",buttons:{}});
+  const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
+  const [ isDialogOpen, setIsDialogOpen] = useState(false);
   const [ isDialogPdfOpen, setIsDialogPdfOpen] = useState(false);
+  const [ deleteValuationId, setDeleteValuationId] = useState("");
+  const { saveValuation, publishValuation, deleteValuation }  = useTest ();
 
-  function handleAlertClose () {
-    setIsAlertOpen(false);
-    setAlertMessage( {title: "", message:""});
+  function handleSave (){
+    saveValuation(companyData, assumptions, calculatedCostOfCapital, valuation, setValuation, forecastedFinancialData, saveSuccessCallback, errorCallback)
+  }
+
+  function handlePublish (){
+    publishValuation(valuation, publishSuccessCallback, errorCallback);
+  }
+
+  function handleDelete (valuationId){
+    setDeleteValuationId(valuationId);
+    setDialogOptions({severity:"warning", title:"Alert", message:"Are you sure you want to delete this valuation ?",buttons:{button1:"Cancel",button2:"Confirm"},action:"delete"})
+    setIsDialogOpen (true);
+  }
+
+  function saveSuccessCallback(){
+    setEditMode("saved");
+    setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully saved",buttons:{button1:"Ok"},action:"save"})
+    setIsDialogOpen (true);
+  }
+
+  function publishSuccessCallback(){
+    const publishedDate = format(new Date(),'yyyy-MM-dd HH:mm:ss') //only to update the state in the frontend
+    setValuation(prevState => ({...prevState, published:"all", publishedDate:publishedDate}))
+    setEditMode("published");
+    setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully published",buttons:{button1:"Ok"},action:"publish"})
+    setIsDialogOpen (true);
+  }
+
+  function deleteSuccessCallback(){
+    setEditMode("blank");
+    handleNewValuation();
+    setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully deleted",buttons:{button1:"Ok"},action:"delete"})
+    setIsDialogOpen (true);
+  }
+
+  function errorCallback(errorMessage){
+    setDialogOptions({severity:"error", title:"Oops", message:errorMessage,buttons:{button1:"Ok"}})
+    setIsDialogOpen (true);
+  }
+
+  function handleDialogClose (value, action) { 
+    setIsDialogOpen (false);
+    setDialogOptions({severity:"",title:"",message:"",buttons:{},action:""});
+    if (value === "Confirm" && action ==="delete"){  
+      // switch (action) {
+      //   case "save":
+
+      //   case "publish":
+
+      //   case "print":
+
+      //   case "delete":
+          deleteValuation(deleteValuationId,deleteSuccessCallback, errorCallback);
+      // }
+    } 
+    // else if (value === "Ok"){
+    // }
   }
 
   function handleDialogPdfClose(){
     setIsDialogPdfOpen(false);
   }
+
   function handlePrintValuation (){
     console.log("entrou em Printvaluation");
     setIsDialogPdfOpen(true)
     // <PrintValuation />
   }
 
-  function handlingValuation () {
-    if (handleValuation()){
-      setEditMode("saved");
-      setAlertMessage( {severity:"success", title: "Congratulations", message:"Your valuation was saved with success"});
-      setIsAlertOpen(true);  
-    }
-    else {
-      console.log("no grabo valuation o problemas en la promise")
-    }
-  }
-
-  function handlingPublication () {
-    if (handlePublication()){
-      setValuation(prevState => ({...prevState, published:"all", publishedDate:""}))
-      setEditMode("published");
-      setAlertMessage( {severity:"success", title: "Congratulations", message:"Your valuation was published with success"});
-      setIsAlertOpen(true);  
-    }
-    else {
-      console.log("no grabo valuation o problemas en la promise")
-    }
-  }
-  // function handlePublication () {
-  //   if (handlePublication()) {
-  //     setAlertMessage( {severity:"success", title: "Congratulations", message:"Your valuation was published with success"});
-  //     setIsAlertOpen(true);  
-  //   }
-  // }
-
   const classes = useStyles()
-
   return (
     <>
     <Grid container direction = "row" spacing = {1}  >
       <Grid item xs = {12} sm={5}>
         <Box style = {{height: "10px"}}/>  
-        { companyData.symbol ? <>
+        <Typography>{editMode}</Typography>
+        { companyData.symbol ? 
+          <>
+          
           <Typography align="left" className={classes.companyNameText}>{`${companyData.symbol} - ${companyData.shortName} `}</Typography>
           {/* <Typography align="left" className={classes.companyNameText}>{`${companyData.shortName}`}</Typography> */}
 
@@ -122,63 +139,57 @@ export default function CompanyInfo({ companyData, historicalFinancialData, hand
         <Box display ="flex" justifyContent="flex-end">
           <Button 
             variant = "contained" 
-            size = "small" 
             className = {classes.buttonStyle} 
             startIcon={<AddCircleIcon />} 
             disableRipple
+            disabled={editMode==="blank"}
             onClick = {handleNewValuation} 
             >New 
           </Button>
-
           <Button 
             variant = "contained" 
-            size = "small" 
             className = {classes.buttonStyle} 
             startIcon={<SaveIcon />} 
             disabled={editMode!=="completed"}
             disableRipple
-            onClick = {handlingValuation} 
+            onClick ={handleSave}
             >Save 
           </Button>
           <Button 
             variant = "contained" 
-            size = "small" 
             className = {classes.buttonStyle} 
             startIcon={<PublishIcon />} 
-            // disabled={editMode!=="saved"}
             disabled = {editMode!=="saved"}
             disableRipple
-            onClick = {handlingPublication} 
+            onClick={handlePublish} 
             >Publish 
           </Button>
           <Button 
             variant = "contained" 
-            size = "small" 
             className = {classes.buttonStyle} 
             startIcon={<PictureAsPdfIcon />} 
-            // disabled={editMode!=="saved"}
-            disabled = {editMode=="blank" || editMode=="completed"}
+            // disabled = {editMode=="blank" || editMode=="completed"}
+            disabled = {editMode!=="saved" && editMode!=="published"}
             disableRipple
             onClick = {handlePrintValuation} 
             >Print
           </Button>
           <Button 
             variant = "contained" 
-            size = "small" 
             className = {classes.buttonStyle} 
             startIcon={<DeleteIcon />} 
-            // disabled={editMode!=="saved"}
-            disabled = {editMode=="blank" || editMode=="completed"}
+            // disabled = {editMode=="blank" || editMode=="completed"}
+            disabled = {editMode!=="saved" && editMode!=="published"}
             disableRipple
-            // onClick = {handleValuation} 
+            onClick={(e) => (handleDelete (valuation.valuationId))} 
             >Delete
           </Button>
         </Box>  
       </Grid>
     </Grid>
-    <AlertDialog open={isAlertOpen} onClose={handleAlertClose} severity={alertMessage.severity} title={alertMessage.title}>
-      {alertMessage.message}
-    </AlertDialog>
+    <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
+      {dialogOptions.message}
+    </DialogModal> 
     <TestPrint 
       open={isDialogPdfOpen} 
       onClose={handleDialogPdfClose} 

@@ -2,11 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router , Route, Switch } from 'react-router-dom';
 
 import Blog from './pages/Blog';
-// import Books from './pages/Books';
+import Books from './pages/Books';
 import CompanyData from './pages/CompanyData';
 import Contact from './pages/Contact';
 import Valuation from './pages/Valuation';
-import Test from './pages/Valuation/Test';
+// import Test from './pages/Valuation/Test';
 import DividendYield from './pages/DividendYield';
 import Graham from './pages/Graham';
 import Home from './pages/Home';
@@ -14,6 +14,7 @@ import Login from './pages/Login';
 // import { RenderingTest } from './pages/RenderingTest';
 // import Update from './pages/Update';
 import Pricing from './pages/Pricing';
+import TestDateFormats from './pages/TestDateFormats';
 import Updatebk from './pages/Updatebk';
 import Whoweare from './pages/Whoweare';
 
@@ -29,7 +30,7 @@ export default function Routes() {
         <Route path = "/dividend-yield" component = {DividendYield} />
         <Route path = "/graham" component = {Graham} />
         <Route path = "/valuation" component = {Valuation} />
-        <Route path = "/books" component = {Test} />
+        <Route path = "/books" component = {Books} />
         {/* <Route path = "/blog" component = {Blog} /> */}
         <Route path = "/pricing" component = {Pricing} />
         <Route path = "/who-we-are" component = {Whoweare} />

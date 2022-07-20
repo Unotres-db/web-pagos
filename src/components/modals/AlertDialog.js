@@ -29,7 +29,7 @@ const useStyles = makeStyles( (mainTheme) => ({
 }))
 
 const AlertDialog = ({open, onClose, severity, title, buttons, children}) => {
-  console.log(buttons);
+
   if (buttons === undefined){
     buttons={button1:"Ok"}
   }
@@ -45,7 +45,7 @@ const AlertDialog = ({open, onClose, severity, title, buttons, children}) => {
   if (numberOfButtons === 1) {
     gridSpace = 12
   } else if (numberOfButtons === 2){
-    gridSpace = 6
+    gridSpace = 3
   } else if (numberOfButtons === 3) {
     gridSpace = 4
   } else {
@@ -93,6 +93,9 @@ const AlertDialog = ({open, onClose, severity, title, buttons, children}) => {
         
       <DialogActions style={{color:'white', backgroundColor:bkColor, paddingTop:"0px", paddingBottom:"0px"}}>
         <Grid container direction="row" xs={12} style={{textAlign:'center'}}>
+          { numberOfButtons = 2 ? <>
+            <Grid item direction="row" xs={gridSpace} />
+          </>: null}
           {Object.keys(buttons).map( key => {
             return (
             
@@ -102,7 +105,9 @@ const AlertDialog = ({open, onClose, severity, title, buttons, children}) => {
             )
             
           })}
-
+          { numberOfButtons = 2 ? <>
+            <Grid item direction="row" xs={gridSpace} />
+          </>: null}
         </Grid>
         <Box style={{height:"2px"}}/>
       </DialogActions>

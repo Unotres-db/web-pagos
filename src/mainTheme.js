@@ -4,7 +4,7 @@ import { createTheme } from '@material-ui/core';
 const mainTheme = createTheme ({
   palette: {
     primary: {
-      main:  "#344955"
+      main: "#344955"
     },
     secondary: {
       main: "#F9AA33" 
@@ -15,7 +15,37 @@ const mainTheme = createTheme ({
     contrast :{
       main: "#d3d3d3"
     },
-    
+  },
+  sectionTitle:{
+    fontSize: 14,
+    color:"#344955",
+    marginTop:"5px",
+    marginLeft:"5px",
+    MarginBottom:"5px",
+  },
+  userPhotoStyle:{
+    height: "72px",
+    width: "72px",
+    alignItems: "center",
+    marginTop: "5px",
+    marginBottom:"5px",
+    marginLeft:"5px",
+    marginRigth:"5px",
+    display: "block",
+    textAlign: "center",
+    justifyContent: "center",
+  },
+  contactPhotoStyle:{
+    height: "40px",
+    width: "40px",
+    alignItems: "center",
+    marginTop: "5px",
+    marginBottom:"5px",
+    marginLeft:"5px",
+    marginRigth:"5px",
+    display: "block",
+    textAlign: "center",
+    justifyContent: "center",
   },
   overrides: {
     MuiTextField: {
@@ -79,7 +109,41 @@ const mainTheme = createTheme ({
     MuiSelectOutlined:{
       color: "#1C1C49",
       backgroundColor: "white"
-      
+    },
+    MuiButton:{
+      contained:{
+        color: "#344955",
+        fontSize: "11px",
+        // [mainTheme.breakpoints.down('xs')]: {
+        //   fontSize: "10px"
+        // },
+        backgroundColor: "#F9AA33",
+        textTransform: "none",
+        // width:"120px",
+        height: "30px",
+        marginTop: "2px",
+        marginLeft:"1px",
+        marginRight:"1px",
+        "&:hover": {
+          backgroundColor: "#F49506ed"
+        },
+      },
+      text:{
+        color: "#344955",
+        fontSize: "11px",
+        // [mainTheme.breakpoints.down('xs')]: {
+        //   fontSize: "10px"
+        // },
+        backgroundColor: "#F9AA33",
+        textTransform: "none",
+        // width:"95px",
+        height: "30px",
+        marginTop: "2px",
+        marginLeft:"2px",
+        "&:hover": {
+          backgroundColor: "#F49506ed"
+        },
+      },
     },
     MuiStepLabel:{
       fontSize:9
@@ -131,7 +195,7 @@ const mainTheme = createTheme ({
         
       },
     }
-    },   //overrides
+    },
 });
 mainTheme.palette.tertiary = mainTheme.palette.augmentColor(mainTheme.palette.tertiary);
 mainTheme.palette.contrast = mainTheme.palette.augmentColor(mainTheme.palette.contrast);

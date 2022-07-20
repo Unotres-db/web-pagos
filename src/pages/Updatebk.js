@@ -347,7 +347,7 @@ export default function Update () {
 
     // const companiesList = ['CVX','XOM','PBR','BP','SHEL','FB','AMZN','TSLA','GOOG','MSFT'];
     // const companiesList = ['MMM','AOS','ABT','ABBV','AFL','APD','ALB','AMCR','ADM','T','ATO','ADP','BDX','CAH','CAT','CB','CINF','CTAS','CLX','CL','ED','DOV','ECL','EMR','ESS','EXPD','FRT','BEN','GD','GPC','HRL','ITW','IBM','KMB','LEG','LIN','LOW','MKC','MCD','MDT','NEE','NUE','PNR','PBCT','PPG','PG','ROP','SPGI','SHW','SWK','SYY','TROW','TGT','VFC','GWW','WBA','WMT','WST','PBR','BP','SHEL','FB','AMZN','TSLA','GOOG','MSFT'];
-    const companiesList = ['CVX','XOM','PCBT'];
+    const companiesList = ['PBR'];
 
     for (let i = 0; i < companiesList.length; i++) {
       console.log(i/companiesList.length);

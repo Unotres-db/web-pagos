@@ -39,16 +39,16 @@ const ref = React.createRef();
 
 const TestPrint = ({ open, onClose, companyData, historicalFinancialData, assumptions, calculatedCostOfCapital, valuation }) => {
 
-  console.log("entou em Test Print");
+  // console.log("entou em Test Print");
   const classes = useStyles();  
 
   return (
     <>
-    { console.log("companyData: " + companyData)}
+    {/* { console.log("companyData: " + companyData)}
     { console.log("historicalFinancialData " + historicalFinancialData)}
     { console.log("assumptions: " + assumptions)}
     { console.log("calculatedCostOfCapital: " + calculatedCostOfCapital)}
-    { console.log(valuation)}
+    { console.log(valuation)} */}
 
 
     { companyData ? <>
@@ -76,7 +76,6 @@ const TestPrint = ({ open, onClose, companyData, historicalFinancialData, assump
                   companyData = {companyData}
                 />
                 <Grid item xs={3}></Grid>
-                 
               </Grid>
               {/* <Typography>Generate Pdf</Typography> */}
             </div>
