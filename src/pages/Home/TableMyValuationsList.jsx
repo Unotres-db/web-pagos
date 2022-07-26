@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { format, parseISO } from 'date-fns';
 
+import api from '../../services/api';
 import useTest from '../../hooks/useTest';
 import useTableSorting from '../../hooks/useTableSorting';
 
@@ -30,6 +31,11 @@ const useStyles = makeStyles( (mainTheme) => ({
   TableTitle:{
     color: "white",
     fontSize: 11
+  },
+  TableTitleCurrMarketValue:{
+    fontSize: 11,
+    color: "white",
+    backgroundColor: mainTheme.palette.tertiary .main
   },
   ButtonTable:{
     display: 'inline-block',
@@ -73,9 +79,9 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
   const [ rowsPerPage, setRowsPerPage ] = useState(12);
   const [ orderDirection, setOrderDirection ] = useState('desc');
   const [ orderBy, setOrderBy ] = useState('updated_at');
-  const [ isDialogOpen, setIsDialogOpen]= useState(false);
+  const [ isDialogOpen, setIsDialogOpen ] = useState(false);
   const [ dialogOptions, setDialogOptions ] = useState({severity:"",title:"",message:"",buttons:{},action:""});
-  const [ deleteValuationId, setDeleteValuationId] = useState("")
+  const [ deleteValuationId, setDeleteValuationId ] = useState("")
   const { deleteValuation } = useTest();
   const { getComparator, handleRequestSort } = useTableSorting();
 
@@ -92,12 +98,13 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
     setDialogOptions({severity:"",title:"",message:"",buttons:{},action:""});
     if (value === "Confirm" && action ==="delete"){  
       deleteValuation(deleteValuationId,deleteSuccessCallback, errorCallback);
+      // FetchData(api.delete (`valuations/${deleteValuationId}`,{ headers : { Authorization: "martincsl",}}),deleteSuccessCallback, errorCallback)
     } 
   }
 
   function deleteSuccessCallback(){
     setValuationsList(valuationsList.filter(currValuation => currValuation.valuationId !== deleteValuationId));
-    setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully deleted",buttons:{button1:"Ok"}, action:"delete"})
+    setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully deleted.",buttons:{button1:"Ok"}, action:"delete"})
     setIsDialogOpen (true);
   }
 

@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { Paper, Grid, Box, Button, Typography, Tooltip } from '@material-ui/core';
+import { Grid, Paper, Box, Button, Typography, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 import api from '../../services/api';
 
-import Header from '../../components/Header.js';
+import Header from '../../components/Header';
 import DialogModal from '../../components/modals/DialogModal';
 import MyProfile from './MyProfile';
 import TableMyValuationsList from './TableMyValuationsList';
-import RecommendedValuations from './RecommendedValuations.jsx';
+import RecommendedValuations from './RecommendedValuations';
 import TableYourNetwork from './TableYourNetwork';
 
 const useStyles = makeStyles( (mainTheme) => ({
@@ -84,7 +84,7 @@ export default function Home (){
   function handleNewValuation(){
     history.push('/valuation')
   }
-
+   // testear com useFetch x useEffect
   useEffect ( ()=> {
     api.get('valuations')
     .then (response => {
@@ -100,7 +100,7 @@ export default function Home (){
         } else {
           setDialogOptions({severity:"error", title:"Oops", message:"There was an unexpected error in the server. Please try later.",buttons:{button1:"Ok"},action:""})
           }
-      setIsDialogOpen (true);   
+      setIsDialogOpen (true);
     });
   },[]) 
   

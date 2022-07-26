@@ -3,41 +3,31 @@ import React from 'react';
 import Pdf from "react-to-pdf";
 import { Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Button, Typography, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
+import CancelIcon from '@mui/icons-material/Cancel';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+
+import mainLogo from '../../assets/Group 292.svg';
 
 import TableHistoricalData from './TableHistoricalData';
+import FormBusinessData from './FormBusinessData';
+import FormCostOfCapitalData from './FormCostOfCapitalData';
 import TableValuation from './TableValuation';
 
 const useStyles = makeStyles((mainTheme) => ({
-  iconBox:{
-    width:'100%',
-    textAlign: 'center',
-    AlignItems: 'center',
-  },
   buttonStyle:{
-    color:"white",
-    backgroundColor:mainTheme.palette.primary.main,
-    textTransform:"none",
-    fontSize: 12,
-    margin: "10px",
-    minWidth:"140px",
-    "&:hover": {
-      color:"orangered",
-      backgroundColor:mainTheme.palette.primary.main,
-    },
+    minWidth:"130px",
   }, 
-  paperStyle: {
-    width: 650,   
-    height:"100%",
-    marginLeft:"50px",
-    marginRight:"50px",
-    padding: "10px",
-    backgroundColor:"white",
-  },   
+  logoStyle: {
+    position: "relative",
+    height: "45px",
+    // padding: "24px",
+    top:"0px"
+  }
 }))
 
 const ref = React.createRef();
 
-const TestPrint = ({ open, onClose, companyData, historicalFinancialData, assumptions, calculatedCostOfCapital, valuation }) => {
+const TestPrint = ({ open, onClose, companyData, historicalFinancialData, assumptions, setAssumptions, calculatedCostOfCapital, valuation }) => {
 
   // console.log("entou em Test Print");
   const classes = useStyles();  
@@ -64,18 +54,27 @@ const TestPrint = ({ open, onClose, companyData, historicalFinancialData, assump
         <DialogContent style={{color:'white'}}>
           <DialogContentText id="alert-dialog-description">
             <div className="Post" ref={ref}>
-              <Grid container>
-                <Grid item xs={3}></Grid>
+            <img src = {mainLogo} alt="Logo" className={classes.logoStyle} />
+              <Grid container direction="row" spacing={2}>
+                <Grid item xs={6}>
                   <TableHistoricalData historicalFinancialData = {historicalFinancialData} />
-                <Grid item xs={6}></Grid>
-                <TableValuation 
-                  valuation = {valuation} 
-                  historicalFinancialData = {historicalFinancialData} 
-                  calculatedCostOfCapital = {calculatedCostOfCapital}
-                  assumptions = {assumptions}
-                  companyData = {companyData}
-                />
-                <Grid item xs={3}></Grid>
+                  <FormBusinessData assumptions = {assumptions} setAssumptions = {setAssumptions} />
+                  <FormCostOfCapitalData 
+                      assumptions = {assumptions} 
+                      setAssumptions = {setAssumptions}
+                      calculatedCostOfCapital = {calculatedCostOfCapital}
+                    />
+                  </Grid>  
+                <Grid item xs={6}>
+                  <TableValuation 
+                    valuation = {valuation} 
+                    historicalFinancialData = {historicalFinancialData} 
+                    calculatedCostOfCapital = {calculatedCostOfCapital}
+                    assumptions = {assumptions}
+                    companyData = {companyData}
+                  />
+                  </Grid>
+                
               </Grid>
               {/* <Typography>Generate Pdf</Typography> */}
             </div>
@@ -84,9 +83,9 @@ const TestPrint = ({ open, onClose, companyData, historicalFinancialData, assump
         </DialogContent>
         <DialogActions >
           <Grid container direction="row" xs={6} style={{textAlign:'center'}}>
-            <Button disableRipple className={classes.buttonStyle} onClick={onClose}>Volver</Button>
-            <Pdf targetRef={ref} filename="post.pdf">
-              {({ toPdf }) => <Button disableRipple className={classes.buttonStyle} onClick={toPdf}>Generar Archivo Pdf</Button>}
+            <Button disableRipple className={classes.buttonStyle} onClick={onClose} startIcon={<CancelIcon />}>Cancel</Button>
+            <Pdf targetRef={ref} filename="valuation.pdf">
+              {({ toPdf }) => <Button disableRipple className={classes.buttonStyle} onClick={toPdf} startIcon={<PictureAsPdfIcon />}>Generate Pdf File</Button>}
             </Pdf>
             <Box style={{height: 20}}/>
           </Grid> 

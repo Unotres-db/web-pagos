@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { Container, Grid, Paper, Box, CircularProgress, Typography } from '@material-ui/core';
+import { Container, Grid, Paper, Box, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import api from '../../services/api';
 import useFetch from '../../hooks/useFetch';
+import useFetch0 from '../../hooks/useFetch0';
 import useUnsavedWarning from '../../hooks/useUnsavedWarning';
 import useDataHandling from '../../hooks/useDataHandling';
 import useValuation from '../../hooks/useValuation';
@@ -75,14 +76,13 @@ export default function Valuation () {
   const currentYear = new Date().getFullYear();  // revisar
   const historicalYears = 3
   const historicalInitialValues = (Array.from({ length: 4 }, (a,b) => ({ year:currentYear - 4 + b, period:0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, grossProfitPercent:0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0 }))).reverse();
-
   const forecastedInitialValues = (Array.from({ length: 5 }, (a,b) => ({ year:currentYear + b, period:0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, grossProfitPercent:0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0 }))).reverse();
   const combinedInitialValues = (Array.from({ length: 8 }, (a,b) => ({ year:currentYear - historicalYears + b, period:0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, grossProfitPercent:0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalrChanges:0, cashFlow:0, discountedCashFlow:0 }))).reverse();
   const assumptionsInitialValues = {revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",cashFlowGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: 3, cashFlowDiscretePeriod:5, companyBeta:0, riskFreeReturn:3.0790, marketReturn:10.05, debtTotalRatio:0, costOfDebt:5}
   const valuationInitialValues = {valuationId:"none", cashFlowAvgGrowth:0, sumOfCashFlowPresentValue:0, perpetuityValue:0, perpetuityPresentValue:0, enterpriseValue:0, cash:0, debt:0, equityValue:0, sharesOutstanding:0, targetStockPrice:0, marketCap:0, published:"", publishedDate:""};
   const [ Prompt, setIsDirty, setIsPristine ] = useUnsavedWarning();
-  const [ isLoading, setIsLoading ] = useState(false);
-  const [ isUseAvgAsAssumption, setIsUseAvgAsAssumption ] = useState(true); // Uses historical averages as assumptions to forecast next years
+  const [ isLoading, setIsLoading ] = useState (false);
+  // const [ isUseAvgAsAssumption, setIsUseAvgAsAssumption ] = useState(true); // Uses historical averages as assumptions to forecast next years
   const [ isEstimateFcffOnly,setIsEstimateFcffOnly  ] = useState(false); 
   const [ isDisabledChkBox, setIsDisabledChkBox] = useState(false);
   const [ isCheckedDescOrder, setIsCheckedDescOrder] = useState(true);
@@ -94,9 +94,9 @@ export default function Valuation () {
   const [ companiesList, setCompaniesList ] = useState([]);
   const [ companyIdSearch, setCompanyIdSearch] = useState("");
   const [ companySearchName, setCompanySearchName]= useState("");
-  const [ apiQueryParam, setApiQueryParam] = useState("")
+  // const [ apiQueryParam, setApiQueryParam] = useState("")
   const [ historicalFinancialData, setHistoricalFinancialData ] = useState();
-  const [ averageHistoricalTaxRate, setAverageHistoricalTaxRate] = useState(0);
+  // const [ averageHistoricalTaxRate, setAverageHistoricalTaxRate] = useState(0);
   const [ combinedFinancialData, setCombinedFinancialData] = useState(combinedInitialValues);
   const [ companyData, setCompanyData] = useState({symbol:"",shortName:"", sharesOustanding: 0, regularMarketPrice:0, fiftyTwoWeekLow:0, fiftyTwoWeekHigh:0, marketCap:0, beta:0, totalCash:0, totalDebt:0 });
   const [ assumptions, setAssumptions ] = useState(assumptionsInitialValues);
@@ -106,12 +106,9 @@ export default function Valuation () {
   const { calcForecastedCashFlow, calcValuation, calcCostOfCapital } = useValuation ({assumptions, forecastedFinancialData, historicalFinancialData, isCheckedDescOrder, calculatedCostOfCapital, companyData, isEstimateFcffOnly}); //
   const { createFinancialHistoricalData, createCombinedData, handleValuation, handlePublication } = useDataHandling({ companyData, historicalFinancialData, assumptions, calculatedCostOfCapital, valuation, setValuation, forecastedFinancialData, isCheckedShowPreviousYears, isCheckedDescOrder })
   const { data: allCompanies, isLoading: isLoadingAllCompanies, error: errorAllCompanies } = useFetch(api.get("companies"));
-  // const { data: company, isLoading: isLoadingCompany, error: errorCompany, refetch:refetchCompany } = useFetch(api.get(`'companies', { headers :{ Authorization: ${companyIdSearch},}})`);
-  const { data: company, isLoading: isLoadingCompany, error: errorCompany, refetch:refetchCompany } = useFetch(api.get('companies', { headers :{ Authorization: companyIdSearch,}}));
-  const { data: financials, isLoading: isLoadingFinancials, error: errorFinancials } = useFetch(api.get('financials',{ headers :{Authorization: companyIdSearch,}}));
+  const { data,  error, refetch } = useFetch0();
 
-  function valuationStatus(){
-
+  function valuationStatus() {
     const {revenueGrowth, marginTarget, opexGrowth, interestGrowth, otherGrowth,  taxRate, capexGrowth, nwcGrowth, cashFlowGrowthRate, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn, costOfDebt} = assumptions;
     const {symbol} = companyData;
     let fieldsCompleted = 0;
@@ -132,24 +129,7 @@ export default function Valuation () {
       return "completed"
     } 
     return "edited"
-    }
-
-
-  // function isValuationCompleted(){
-  //   const {revenueGrowth, marginTarget, opexGrowth, interestGrowth, otherGrowth,  taxRate, capexGrowth, nwcGrowth, cashFlowGrowthRate, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn,costOfDebt} = assumptions;
-
-  //   let isCompleted = true;
-  //   let valuesToCheck = { revenueGrowth, marginTarget, opexGrowth, interestGrowth, otherGrowth,  taxRate, capexGrowth, nwcGrowth, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn,costOfDebt }
-  //   if (isEstimateFcffOnly) {
-  //     valuesToCheck = { cashFlowGrowthRate, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn, costOfDebt }
-  //   }
-  //   Object.keys(valuesToCheck).forEach( (key) => {  
-  //     if (assumptions [key] === "") {
-  //       isCompleted = false;
-  //     }
-  //   })
-  //   return isCompleted
-  // }
+  }
 
   function handleNewValuation () {
     setCompanySearchName("");
@@ -161,9 +141,46 @@ export default function Valuation () {
     setValuation(valuationInitialValues); 
   }
 
+  // function allCompaniesSuccessCallback () {
+  //   if (allCompanies) {  
+  //     // Uses react-search-autocomplete parameters (name, id) not the state names such as shortName, companyId...
+  //     let searchListCompanies = Array.from({ length: allCompanies.length } , () =>({id:"", shortName:"", name:""}));
+  //     for (let i = 0 ; i < allCompanies.length; i++) {
+  //       searchListCompanies[i].name = allCompanies[i].symbol + " - " + allCompanies[i].shortName
+  //       searchListCompanies[i].id = allCompanies[i].symbol 
+  //       searchListCompanies[i].shortName = allCompanies[i].shortName
+  //     }
+  //     setCompaniesList (searchListCompanies)
+  //   }
+  // }
+
+  // function CompanySuccessCallback(data){
+  //   const company = data;
+  //   if (response.data) {
+  //     if (company.marketCap > 0 && company.regularMarketPrice > 0 ) {
+  //       shares = company.marketCap/1000000/company.regularMarketPrice //see api value
+  //     } 
+  //     setCompanySearchName(company.symbol + " - " + company.shortName);
+  //     setCompanyData({symbol:company.symbol, shortName:company.shortName, sharesOutstanding: shares, regularMarketPrice:company.regularMarketPrice, fiftyTwoWeekLow:company.fiftyTwoWeekLow, fiftyTwoWeekHigh:company.fiftyTwoWeekHigh, marketCap:company.marketCap/1000000000, beta:company.beta, totalCash: company.totalCash/1000000000, totalDebt: company.totalDebt/1000000000})
+  //     setAssumptions (prevState => ({...prevState, companyBeta: company.beta, revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",taxRate:"",capexGrowth:"",nwcGrowth:"",cashFlowGrowthRate:"",cashFlowDiscretePeriod:5 }))
+  //     // clean previous company forecasted data
+  //     setForecastedFinancialData(forecastedInitialValues);
+  //     // setCombinedFinancialData(historicalFinancialData);
+  // }
+
+  // function CompanyErrorCallback(){
+  //   setCompanySearchName("");
+  //   setDialogOptions({severity:"error", title:"Oops", message:errorMessage,buttons:{button1:"Ok"}})
+  //   setIsDialogOpen (true);
+  // }
+
+  // function financialsSuccessCallback(){
+  //   setHistoricalFinancialData(createFinancialHistoricalData(response.data));
+  // }
+
   useEffect ( ()=> {
     if (allCompanies) {  
-      // Uses react-search-autocomplete parameters (name, id) not the state names such as shortName, companyId...
+      // Note: Uses 'react-search-autocomplete' parameters (name, id) not the state names such as shortName, companyId...
       let searchListCompanies = Array.from({ length: allCompanies.length } , () =>({id:"", shortName:"", name:""}));
       for (let i = 0 ; i < allCompanies.length; i++) {
         searchListCompanies[i].name = allCompanies[i].symbol + " - " + allCompanies[i].shortName
@@ -180,15 +197,40 @@ export default function Valuation () {
 
   useEffect (()=> {
     
+    function getCompany2 (){
+      let shares = 0;
+      // const { company, isErrorCompany} = refetch(api.get('companies', { headers :{ Authorization: companyIdSearch,}}))
+      // const { company, isErrorCompany } = refetch (api.get(`'companies', { headers :{ Authorization: ${companyIdSearch},}})`));
+      const { data, isError } = refetch (companyIdSearch);
+
+      if (isError) {
+        alert ("Error fetching data");
+      } else {
+          if (data) {
+            if (data.marketCap > 0 && data.regularMarketPrice > 0 ) {
+              shares = data.marketCap/1000000/data.regularMarketPrice //see api value
+            } 
+            setCompanySearchName(data.symbol + " - " + data.shortName);
+            setCompanyData({symbol:data.symbol, shortName:data.shortName, sharesOutstanding: shares, regularMarketPrice:data.regularMarketPrice, fiftyTwoWeekLow:data.fiftyTwoWeekLow, fiftyTwoWeekHigh:data.fiftyTwoWeekHigh, marketCap:data.marketCap/1000000000, beta:data.beta, totalCash: data.totalCash/1000000000, totalDebt: data.totalDebt/1000000000})
+            setAssumptions (prevState => ({...prevState, companyBeta: data.beta, revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",taxRate:"",capexGrowth:"",nwcGrowth:"",cashFlowGrowthRate:"",cashFlowDiscretePeriod:5 }))
+            // clean previous company forecasted data
+            setForecastedFinancialData(forecastedInitialValues);
+            // setCombinedFinancialData(historicalFinancialData);
+          } else {
+            setCompanySearchName("");
+          }
+        }
+    }
+
     function getCompany(){
-      const dataCompany = {companyIdSearch}
-      let shares = 0
+      
+      let shares = 0;
       api.get('companies', { headers :{ Authorization: companyIdSearch,}})
         .then (response => {
           const company = response.data;
           if (company) {
             if (company.marketCap > 0 && company.regularMarketPrice > 0 ) {
-              shares = company.marketCap/1000000/company.regularMarketPrice
+              shares = company.marketCap/1000000/company.regularMarketPrice //see api value
             } 
             setCompanySearchName(company.symbol + " - " + company.shortName);
             setCompanyData({symbol:company.symbol, shortName:company.shortName, sharesOutstanding: shares, regularMarketPrice:company.regularMarketPrice, fiftyTwoWeekLow:company.fiftyTwoWeekLow, fiftyTwoWeekHigh:company.fiftyTwoWeekHigh, marketCap:company.marketCap/1000000000, beta:company.beta, totalCash: company.totalCash/1000000000, totalDebt: company.totalDebt/1000000000})
@@ -206,21 +248,6 @@ export default function Valuation () {
             alert("warning - Error en acceso a base de datos" + errorMsg)
           }
         });  
-      // console.log(companyIdSearch);
-      // console.log(company);
-      // refetchCompany(api.get('companies', { headers :{ Authorization: companyIdSearch,}}));
-      // console.log(company);
-      // refetchCompany();
- 
-      // if (company) {
-      //   console.log(company);
-      //   setCompanySearchName(company.symbol + " - " + company.shortName);
-      //   setCompanyData({symbol:company.symbol, shortName:company.shortName, sharesOutstanding: company.marketCap/1000000/company.regularMarketPrice, regularMarketPrice:company.regularMarketPrice, marketCap:company.marketCap/1000000000, beta:company.beta})
-      //   setAssumptions (prevState => ({...prevState, companyBeta: company.beta, revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",taxRate:"",capexGrowth:"",nwcGrowth:"",cashFlowGrowthRate:"",cashFlowDiscretePeriod:5 }))
-    
-      //   setForecastedFinancialData(forecastedInitialValues);
-      //   setCombinedFinancialData(historicalFinancialData);
-      // }
     }
 
     function getFinancials(){ 
@@ -251,6 +278,7 @@ export default function Valuation () {
     // },5000)
     // setTimeout(getFinancials(),5000);
     if (companyIdSearch){
+      // getCompany2();
       getCompany();
       getFinancials();
     }
@@ -285,20 +313,8 @@ useEffect (()=> {
   if (historicalFinancialData){
     setCalculatedCostOfCapital(calcCostOfCapital());
     setForecastedFinancialData(calcForecastedCashFlow());
-    // setValuation(calcValuation());
     setCombinedFinancialData(createCombinedData());
-    // if (isValuationCompleted()) {
-    //   setEditMode("completed");
-    // } else {
-      
-    //   setEditMode("blank");
-    // }
     setEditMode(valuationStatus());
-    // if (checkValuationMinRequirements) {
-    //   localStorage.setItem('valuation', JSON.stringify(valuation));
-    //   localStorage.setItem('forecastedFinancialData', JSON.stringify(forecastedFinancialData));
-    //   localStorage.setItem('calculatedCostOfCapital', JSON.stringify(calculatedCostOfCapital));
-    // }
   }
 },[assumptions]);  
 
@@ -307,34 +323,19 @@ useEffect (()=> {
 },[isCheckedDescOrder, isCheckedShowPreviousYears]);  
 
 useEffect (()=> {
-  // setAssumptions(assumptionsInitialValues)
   if (companyData.beta) {
     setAssumptions (prevState => ({...prevState, companyBeta: companyData.beta, revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",taxRate:"",capexGrowth:"",nwcGrowth:"",cashFlowGrowthRate:"",cashFlowDiscretePeriod:5 }))
   } else {
     setAssumptions (prevState => ({...prevState, companyBeta: "", revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",taxRate:"",capexGrowth:"",nwcGrowth:"",cashFlowGrowthRate:"",cashFlowDiscretePeriod:5 }))
   }
-
 },[isEstimateFcffOnly]);  
 
 
-  // axios.all([
-  //   axios.post(`/my-url`, {
-  //     myVar: 'myValue'
-  //   }), 
-  //   axios.post(`/my-url2`, {
-  //     myVar: 'myValue'
-  //   })
-  // ])
-  // .then(axios.spread((data1, data2) => {
-  //   // output of req.
-  //   console.log('data1', data1, 'data2', data2)
-  // }));
   
   return (
   <>
+  {console.count()}
   <Header />
-  {/* {console.count()} */}
-  {/* {console.log(historicalAverages)} */}
 
   { combinedFinancialData ? <div>
 
@@ -345,42 +346,39 @@ useEffect (()=> {
     <Grid item container direction="row" spacing={1} >
       <Grid item xs={12} md={3} >
         <Paper className={classes.paperStyle} elevation={3}>
-        {/* {  historicalAverages ? ( */}
+
           <TableHistoricalData historicalFinancialData = {historicalFinancialData} />
-        {/* ) : null } */}
-
         <Box style={{height:"5px"}}/>
-          {/* { ! isLoading ? ( */}
-            <FormOptions 
-              isEstimateFcffOnly = {isEstimateFcffOnly}
-              setIsEstimateFcffOnly = {setIsEstimateFcffOnly}
-              isDisabledChkBox = {isDisabledChkBox}
-            />
-          {/* ) : null }   */}
 
-          {  ! isEstimateFcffOnly ? <div>
-          <Box style={{height:"5px"}}/>  
-            {/* { ! isLoading ? ( */}
-              <FormBusinessData 
-                assumptions = {assumptions} 
-                setAssumptions = {setAssumptions}
-              />
-            {/* ) : null } */}
-          </div> : <div> 
-            <Box style={{height:"5px"}}/>    
+          <FormOptions 
+            isEstimateFcffOnly = {isEstimateFcffOnly}
+            setIsEstimateFcffOnly = {setIsEstimateFcffOnly}
+            isDisabledChkBox = {isDisabledChkBox}
+          />
+
+          {  ! isEstimateFcffOnly ? <>
+          <Box style={{height:"5px"}} />  
+
+            <FormBusinessData 
+              assumptions = {assumptions} 
+              setAssumptions = {setAssumptions}
+            />
+          </> : 
+          <> 
+            <Box style={{height:"5px"}}/>   
+            
             <FormCashFlowData
               assumptions = {assumptions} 
               setAssumptions = {setAssumptions}
             />
-          </div>}
+          </> }
           <Box style={{height:"5px"}}/>
-          {/* { ! isLoading ? ( */}
+
           <FormCostOfCapitalData 
             assumptions = {assumptions} 
             setAssumptions = {setAssumptions}
             calculatedCostOfCapital = {calculatedCostOfCapital}
           />
-          {/* ) : null } */}
         </Paper>
       </Grid>  
 
@@ -392,7 +390,6 @@ useEffect (()=> {
           
             { companiesList ? <>
               <Box className = {classes.boxSelectStyle} >
-                {/* {editMode? editMode : null} */}
                 <CompanySelect 
                   companiesList={companiesList} 
                   companyIdSearch={companyIdSearch} 
@@ -401,6 +398,7 @@ useEffect (()=> {
               </Box>
             </> : null}
             <Box style={{height:"10px"}}/>
+            
             { companyData ? <>
               <CompanyInfo 
                 companyData = {companyData} 
@@ -411,12 +409,13 @@ useEffect (()=> {
                 editMode = {editMode}
                 setEditMode = {setEditMode}
                 assumptions={assumptions}
+                setAssumptions={setAssumptions}
                 calculatedCostOfCapital={calculatedCostOfCapital}
                 valuation = {valuation}
                 setValuation = {setValuation}
                 handleNewValuation = {handleNewValuation}
               />
-            </>: null}
+            </> : null}
 
             <TableCheckBoxes 
               isCheckedDescOrder = {isCheckedDescOrder} 
@@ -458,7 +457,7 @@ useEffect (()=> {
 
       <Grid item xs={12} md={3} >
         <Paper className={classes.paperStyle} elevation={3}>
-          {/* { ! isLoading ? <> */}
+          
           <TableValuation 
             valuation = {valuation} 
             historicalFinancialData = {historicalFinancialData} 
@@ -470,9 +469,6 @@ useEffect (()=> {
           <Paper elevation ={6} style={{height:'180px'}}>
             { combinedFinancialData ? 
               <ChartFreeCashFlow
-                // historicalFinancialData = {historicalFinancialData}
-                // assumptions = {assumptions}
-                // forecastedFinancialData = {forecastedFinancialData} 
                 combinedFinancialData = {combinedFinancialData}
                 assumptions = {assumptions}
                 isCheckedShowPreviousYears = {isCheckedShowPreviousYears}
@@ -480,7 +476,7 @@ useEffect (()=> {
               />
             : null}
           </Paper>
-          {/* </> : null }  */}
+        
         </Paper>
       </Grid>
     </Grid>
@@ -495,3 +491,17 @@ useEffect (()=> {
   </>
   )
 }
+
+
+  // axios.all([
+  //   axios.post(`/my-url`, {
+  //     myVar: 'myValue'
+  //   }), 
+  //   axios.post(`/my-url2`, {
+  //     myVar: 'myValue'
+  //   })
+  // ])
+  // .then(axios.spread((data1, data2) => {
+  //   // output of req.
+  //   console.log('data1', data1, 'data2', data2)
+  // }));

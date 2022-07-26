@@ -5,15 +5,10 @@ import { Chart as ChartJS } from "chart.js/auto";
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
-// import useDataHandling from "../../hooks/useDataHandling";
 
-// export default function ChartRevenueFcff ({ historicalFinancialData, assumptions, forecastedFinancialData, isCheckedShowPreviousYears, isCheckedDescOrder }) {
-  export default function ChartFreeCashFlow ({ combinedFinancialData, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder }) {
+export default function ChartFreeCashFlow ({ combinedFinancialData, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder }) {
 
-  // const { changeArrayOrder } = useDataHandling ({ historicalFinancialData, forecastedFinancialData, isCheckedShowPreviousYears, isCheckedDescOrder });
   let combinedArray = [];
-  // const numberOfYears = assumptions;
-  // console.log(assumptions);
   const theme = useTheme();
   const [ chartData, setChartData] = useState({
     labels:combinedArray.map((currElement)=> (currElement.year)),

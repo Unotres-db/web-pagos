@@ -10,6 +10,7 @@ import Valuation from './pages/Valuation';
 import DividendYield from './pages/DividendYield';
 import Graham from './pages/Graham';
 import Home from './pages/Home';
+import Jokes from './pages/Jokes';
 import Login from './pages/Login';
 // import { RenderingTest } from './pages/RenderingTest';
 // import Update from './pages/Update';
@@ -32,7 +33,7 @@ export default function Routes() {
         <Route path = "/valuation" component = {Valuation} />
         <Route path = "/books" component = {Books} />
         {/* <Route path = "/blog" component = {Blog} /> */}
-        <Route path = "/pricing" component = {Pricing} />
+        <Route path = "/pricing" component = {Jokes} />
         <Route path = "/who-we-are" component = {Whoweare} />
         <Route path = "/contact" component = {Contact} />
         <Route path = "/login" component = {Login} />

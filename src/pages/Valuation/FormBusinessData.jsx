@@ -7,8 +7,8 @@ import useValuationForm from '../../hooks/useValuationForm';
 
 const useStyles = makeStyles( (mainTheme) => ({
   table: {
-    minWidth: 300,
-    maxHeight: 900
+    // minWidth: 300,
+    // maxHeight: 900
   },
   TableHeader:{
     color:  "white",

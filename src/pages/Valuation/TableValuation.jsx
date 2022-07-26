@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles( (mainTheme) => ({
 table: {
-  minWidth: 300,
+  // minWidth: 300,
   maxHeight: 900
 },
 TableHeader:{

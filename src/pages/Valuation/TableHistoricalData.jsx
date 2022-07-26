@@ -7,8 +7,8 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles( (mainTheme) => ({
 table: {
-  minWidth: 300,
-  maxHeight: 900,
+  // minWidth: 300,
+  // maxHeight: 900,
   // "& .MuiTableCell-root": {
   //   borderLeft: "1px solid rgba(224, 224, 224, 1)"
   // }

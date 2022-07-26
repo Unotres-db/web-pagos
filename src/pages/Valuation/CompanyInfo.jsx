@@ -33,7 +33,7 @@ companyNameText:{
 }
 }));
 
-export default function CompanyInfo({ companyData, historicalFinancialData, forecastedFinancialData, handleValuation, handlePublication, editMode, setEditMode, assumptions, calculatedCostOfCapital, valuation, setValuation, handleNewValuation }){
+export default function CompanyInfo({ companyData, historicalFinancialData, forecastedFinancialData, handleValuation, handlePublication, editMode, setEditMode, assumptions, setAssumptions, calculatedCostOfCapital, valuation, setValuation, handleNewValuation }){
 
   const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
   const [ isDialogOpen, setIsDialogOpen] = useState(false);
@@ -196,6 +196,7 @@ export default function CompanyInfo({ companyData, historicalFinancialData, fore
       companyData={companyData}
       historicalFinancialData={historicalFinancialData} 
       assumptions={assumptions} 
+      setAssumptions={setAssumptions}
       calculatedCostOfCapital={calculatedCostOfCapital} 
       valuation={valuation}
     />
