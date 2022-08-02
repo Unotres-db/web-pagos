@@ -8,9 +8,12 @@ import PublishIcon from '@mui/icons-material/Publish';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { format } from 'date-fns'
+import { format } from 'date-fns';
 
 import useTest from '../../hooks/useTest';
+import valuationsWebApi from '../../services/valuationsWebApi';
+import useAxios from '../../hooks/useAxios';
+
 import DialogModal from '../../components/modals/DialogModal';
 import PrintValuation from './PrintValuation';
 import TestPrint from './TestPrint';
@@ -39,14 +42,23 @@ export default function CompanyInfo({ companyData, historicalFinancialData, fore
   const [ isDialogOpen, setIsDialogOpen] = useState(false);
   const [ isDialogPdfOpen, setIsDialogPdfOpen] = useState(false);
   const [ deleteValuationId, setDeleteValuationId] = useState("");
-  const { saveValuation, publishValuation, deleteValuation }  = useTest ();
+  const { saveValuation }  = useTest ();
+  const { axiosFetch: putValuation} = useAxios();
+  const { axiosFetch: delValuation} = useAxios();
 
   function handleSave (){
     saveValuation(companyData, assumptions, calculatedCostOfCapital, valuation, setValuation, forecastedFinancialData, saveSuccessCallback, errorCallback)
   }
 
-  function handlePublish (){
-    publishValuation(valuation, publishSuccessCallback, errorCallback);
+  function handlePublish (){  // receber valuationId como parametro x usar o state
+    const { valuationId } = valuation;
+    const published = "all";
+    putValuation({ axiosInstance: valuationsWebApi, method: 'PUT', url: '/publication', 
+      requestConfig: { 
+        valuationId: valuationId,
+        published: published
+      }
+    },publishSuccessCallback, errorCallback);
   }
 
   function handleDelete (valuationId){
@@ -55,7 +67,17 @@ export default function CompanyInfo({ companyData, historicalFinancialData, fore
     setIsDialogOpen (true);
   }
 
-  function saveSuccessCallback(){
+  function deleteValuation (valuationId){  
+    const userId = "martincsl"  // atualizar para state global com Context
+    delValuation({ axiosInstance: valuationsWebApi, method: 'DELETE', url: '/valuations', 
+      requestConfig: { 
+        data : {valuationId: valuationId }, //testar com params e nao body
+        headers: {'Authorization': userId,},
+      }
+    },deleteSuccessCallback, errorCallback);
+  }
+
+  function saveSuccessCallback(apiData){
     setEditMode("saved");
     setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully saved",buttons:{button1:"Ok"},action:"save"})
     setIsDialogOpen (true);
@@ -69,7 +91,7 @@ export default function CompanyInfo({ companyData, historicalFinancialData, fore
     setIsDialogOpen (true);
   }
 
-  function deleteSuccessCallback(){
+  function deleteSuccessCallback(apiData){
     setEditMode("blank");
     handleNewValuation();
     setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully deleted",buttons:{button1:"Ok"},action:"delete"})
@@ -85,19 +107,8 @@ export default function CompanyInfo({ companyData, historicalFinancialData, fore
     setIsDialogOpen (false);
     setDialogOptions({severity:"",title:"",message:"",buttons:{},action:""});
     if (value === "Confirm" && action ==="delete"){  
-      // switch (action) {
-      //   case "save":
-
-      //   case "publish":
-
-      //   case "print":
-
-      //   case "delete":
-          deleteValuation(deleteValuationId,deleteSuccessCallback, errorCallback);
-      // }
+      deleteValuation(deleteValuationId,deleteSuccessCallback, errorCallback);
     } 
-    // else if (value === "Ok"){
-    // }
   }
 
   function handleDialogPdfClose(){
@@ -116,7 +127,7 @@ export default function CompanyInfo({ companyData, historicalFinancialData, fore
     <Grid container direction = "row" spacing = {1}  >
       <Grid item xs = {12} sm={5}>
         <Box style = {{height: "10px"}}/>  
-        <Typography>{editMode}</Typography>
+        {/* <Typography>{editMode}</Typography> */}
         { companyData.symbol ? 
           <>
           

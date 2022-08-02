@@ -2,6 +2,8 @@ import React, { useState }  from 'react';
 
 import { Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel, Button, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+import useTableSorting from '../../hooks/useTableSorting';
 import TablePaginationActions from '../../components/TablePaginationActions';
 
 const useStyles = makeStyles( (mainTheme) => ({
@@ -35,33 +37,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
 }));
 
-function descendingComparator(a, b, orderBy) {
-  if (typeof a[orderBy] === 'string' || a instanceof String ) {
-    // console.log("entrou com Lowercase Test")
-    var stringA = a[orderBy].toLowerCase(), stringB = b[orderBy].toLowerCase()
-    if (stringB < stringA) {
-      return -1;
-    }
-    if (stringB > stringA) {
-      return 1;
-    }
-    return 0;
-  } else {
-      if (b[orderBy] < a[orderBy]) {
-        return -1;
-      }
-      if (b[orderBy] > a[orderBy]) {
-        return 1;
-      }
-      return 0;
-    }
-}
 
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
 
 export default function TableDividendYield ({companiesList}) {
   const classes = useStyles();
@@ -69,17 +45,12 @@ export default function TableDividendYield ({companiesList}) {
   const [ rowsPerPage, setRowsPerPage ] = useState(15);
   const [ orderDirection, setOrderDirection ] = useState('desc');
   const [ orderBy, setOrderBy ] = useState('dividendYield');
-
-  const handleRequestSort = (event, property) => {
-    const isAscending = (orderBy === property && orderDirection === 'asc');
-    setOrderDirection(isAscending ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
+  const { getComparator, handleRequestSort } = useTableSorting();
 
   const createSorthandler=(property) => (event) => {
-    handleRequestSort(event, property);
+    handleRequestSort(event, property, orderDirection, setOrderDirection, orderBy, setOrderBy);
   }
-  
+
   // Avoid a layout jump when reaching the last page with empty rows.
   var emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - companiesList.length) : 0;
 
@@ -177,3 +148,41 @@ export default function TableDividendYield ({companiesList}) {
     </TableContainer>
   );
 }
+
+// function descendingComparator(a, b, orderBy) {
+//   if (typeof a[orderBy] === 'string' || a instanceof String ) {
+//     // console.log("entrou com Lowercase Test")
+//     var stringA = a[orderBy].toLowerCase(), stringB = b[orderBy].toLowerCase()
+//     if (stringB < stringA) {
+//       return -1;
+//     }
+//     if (stringB > stringA) {
+//       return 1;
+//     }
+//     return 0;
+//   } else {
+//       if (b[orderBy] < a[orderBy]) {
+//         return -1;
+//       }
+//       if (b[orderBy] > a[orderBy]) {
+//         return 1;
+//       }
+//       return 0;
+//     }
+// }
+
+// function getComparator(order, orderBy) {
+//   return order === 'desc'
+//     ? (a, b) => descendingComparator(a, b, orderBy)
+//     : (a, b) => -descendingComparator(a, b, orderBy);
+// }
+
+  // const handleRequestSort = (event, property) => {
+  //   const isAscending = (orderBy === property && orderDirection === 'asc');
+  //   setOrderDirection(isAscending ? 'desc' : 'asc');
+  //   setOrderBy(property);
+  // };
+
+  // const createSorthandler=(property) => (event) => {
+  //   handleRequestSort(event, property);
+  // }

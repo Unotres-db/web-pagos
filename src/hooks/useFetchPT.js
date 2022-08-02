@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
 
-function useFetchPT (url) {
+function useFetchPT () {
+  // function useFetchPT (url) {
 
   const [ data, setData ] = useState(null);
   const [ isLoading, setIsLoading ] = useState(false);
@@ -24,21 +25,23 @@ function useFetchPT (url) {
 // }, [request]);
 
   const refetch = (url, successCallback) => {
+  // const refetch = (request, successCallback) => {
+
     setIsLoading(true);
     // request.then((response) => {
-      axios.get(url).then ((response) => {  
-        setData(response.data);
-        successCallback(response.data);
-      })
-      .catch((err) => {
-        setIsError(err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    axios.get(url).then ((response) => {  
+      setData(response.data);
+      successCallback(response.data);
+    })
+    .catch((err) => {
+      setIsError(err);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
   };
 
-  return { isLoading, isError, refetch };
+  return { data, isLoading, isError, refetch };
 }
 
 export default useFetchPT;

@@ -15,6 +15,7 @@ import Login from './pages/Login';
 // import { RenderingTest } from './pages/RenderingTest';
 // import Update from './pages/Update';
 import Pricing from './pages/Pricing';
+import TestApi from './pages/TestApi';
 import TestDateFormats from './pages/TestDateFormats';
 import Updatebk from './pages/Updatebk';
 import Whoweare from './pages/Whoweare';
@@ -33,7 +34,7 @@ export default function Routes() {
         <Route path = "/valuation" component = {Valuation} />
         <Route path = "/books" component = {Books} />
         {/* <Route path = "/blog" component = {Blog} /> */}
-        <Route path = "/pricing" component = {Jokes} />
+        <Route path = "/pricing" component = {TestApi} />
         <Route path = "/who-we-are" component = {Whoweare} />
         <Route path = "/contact" component = {Contact} />
         <Route path = "/login" component = {Login} />

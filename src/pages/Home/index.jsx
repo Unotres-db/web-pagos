@@ -5,7 +5,9 @@ import { Grid, Paper, Box, Button, Typography, Tooltip } from '@material-ui/core
 import { makeStyles } from '@material-ui/core/styles';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-import api from '../../services/api';
+// import api from '../../services/api';
+import valuationsWebApi from '../../services/valuationsWebApi';
+import useAxios from '../../hooks/useAxios';
 
 import Header from '../../components/Header';
 import DialogModal from '../../components/modals/DialogModal';
@@ -75,37 +77,35 @@ export default function Home (){
   const [ valuationsList, setValuationsList ] = useState();
   const [ isDialogOpen, setIsDialogOpen ] = useState(false);
   const [ dialogOptions, setDialogOptions ] = useState({severity:"",title:"",message:"",buttons:{},action:""});
+  const { loading: isLoadingValuations, axiosFetch: getUserValuations} = useAxios();
   const history = useHistory();
 
   function handleDialogClose(){
     setIsDialogOpen(false);
+    setDialogOptions({severity:"",title:"",message:"",buttons:{},action:""});
   }
 
   function handleNewValuation(){
     history.push('/valuation')
   }
-   // testear com useFetch x useEffect
+
+  function userValuationsSuccessCallback(apiData){
+    const allValuations = apiData;
+    setValuationsList(allValuations);
+  }
+
+  function errorCallback(errorMessage){
+    setDialogOptions({severity:"error", title:"Oops", message:errorMessage,buttons:{button1:"Ok"}})
+    setIsDialogOpen (true);
+  }
+  
   useEffect ( ()=> {
-    api.get('valuations')
-    .then (response => {
-      const allValuations = response.data;
-      setValuationsList(allValuations);
-    })
-    .catch (function (err){
-      if (err.response) {
-        const errorMsg = Object.values(err.response.data);
-        setDialogOptions({severity:"error", title:"Oops", message:"There was an error in the database access. Please try later.",buttons:{button1:"Ok"},action:""})
-      } else if (err.request) {
-        setDialogOptions({severity:"error", title:"Oops", message:"There was an error in the server access. Please try later.",buttons:{button1:"Ok"},action:""})
-        } else {
-          setDialogOptions({severity:"error", title:"Oops", message:"There was an unexpected error in the server. Please try later.",buttons:{button1:"Ok"},action:""})
-          }
-      setIsDialogOpen (true);
-    });
+    getUserValuations({ axiosInstance: valuationsWebApi, method: 'GET', url: '/valuations', }, userValuationsSuccessCallback, errorCallback);
   },[]) 
   
   return (
     <>
+    {/* {console.count()} */}
     <Header />
     <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}} >
 
@@ -141,11 +141,14 @@ export default function Home (){
               
             </Grid>
             <Box style={{height:"5px"}}/>
-            { valuationsList ? <>
-              <TableMyValuationsList valuationsList = {valuationsList} setValuationsList={setValuationsList} />
-            </>: 
-              <Typography style={{fontSize:14, marginTop:"15px"}}>You don't have any saved valuation</Typography>
-            }
+            { ! isLoadingValuations ? <>
+              { valuationsList ? <>
+                <TableMyValuationsList valuationsList = {valuationsList} setValuationsList={setValuationsList} />
+              </>: 
+                <Typography style={{fontSize:14, marginTop:"15px"}}>You don't have any saved valuation</Typography>
+              }
+            </>: null}
+
           </Paper>
         </Grid>
 
@@ -162,7 +165,25 @@ export default function Home (){
     </Grid>
     <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
       {dialogOptions.message}
-    </DialogModal> 
+    </DialogModal>
+  
     </>
   )
 }
+
+    // api.get('valuations')
+    // .then (response => {
+    //   const allValuations = response.data;
+    //   setValuationsList(allValuations);
+    // })
+    // .catch (function (err){
+    //   if (err.response) {
+    //     const errorMsg = Object.values(err.response.data);
+    //     setDialogOptions({severity:"error", title:"Oops", message:"There was an error in the database access. Please try later.",buttons:{button1:"Ok"},action:""})
+    //   } else if (err.request) {
+    //     setDialogOptions({severity:"error", title:"Oops", message:"There was an error in the server access. Please try later.",buttons:{button1:"Ok"},action:""})
+    //     } else {
+    //       setDialogOptions({severity:"error", title:"Oops", message:"There was an unexpected error in the server. Please try later.",buttons:{button1:"Ok"},action:""})
+    //       }
+    //   setIsDialogOpen (true);
+    // });

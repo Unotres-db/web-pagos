@@ -1,30 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import useAxios from './useAxios';
 import api from '../services/api';
+import valuationsWebApi from '../services/valuationsWebApi';
 
 export default function useTest () {
-
-  function getAllCompanies(successCallback, errorCallback){
-
-  }
-
-  function getFinancials(successCallback, errorCallback){
-
-  }
-
-  function FetchData (request, successCallback, errorCallback){
-    const [ data, setData ] = useState(null);
-
-    request.then ((response) => {
-      setData (response.data);
-      successCallback();
-    })
-    .catch ((err) => {
-      errorCallback();
-    });
-
-    return data
-  }
-
+  
   function saveValuation(companyData, assumptions, calculatedCostOfCapital, valuation, setValuation, forecastedFinancialData, successCallback, errorCallback){ 
     const userId = "martincsl"; // colocar userId 
     const companyId = companyData.symbol;
@@ -40,6 +20,7 @@ export default function useTest () {
       const { valuationId: valuationId, data } = response.data;
       setValuation (prevState => ({...prevState, valuationId: valuationId}))
       dataToProcess = forecastedFinancialData.map((item, index) => ({...item, valuationId:valuationId, forecastedId:valuationId + index.toString(), companyId:companyData.symbol})) 
+      
       // map and save each period (year) forecasted....
       dataToProcess.map ((currElement)=> (
         api.post('/forecasted', currElement )
@@ -119,5 +100,5 @@ export default function useTest () {
     });
   }
 
-  return { saveValuation, publishValuation, deleteValuation, FetchData }
+  return { saveValuation, publishValuation, deleteValuation }
 }

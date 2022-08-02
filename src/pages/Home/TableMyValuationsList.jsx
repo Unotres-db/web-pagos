@@ -3,21 +3,15 @@ import React, { useState }  from 'react';
 import { Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, TableFooter, TablePagination, TableSortLabel, Button, IconButton, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
-// import PublishIcon from '@mui/icons-material/Publish';
-// import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-// import UnpublishedIcon from '@mui/icons-material/Unpublished';
-// import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-// import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 import { format, parseISO } from 'date-fns';
 
-import api from '../../services/api';
-import useTest from '../../hooks/useTest';
+import valuationsWebApi from '../../services/valuationsWebApi';
+import useAxios from '../../hooks/useAxios';
 import useTableSorting from '../../hooks/useTableSorting';
 
 import DialogModal from '../../components/modals/DialogModal';
 import TablePaginationActions from '../../components/TablePaginationActions';
-
 
 const useStyles = makeStyles( (mainTheme) => ({
   table:{
@@ -82,7 +76,7 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
   const [ isDialogOpen, setIsDialogOpen ] = useState(false);
   const [ dialogOptions, setDialogOptions ] = useState({severity:"",title:"",message:"",buttons:{},action:""});
   const [ deleteValuationId, setDeleteValuationId ] = useState("")
-  const { deleteValuation } = useTest();
+  const { axiosFetch: delValuation} = useAxios();
   const { getComparator, handleRequestSort } = useTableSorting();
 
   var emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - valuationsList.length) : 0; // Avoid a layout jump when reaching the last page with empty rows.
@@ -104,13 +98,23 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
 
   function deleteSuccessCallback(){
     setValuationsList(valuationsList.filter(currValuation => currValuation.valuationId !== deleteValuationId));
-    setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully deleted.",buttons:{button1:"Ok"}, action:"delete"})
+    setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was successfully deleted.",buttons:{button1:"Ok"}, action:"delete"})
     setIsDialogOpen (true);
   }
 
   function errorCallback(errorMessage){
     setDialogOptions({severity:"error", title:"Oops", message:errorMessage,buttons:{button1:"Ok"}})
     setIsDialogOpen (true);
+  }
+
+  function deleteValuation (valuationId){  
+    const userId = "martincsl"  // atualizar para state global com Context
+    delValuation({ axiosInstance: valuationsWebApi, method: 'DELETE', url: '/valuations', 
+      requestConfig: { 
+        data : {valuationId: valuationId }, //testar com params e nao body
+        headers: {'Authorization': userId,},
+      }
+    },deleteSuccessCallback, errorCallback);
   }
 
   const createSorthandler=(property) => (event) => {
@@ -134,6 +138,7 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
     <>
     <TableContainer component={Paper} >
       <Table className={classes.table} size="small" aria-label="stycky header" >
+
         <TableHead className={classes.TableHeader}>
           <TableRow >
             <TableCell className={classes.TableTitle} style={{width:"16%",position:"sticky", paddingRight:"0px", left:0, zIndex:2}}  align="left" key="updated_at">
@@ -158,68 +163,41 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
               <TableCell className={classes.TableTitle} style={{width:"14%", paddingLeft:"5px", paddingRight:"5px"}} align="right">Equity Value</TableCell>
               <TableCell className={classes.TableTitle} style={{width:"14%", paddingLeft:"5px", paddingRight:"5px"}} align="right">Cost of Capital</TableCell>
               <TableCell className={classes.TableTitle} style={{width:"7%", paddingLeft:"5px", paddingRight:"5px"}} align="right"></TableCell>
-
           </TableRow>
         </TableHead>
         
         <TableBody>
-          
           {(rowsPerPage > 0 ? 
-          
             valuationsList.slice().sort(getComparator(orderDirection, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : valuationsList
-            
             ).map((currValuation) => (
-            <TableRow key={currValuation.valuationId}>
-              <TableCell align="left"  className={classes.TableRows}  >
-                <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{format(parseISO(currValuation.updated_at),"yyyy MMMM,dd")}</Button>
-              </TableCell>
-              <TableCell align="left" className={classes.TableRows}  style={{fontSize: 11, width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
-                <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.shortName}</Button>
-              </TableCell>
-              <TableCell align="left" className={classes.TableRows} style={{width:"9%", paddingLeft:"5px", paddingRight:"5px"}}>
-                <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{currValuation.published ? "Public": "Private"}</Button>
-              </TableCell>
-              {/* { ! currValuation.published ? <>
+              <TableRow key={currValuation.valuationId}>
+                <TableCell align="left"  className={classes.TableRows}  >
+                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{format(parseISO(currValuation.updated_at),"yyyy MMMM,dd")}</Button>
+                </TableCell>
+                <TableCell align="left" className={classes.TableRows}  style={{fontSize: 11, width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
+                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.shortName}</Button>
+                </TableCell>
+                <TableCell align="left" className={classes.TableRows} style={{width:"9%", paddingLeft:"5px", paddingRight:"5px"}}>
+                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{currValuation.published ? "Public": "Private"}</Button>
+                </TableCell>
+                <TableCell align="right" className={classes.TableRows} style={{width:"10%", paddingLeft:"5px", paddingRight:"5px"}} >
+                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(currValuation.targetStockPrice)}</Button>
+                </TableCell>
+                <TableCell align="right" className={classes.TableRows} style={{width:"14%", paddingLeft:"5px", paddingRight:"15px"}}>
+                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(currValuation.equityValue)}</Button>
+                </TableCell>
+                <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
+                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(currValuation.costOfCapital/100)}</Button>
+                </TableCell>  
                 <TableCell>
-                  <Tooltip title={`Turn this this ${currValuation.shortName} Valuation public`}>
-                    <IconButton className={classes.iconButtonStyle} 
-                      onClick={(e) => (publicate (currValuation.valuationId))} 
-                      disableRipple size="small" aria-label="delete">
-                      <PublishedWithChangesIcon fontSize="small" />
+                  <Tooltip title={`Delete this ${currValuation.shortName} Valuation`}>
+                    <IconButton className={classes.iconButtonStyle} onClick={(e) => (handleDelete (currValuation.valuationId))} disableRipple size="small" aria-label="delete">
+                      <DeleteIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                </TableCell>
-              </>:
-              <>
-                <TableCell>
-                  <Tooltip title={`Turn this ${currValuation.shortName} Valuation private`}>
-                    <IconButton className={classes.iconButtonStyle} 
-                        disableRipple size="small" aria-label="delete">
-                      <UnpublishedIcon fontSize="small"  />
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
-              </>} */}
-
-              <TableCell align="right" className={classes.TableRows} style={{width:"10%", paddingLeft:"5px", paddingRight:"5px"}} >
-                <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(currValuation.targetStockPrice)}</Button>
-              </TableCell>
-              <TableCell align="right" className={classes.TableRows} style={{width:"14%", paddingLeft:"5px", paddingRight:"15px"}}>
-                <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(currValuation.equityValue)}</Button>
-              </TableCell>
-              <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
-                <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(currValuation.costOfCapital/100)}</Button>
-              </TableCell>  
-              <TableCell>
-                <Tooltip title={`Delete this ${currValuation.shortName} Valuation`}>
-                  <IconButton className={classes.iconButtonStyle} onClick={(e) => (handleDelete (currValuation.valuationId))} disableRipple size="small" aria-label="delete">
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </TableCell>  
-
-            </TableRow>
+                </TableCell>  
+              </TableRow>
           ))}
           {emptyRows > 0 && (
             <TableRow style={{ height: 19.25 * emptyRows }}>
@@ -258,53 +236,58 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
   );
 }
 
-  // function deleteValuation (valuationId) {
-  //   api.delete (`valuations/${valuationId}`,{   
-  //     headers : {
-  //       Authorization: "martincsl",
-  //     }
-  //   })
-  //   .then (response => {
-  //     const deletedId = response.data;
-  //     setValuationsList(valuationsList.filter(currValuation => currValuation.valuationId !== valuationId));
+// import PublishIcon from '@mui/icons-material/Publish';
+// import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+// import UnpublishedIcon from '@mui/icons-material/Unpublished';
+// import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+// import AddCircleIcon from '@mui/icons-material/AddCircle';  
 
-  //   }).catch (function (err){
-  //     if (err.response) {
-  //       const errorMsg = Object.values(err.response.data);
-  //       alert("Warning - Database access error" + errorMsg)
-  //     } else if (err.request) {
-  //         alert("Warning - Server access error")
-  //       } else {
-  //           alert("Warning - Unexpected error")
-  //         }
-  //   }).finally (() => {
-  //       setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was deleted with success",buttons:{button1:"Ok"}})
-  //       setIsDialogOpen (true);
-  //   });
-  // }
+{/* { ! currValuation.published ? <>
+  <TableCell>
+    <Tooltip title={`Turn this this ${currValuation.shortName} Valuation public`}>
+      <IconButton className={classes.iconButtonStyle} 
+        onClick={(e) => (publicate (currValuation.valuationId))} 
+        disableRipple size="small" aria-label="delete">
+        <PublishedWithChangesIcon fontSize="small" />
+      </IconButton>
+    </Tooltip>
+  </TableCell>
+</>:
+<>
+  <TableCell>
+    <Tooltip title={`Turn this ${currValuation.shortName} Valuation private`}>
+      <IconButton className={classes.iconButtonStyle} 
+          disableRipple size="small" aria-label="delete">
+        <UnpublishedIcon fontSize="small"  />
+      </IconButton>
+    </Tooltip>
+  </TableCell>
+</>} */}
 
-                {/* <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}> 
-                <Button disableRipple fullWidth="false" className = {classes.buttonStyle}  startIcon={<DeleteIcon />} >Delete</Button>
-              </TableCell> */}
-              {/* <Box className={classes.grow} style={{justifyContent:"right"}}>
-                <Tooltip title={`Publish this ${currValuation.shortName} Valuation`}>
-                  <IconButton className={classes.iconButtonStyle} disabled={currValuation.published} size="small" aria-label="delete">
-                    <PublishIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={`Print this ${currValuation.shortName} Valuation`}>
-                  <IconButton className={classes.iconButtonStyle}  size="small" aria-label="delete">
-                    <PictureAsPdfIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={`Delete this ${currValuation.shortName} Valuation`}>
-                  <IconButton className={classes.iconButtonStyle}  size="small" aria-label="delete">
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={`Create another ${currValuation.shortName} Valuation`}>
-                  <IconButton className={classes.iconButtonStyle} edge="end" size="small" aria-label="delete">
-                    <AddCircleIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Box> */}
+
+
+{/* <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}> 
+<Button disableRipple fullWidth="false" className = {classes.buttonStyle}  startIcon={<DeleteIcon />} >Delete</Button>
+</TableCell> */}
+{/* <Box className={classes.grow} style={{justifyContent:"right"}}>
+<Tooltip title={`Publish this ${currValuation.shortName} Valuation`}>
+  <IconButton className={classes.iconButtonStyle} disabled={currValuation.published} size="small" aria-label="delete">
+    <PublishIcon fontSize="small" />
+  </IconButton>
+</Tooltip>
+<Tooltip title={`Print this ${currValuation.shortName} Valuation`}>
+  <IconButton className={classes.iconButtonStyle}  size="small" aria-label="delete">
+    <PictureAsPdfIcon fontSize="small" />
+  </IconButton>
+</Tooltip>
+<Tooltip title={`Delete this ${currValuation.shortName} Valuation`}>
+  <IconButton className={classes.iconButtonStyle}  size="small" aria-label="delete">
+    <DeleteIcon fontSize="small" />
+  </IconButton>
+</Tooltip>
+<Tooltip title={`Create another ${currValuation.shortName} Valuation`}>
+  <IconButton className={classes.iconButtonStyle} edge="end" size="small" aria-label="delete">
+    <AddCircleIcon fontSize="small" />
+  </IconButton>
+</Tooltip>
+</Box> */}

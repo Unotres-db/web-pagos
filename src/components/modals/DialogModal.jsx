@@ -72,6 +72,7 @@ export default function DialogModal ({open, onClose, severity, title, buttons, c
   const classes = useStyles();
   return (
     <>
+    <div style={{overflowY: "visible"}}>
     <Dialog 
       open={open}
       onClose={onClose}
@@ -111,6 +112,7 @@ export default function DialogModal ({open, onClose, severity, title, buttons, c
         <Box style={{height:"2px"}}/>
       </DialogActions>
     </Dialog>
+    </div>
     </>
     )
 }

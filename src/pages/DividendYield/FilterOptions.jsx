@@ -10,7 +10,7 @@ sliderAreaStyle:{
   marginTop:"5px",
   marginLeft:"5px",
   marginRight:"5px",
- height:"220px",
+  height:"220px",
   backgroundColor:mainTheme.palette.secondary.main,
 }, 
 boxStyle: {

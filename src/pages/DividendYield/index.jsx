@@ -3,8 +3,13 @@ import React, {useState, useEffect} from 'react';
 import { Grid, Paper, Box, Hidden } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import api from '../../services/api';
+// import api from '../../services/api';
+import valuationsWebApi from '../../services/valuationsWebApi';
+import useAxios from '../../hooks/useAxios';
+
 import Header from '../../components/Header'; 
+import DialogModal from '../../components/modals/DialogModal';
+
 import DescriptionText from './DescriptionText';
 import TableDividendYield from './TableDividendYield';
 import FilterOptions from './FilterOptions';
@@ -44,24 +49,45 @@ const marks = [
   { value: 9, label: '9%'},
   { value: 10, label: '10%'},
 ];
+const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
+const [ isDialogOpen, setIsDialogOpen] = useState(false);
 const [ minimumYield, setMinimumYield ] = useState(2.74);
 const [ companiesList, setCompaniesList ] = useState();
+const { axiosFetch: getDividendsCompanies } = useAxios();
 
-useEffect ( ()=> {
-  api.get('dividendyield')
-  .then (response => {
-    const allCompanies = response.data;
-    setCompaniesList(allCompanies.filter(company => (company.dividendYield * 100) > minimumYield));
-  }).catch (function (err){
-    if (err.response) {
-      const errorMsg = Object.values(err.response.data);
-      alert("Warning - Database access error" + errorMsg)
-    } else if (err.request) {
-        alert("Warning - Server access error")
-      } else {
-          alert("Warning - Unexpected error")
-        }
-  });
+function allCompaniesSuccessCallback (apiData) {
+  const allCompanies = apiData;
+  setCompaniesList(allCompanies.filter(company => (company.dividendYield * 100) > minimumYield));
+}
+
+function handleDialogClose (value, action) { 
+  setIsDialogOpen (false);
+  setDialogOptions({severity:"",title:"",message:"",buttons:{},action:""});
+}
+
+function errorCallback(errorMessage){
+  setDialogOptions({severity:"error", title:"Oops", message:errorMessage,buttons:{button1:"Ok"}})
+  setIsDialogOpen (true);
+}
+
+useEffect ( ()=> {  // revisar, fazer o fech somente 1 vez e filtra o array nas mudancas de state
+
+  getDividendsCompanies({ axiosInstance: valuationsWebApi, method: 'GET', url: '/dividendyield', }, allCompaniesSuccessCallback, errorCallback);
+  // console.count();
+  // api.get('dividendyield')
+  // .then (response => {
+  //   const allCompanies = response.data;
+  //   setCompaniesList(allCompanies.filter(company => (company.dividendYield * 100) > minimumYield));
+  // }).catch (function (err){
+  //   if (err.response) {
+  //     const errorMsg = Object.values(err.response.data);
+  //     alert("Warning - Database access error" + errorMsg)
+  //   } else if (err.request) {
+  //       alert("Warning - Server access error")
+  //     } else {
+  //         alert("Warning - Unexpected error")
+  //       }
+  // });
 },[minimumYield]) 
 
   return (
@@ -114,6 +140,9 @@ useEffect ( ()=> {
     </Grid>
 
     <Grid container direction="column" alignItems="center" style= {{ minHeight: '5vh'}} />
+  <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
+    {dialogOptions.message}
+  </DialogModal> 
   </div>: null }
   </>
   )

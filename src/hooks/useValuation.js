@@ -85,6 +85,7 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
 
   function calcCostOfCapital (){   // nao usa o % da media...
     // Note: uses CAPM (Capital Assets Pricing Model) formulas: Ke = Rf + beta * ( Rm - Rf) ; Kd = Cost of debt * (100% - Tax Rate)
+    console.count();
     let ke = 0;
     let calculatedWacc = 0;
     if (historicalFinancialData && companyData.marketCap > 0){
