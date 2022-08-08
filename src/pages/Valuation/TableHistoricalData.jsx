@@ -33,10 +33,9 @@ export default function TableHistoricalData ({historicalFinancialData}){   //, s
   
   const classes = useStyles();
   // let historicalAverages = {}
-
   // let historicalAverages = {revenueGrowth:0, marginTarget:0, opexGrowth:0, interestGrowth:0, otherGrowth:0, taxRate:0, capexGrowth:0, nwcGrowth:0, cashFlowGrowth:0}
   const [ historicalAverages, setHistoricalAverages] = useState({revenueGrowth:0, marginTarget:0, opexGrowth:0, interestGrowth:0, otherGrowth:0, taxRate:0, capexGrowth:0, nwcGrowth:0, cashFlowGrowth:0})
-  // console.count();
+
 
   useEffect (()=> {
 
@@ -172,5 +171,3 @@ export default function TableHistoricalData ({historicalFinancialData}){   //, s
     </>
   )
 }
-
-// export default memo(TableHistoricalData);

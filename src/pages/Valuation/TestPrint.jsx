@@ -1,12 +1,20 @@
 import React from 'react';
 
 import Pdf from "react-to-pdf";
-import { Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Button, Typography, Paper } from '@material-ui/core'
+import { Paper, Grid, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Button, Typography, Avatar } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import EmailIcon from '@mui/icons-material/Email';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
-import mainLogo from '../../assets/Group 292.svg';
+import LogoWhiteBackground from '../../assets/LogoWhiteBackground.svg';
+import picMcl from '../../assets/mcl.jpg';
+
 
 import TableHistoricalData from './TableHistoricalData';
 import FormBusinessData from './FormBusinessData';
@@ -22,7 +30,41 @@ const useStyles = makeStyles((mainTheme) => ({
     height: "45px",
     // padding: "24px",
     top:"0px"
-  }
+  },
+  valuationsWebStyle:{
+    fontSize: "18px",
+    color: mainTheme.palette.tertiary.main
+  },
+  socialNetworkBox:{
+    width:'100%',
+    textAlign: 'center',
+    AlignItems: 'center',
+    // backgroundColor:mainTheme.palette.primary.main,
+  },
+  iconStyle:{
+    marginTop:"5px", 
+    marginLeft:"1px", 
+    marginRight:"1px", 
+    marginBottom:"0px",
+    fontSize:20, 
+    color: mainTheme.palette.tertiary.main,
+  },
+  companyDataStyle:{
+    fontSize: "14px",
+    color: mainTheme.palette.primary.main
+  },
+  userPhotoStyle:{
+    height: mainTheme.contactPhotoStyle.height,
+    width: mainTheme.contactPhotoStyle.width,
+    alignItems: mainTheme.contactPhotoStyle.alignItems,
+    marginTop: mainTheme.contactPhotoStyle.marginTop,
+    marginBottom:mainTheme.contactPhotoStyle.marginBottom,
+    marginLeft:mainTheme.contactPhotoStyle.marginLeft,
+    marginRigth:mainTheme.contactPhotoStyle.marginRight,
+    display: mainTheme.contactPhotoStyle.display,
+    textAlign: mainTheme.contactPhotoStyle.textAlign,
+    justifyContent: mainTheme.contactPhotoStyle.justifyContent,
+  },
 }))
 
 const ref = React.createRef();
@@ -54,7 +96,28 @@ const TestPrint = ({ open, onClose, companyData, historicalFinancialData, assump
         <DialogContent style={{color:'white'}}>
           <DialogContentText id="alert-dialog-description">
             <div className="Post" ref={ref}>
-            <img src = {mainLogo} alt="Logo" className={classes.logoStyle} />
+            <Grid container >
+              <Grid item xs={9} >
+                <img src = {LogoWhiteBackground} alt="Logo" className={classes.logoStyle} />
+              </Grid>
+              {/* <div className={classes.grow} /> */}
+              <Grid item xs={3} >
+              <Avatar src={picMcl} alt="Martin Calcena" className={classes.userPhotoStyle} />
+                {/* <Box style={{height:"12px"}}/> */}
+                {/* <Typography className={classes.valuationsWebStyle}>www.valuationsweb.com</Typography>
+                <Box className = {classes.socialNetworkBox}>
+                  <TwitterIcon className = {classes.iconStyle} />    
+                  <InstagramIcon className = {classes.iconStyle} />
+                  <FacebookIcon className = {classes.iconStyle} />
+                  <YouTubeIcon className = {classes.iconStyle} />
+                </Box> */}
+              </Grid>
+
+            </Grid>  
+
+    
+            <Box style={{height: "10px"}}/>
+            <Typography className={classes.companyDataStyle}>{`Symbol: ${companyData.symbol} Company: ${companyData.shortName}`}</Typography>
               <Grid container direction="row" spacing={2}>
                 <Grid item xs={6}>
                   <TableHistoricalData historicalFinancialData = {historicalFinancialData} />

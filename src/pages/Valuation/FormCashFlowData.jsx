@@ -55,13 +55,11 @@ export default function FormCashFlowData ({assumptions, setAssumptions}){
       </TableHead>
 
       <TableBody>
-
         <TableRow>
           <Grid container>
-
+            
             <Grid item xs = {4}>
-              <TextField
-                label="Free Cash Flow Growth Rate"
+              <TextField label="Free Cash Flow Growth Rate"
                 size="small"
                 value={assumptions.cashFlowGrowthRate}
                 type="number"
@@ -79,8 +77,7 @@ export default function FormCashFlowData ({assumptions, setAssumptions}){
             </Grid>
 
             <Grid item xs = {4} >
-              <TextField
-                label="Perpetual Growth Rate"
+              <TextField label="Perpetual Growth Rate"
                 size="small"
                 value={assumptions.perpetualGrowthRate}
                 type="number"
@@ -99,8 +96,7 @@ export default function FormCashFlowData ({assumptions, setAssumptions}){
             
             <Grid item xs={4} >
               <Tooltip title="Free Cash Flow discrete period, in years, before perpetuity">
-                <TextField
-                  label="FCFF Discrete Period (Years)"
+                <TextField label="FCFF Discrete Period (Years)"
                   size="small"
                   value={assumptions.cashFlowDiscretePeriod}
                   type="number"

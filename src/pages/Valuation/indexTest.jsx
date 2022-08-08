@@ -28,11 +28,11 @@ const useStyles = makeStyles( (mainTheme) => ({
     position: 'absolute',
     top: '65px',
   },
-  // container:{
-  //   position: 'absolute',
-  // },
+  container:{
+    position: 'absolute',
+  },
   paperStyle: {
-    // position: 'sticky',
+    position: 'sticky',
     width: "100%",   
     minHeight: "668px",
     [mainTheme.breakpoints.down('xs')]: {
@@ -77,28 +77,28 @@ export default function Valuation () {
   const [ isDialogOpen, setIsDialogOpen ] = useState(false);
   const currentYear = new Date().getFullYear();  // revisar
   // const historicalYears = 3 // revisar
-  const [ isCheckedShowIncStatement, setIsCheckedShowIncStatement] = useState(true);
-  const [ isCheckedShowPreviousYears, setIsCheckedShowPreviousYears ] = useState(true);   // Check if previous years will be shown in income statement and cash flow (default)
-  const [ isCheckedDescOrder, setIsCheckedDescOrder] = useState(true);                    // Check if numbers will appear in descending order (default)
-  const [ isEstimateFcffOnly, setIsEstimateFcffOnly ] = useState(false);                  // Check if valuation assumptions will be complete or just estimate directly the cash flow growth
-  const [ historicalFinancialData, setHistoricalFinancialData ] = useState(null);         // Array with fetched financial data from previous years
-  const [ companiesList, setCompaniesList ] = useState([]);                               // List of companies to populate the Auto complete Search
-  const [ companyIdSearch, setCompanyIdSearch ] = useState("");                           // Symbol that will be received by CompanySelect component
+  const [ isCheckedShowPreviousYears ] = useState(true);            // Check if previous years will be shown in income statement and cash flow (default)
+  const [ isCheckedDescOrder ] = useState(true);                    // Check if numbers will appear in descending order (default)
+  const [ isEstimateFcffOnly ] = useState(false);                   // Check if valuation assumptions will be complete or just estimate directly the cash flow growth
+  const [ historicalFinancialData, setHistoricalFinancialData ] = useState(null);  // Array with fetched financial data from previous years
+  const [ companiesList, setCompaniesList ] = useState([]);         // List of companies to populate the Auto complete Search
+  const [ companyIdSearch, setCompanyIdSearch ] = useState("");     // Symbol that will be received by CompanySelect component
   const [ companyData, setCompanyData] = useState({symbol:"",shortName:"", sharesOustanding: 0, regularMarketPrice:0, fiftyTwoWeekLow:0, fiftyTwoWeekHigh:0, marketCap:0, beta:0, totalCash:0, totalDebt:0 });
   const companySearchName = companyData.symbol !=="" ? (companyData.symbol + " - " + companyData.shortName) : "" ;
   const [ assumptions, setAssumptions ] = useState({revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",cashFlowGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: 3, cashFlowDiscretePeriod:5, companyBeta:0, riskFreeReturn:3.0790, marketReturn:10.05, debtTotalRatio:0, costOfDebt:5});
   const { createFinancialHistoricalData, createCombinedData} = useDataHandling();
-  const { calcForecastedCashFlow, calcValuation, calcCostOfCapital, checkValuationStatus } = useValuation2();
-  const { axiosFetch: getAllCompanies } = useAxios();                                     // function to fecth data from all companies
-  const { axiosFetch: getCompany } = useAxios();                                          // function to fecth general data from one specific company
-  const { axiosFetch: getFinancials } = useAxios();                                       // function to fecth previous years financial data from one specific company
+  const { calcForecastedCashFlow, calcValuation, calcCostOfCapital } = useValuation2();
+  const { axiosFetch: getAllCompanies } = useAxios();                // function to fecth data from all companies
+  const { axiosFetch: getCompany } = useAxios();                     // function to fecth general data from one specific company
+  const { axiosFetch: getFinancials } = useAxios();                  // function to fecth previous years financial data from one specific company
   const calculatedCostOfCapital = historicalFinancialData && companyData ? calcCostOfCapital(historicalFinancialData, companyData, assumptions): { costOfEquity:0, costOfCapital:0 }  ;
   const forecastedFinancialData = historicalFinancialData ? calcForecastedCashFlow (historicalFinancialData, assumptions, calculatedCostOfCapital, isEstimateFcffOnly):(Array.from({ length: 5 }, (a,b) => ({ year:currentYear + b, period:0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, grossProfitPercent:0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0 }))).reverse();
   const combinedFinancialData = historicalFinancialData ? createCombinedData(historicalFinancialData, forecastedFinancialData, isCheckedShowPreviousYears, isCheckedDescOrder): (Array.from({ length: 8 }, (a,b) => ({ year:currentYear-3 + b, period:0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, grossProfitPercent:0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0 }))).reverse();
   const valuation = forecastedFinancialData ? calcValuation(companyData, historicalFinancialData, assumptions, calculatedCostOfCapital, forecastedFinancialData): {revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",cashFlowGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: 3, cashFlowDiscretePeriod:5, companyBeta:0, riskFreeReturn:3.0790, marketReturn:10.05, debtTotalRatio:0, costOfDebt:5} ;
+  // const [ editMode, setEditMode ] = useState("blank");               // blank, edited, completed, saved, published
   const [ Prompt, setIsDirty, setIsPristine ] = useUnsavedWarning();
-  const [ editMode, setEditMode ] = useState("blank");                                    // blank, edited, completed, saved, published
-  const isDisabledChkBox = checkDisableCheckBox();
+  const [ editMode, setEditMode ] = valuationStatus();
+
 
   function allCompaniesSuccessCallback (apiData) {
     // company poderia filtrar allCompanies em vez de fazer um fetch
@@ -122,22 +122,17 @@ export default function Valuation () {
       if (company.marketCap > 0 && company.regularMarketPrice > 0 ) {
         shares = company.marketCap/1000000/company.regularMarketPrice //compare with api value....
       } 
+      // setCompanySearchName(company.symbol + " - " + company.shortName);
       setCompanyData({symbol:company.symbol, shortName:company.shortName, sharesOutstanding: shares, regularMarketPrice:company.regularMarketPrice, fiftyTwoWeekLow:company.fiftyTwoWeekLow, fiftyTwoWeekHigh:company.fiftyTwoWeekHigh, marketCap:company.marketCap/1000000000, beta:company.beta, totalCash: company.totalCash/1000000000, totalDebt: company.totalDebt/1000000000})
       setAssumptions (prevState => ({...prevState, companyBeta: company.beta, revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",taxRate:"",capexGrowth:"",nwcGrowth:"",cashFlowGrowthRate:"",cashFlowDiscretePeriod:5 }))
+      // clean previous company forecasted data
+      // setForecastedFinancialData(forecastedInitialValues);
+      // setCombinedFinancialData(historicalFinancialData);
     } 
   }
 
   function financialsSuccessCallback (apiData){
     setHistoricalFinancialData(createFinancialHistoricalData ( apiData ));
-  }
-
-  function checkDisableCheckBox (){
-    if (historicalFinancialData){
-      if (historicalFinancialData[0].cashFlow < 0){
-        return true
-      }
-    }
-    return false
   }
 
   function errorCallback(errorMessage){
@@ -152,9 +147,36 @@ export default function Valuation () {
 
   function handleNewValuation () {  // revisar
     setCompanyIdSearch("");
-    setCompanyData({symbol:"",shortName:"", sharesOustanding: 0, regularMarketPrice:0, fiftyTwoWeekLow:0, fiftyTwoWeekHigh:0, marketCap:0, beta:0, totalCash:0, totalDebt:0 });
-    setHistoricalFinancialData(null);
-    setAssumptions({revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",cashFlowGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: 3, cashFlowDiscretePeriod:5, companyBeta:0, riskFreeReturn:3.0790, marketReturn:10.05, debtTotalRatio:0, costOfDebt:5});
+    // setCompanySearchName("");
+    // setCompanyData({symbol:"",shortName:"", sharesOustanding: 0, regularMarketPrice:0, fiftyTwoWeekLow:0, fiftyTwoWeekHigh:0, marketCap:0, beta:0, totalCash:0, totalDebt:0 });
+    // setHistoricalFinancialData(historicalInitialValues);
+    // setAssumptions(assumptionsInitialValues);
+    // setForecastedFinancialData(forecastedInitialValues);
+    // setCombinedFinancialData(combinedInitialValues);
+    // setValuation(valuationInitialValues); 
+  }
+
+  function valuationStatus() {
+    const { revenueGrowth, marginTarget, opexGrowth, interestGrowth, otherGrowth,  taxRate, capexGrowth, nwcGrowth, cashFlowGrowthRate, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn, costOfDebt} = assumptions;
+    const { symbol } = companyData;
+    let fieldsCompleted = 0;
+    if (! symbol){
+      return "Blank"
+    }
+    let valuesToCheck = { revenueGrowth, marginTarget, opexGrowth, interestGrowth, otherGrowth,  taxRate, capexGrowth, nwcGrowth, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn,costOfDebt }
+    if (isEstimateFcffOnly) {
+      valuesToCheck = { cashFlowGrowthRate, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn, costOfDebt }
+    }
+    let totalFields = Object.keys(valuesToCheck).length;
+    Object.keys(valuesToCheck).forEach( (key) => {  
+      if (assumptions [key] !== "") {
+        fieldsCompleted = fieldsCompleted + 1
+      } 
+    })
+    if (fieldsCompleted === totalFields){
+      return "completed"
+    } 
+    return "edited"
   }
 
   useEffect(() => {
@@ -165,31 +187,16 @@ export default function Valuation () {
     if (companyIdSearch){
       getCompany({ axiosInstance: valuationsWebApi, method: 'GET', url: `/companies/${companyIdSearch}`, requestConfig: { headers: {'Authorization': userId,},}},companySuccessCallback, errorCallback);
       getFinancials({ axiosInstance: valuationsWebApi, method: 'GET', url: `/financials/${companyIdSearch}`, requestConfig: { headers: {'Authorization': userId,},}},financialsSuccessCallback, errorCallback);
-      setIsEstimateFcffOnly(false);
     }
   }, [companyIdSearch]);
-  
-  useEffect(() => {
-    setEditMode(checkValuationStatus(companyData, assumptions, isEstimateFcffOnly));
-  }, [assumptions]);
-
-  useEffect (()=> {  
-    if (companyData.beta) {
-      setAssumptions (prevState => ({...prevState, companyBeta: companyData.beta, revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",taxRate:"",capexGrowth:"",nwcGrowth:"",cashFlowGrowthRate:"",cashFlowDiscretePeriod:5 }))
-    } else {
-      setAssumptions (prevState => ({...prevState, companyBeta: "", revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",taxRate:"",capexGrowth:"",nwcGrowth:"",cashFlowGrowthRate:"",cashFlowDiscretePeriod:5 }))
-    }
-  },[isEstimateFcffOnly]); 
-
-
-
   return(
     <>
+    {console.count()}
     <Header />
 
     { combinedFinancialData ? <div>
-      {/* className={classes.container} */}
-    <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}}  >
+
+    <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}} className={classes.container} >
 
       <Grid item xs={12} style = {{ minHeight: '69px'}} /> 
 
@@ -198,19 +205,34 @@ export default function Valuation () {
           <Paper className={classes.paperStyle} elevation={3}>
 
             <TableHistoricalData2 historicalFinancialData = {historicalFinancialData} />
-
             <Box style={{height:"5px"}}/>
-            <FormOptions isEstimateFcffOnly = {isEstimateFcffOnly} setIsEstimateFcffOnly = {setIsEstimateFcffOnly} isDisabledChkBox = {isDisabledChkBox} />
+            <FormOptions 
+              isEstimateFcffOnly = {isEstimateFcffOnly}
+              setIsEstimateFcffOnly = {setIsEstimateFcffOnly}
+              isDisabledChkBox = {isDisabledChkBox}
+            />
 
+            { ! isEstimateFcffOnly ? <>
             <Box style = {{height:"5px"}} />  
-            { ! isEstimateFcffOnly ? 
-              <FormBusinessData assumptions = {assumptions} setAssumptions = {setAssumptions} /> 
-              : <FormCashFlowData assumptions = {assumptions} setAssumptions = {setAssumptions} />
-            }
-
+              <FormBusinessData 
+                assumptions = {assumptions} 
+                setAssumptions = {setAssumptions}
+              />
+            </> : 
+            <> 
+              <Box style = {{height:"5px"}}/>   
+              <FormCashFlowData
+                assumptions = {assumptions} 
+                setAssumptions = {setAssumptions}
+              />
+            </> }
             <Box style={{height:"5px"}}/>
-            <FormCostOfCapitalData assumptions = {assumptions} setAssumptions = {setAssumptions} calculatedCostOfCapital = {calculatedCostOfCapital} />
 
+            <FormCostOfCapitalData 
+              assumptions = {assumptions} 
+              setAssumptions = {setAssumptions}
+              calculatedCostOfCapital = {calculatedCostOfCapital}
+            />
           </Paper>
         </Grid>
 
@@ -242,6 +264,7 @@ export default function Valuation () {
                   setAssumptions = {setAssumptions}
                   calculatedCostOfCapital = {calculatedCostOfCapital}
                   valuation = {valuation}
+                  setValuation = {setValuation}
                   handleNewValuation = {handleNewValuation}
                 />
               </> : null}

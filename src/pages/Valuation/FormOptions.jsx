@@ -20,6 +20,7 @@ const useStyles = makeStyles( (mainTheme) => ({
 export default function FormOptions ({isEstimateFcffOnly, setIsEstimateFcffOnly, isDisabledChkBox}){
   const classes = useStyles();
   const handleChangeCheckEstimateFcffOnly = () => {
+    
     if (isEstimateFcffOnly) {
       setIsEstimateFcffOnly(false);
     } else {

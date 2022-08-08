@@ -37,7 +37,7 @@ userPhotoStyle:{
   justifyContent: mainTheme.userPhotoStyle.justifyContent,
 },
 iconStyle:{
-  color: mainTheme.palette.secondary.main,
+  color: mainTheme.palette.primary.main,
 },
 iconStyleInfo:{
   color: mainTheme.palette.primary.main,
@@ -49,7 +49,7 @@ socialNetworkBox:{
   width:'100%',
   textAlign: 'center',
   AlignItems: 'center',
-  backgroundColor:mainTheme.palette.primary.main,
+  backgroundColor:mainTheme.palette.secondary.main,
 }, 
 })); 
 

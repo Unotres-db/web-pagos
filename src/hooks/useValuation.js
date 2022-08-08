@@ -45,44 +45,6 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
     }
   }
 
-  function calcHistoricalAverages(){
-  // Note: CAGR = Compound Annual Growth Rate
-    // let averagesIndicators = {revenueCAGR: 0, opexCAGR: 0, interestCAGR: 0, otherCAGR: 0, capexCAGR:0, nwcCAGR:0, sumOfRevenue: 0, sumOfGrossProfit: 0, marginAvg: 0, sumOfIncomeBeforeTax: 0, sumOfIncomeTaxExpense: 0, taxRateAvg:0, cashFlowGrowth:0}
-
-    // if ( historicalFinancialData[0].totalRevenue !== undefined &&  historicalFinancialData[0].totalRevenue !== null ){ 
-    //   for (let i = 0; i < historicalFinancialData.length-1 ; i++) {
-    //     if (  historicalFinancialData[i].totalRevenue !== undefined &&  historicalFinancialData[i].totalRevenue !== null ){
-    //       averagesIndicators.sumOfRevenue = averagesIndicators.sumOfRevenue + historicalFinancialData[i].totalRevenue;
-    //     } else { averagesIndicators.sumOfRevenue = 0 }
-    //     averagesIndicators.sumOfGrossProfit = averagesIndicators.sumOfGrossProfit + historicalFinancialData[i].grossProfit;
-    //     averagesIndicators.sumOfIncomeBeforeTax = averagesIndicators.sumOfIncomeBeforeTax + historicalFinancialData[i].incomeBeforeTax;
-    //     averagesIndicators.sumOfIncomeTaxExpense = averagesIndicators.sumOfIncomeTaxExpense + historicalFinancialData[i].incomeTaxExpense;
-    //   }
-    //     if ( historicalFinancialData[3].totalRevenue !== undefined &&  historicalFinancialData[2].totalRevenue !== null ){
-    //       averagesIndicators.revenueCAGR = round((((historicalFinancialData[2].totalRevenue/historicalFinancialData[0].totalRevenue)**(1/2)) -1)*-100);
-    //     } else { averagesIndicators.revenueCAGR = 0 }
-    //     averagesIndicators.revenueCAGR = calcGrowthRate(historicalFinancialData[2].totalRevenue,historicalFinancialData[0].totalRevenue, 2);
-    //     averagesIndicators.marginAvg = round((averagesIndicators.sumOfGrossProfit/averagesIndicators.sumOfRevenue)*100);
-    //     averagesIndicators.opexCAGR = calcGrowthRate(historicalFinancialData[2].operatingExpense,historicalFinancialData[0].operatingExpense, 2) *-1;
-    //     averagesIndicators.interestCAGR = calcGrowthRate(historicalFinancialData[2].interestExpense,historicalFinancialData[0].interestExpense, 2)
-    //     averagesIndicators.otherCAGR = calcGrowthRate(historicalFinancialData[2].other,historicalFinancialData[0].other,2)
-    //     averagesIndicators.taxRateAvg =  round((averagesIndicators.sumOfIncomeTaxExpense/averagesIndicators.sumOfIncomeBeforeTax)*-100);
-    //     averagesIndicators.capexCAGR = calcGrowthRate(historicalFinancialData[2].capitalExpenditures,historicalFinancialData[0].capitalExpenditures, 2)
-    //     averagesIndicators.nwcCAGR = calcGrowthRate(historicalFinancialData[2].workingCapitalChanges,historicalFinancialData[0].workingCapitalChanges, 2);
-    //     averagesIndicators.cashFlowCAGR = calcGrowthRate(historicalFinancialData[2].cashFlow,historicalFinancialData[0].cashFlow, 2);
-    // }
-
-    // historicalAverages.revenueGrowth = averagesIndicators.revenueCAGR
-    // historicalAverages.marginTarget = averagesIndicators.marginAvg
-    // historicalAverages.opexGrowth = averagesIndicators.opexCAGR
-    // historicalAverages.interestGrowth = averagesIndicators.interestCAGR
-    // historicalAverages.otherGrowth = averagesIndicators.otherCAGR
-    // historicalAverages.taxRate = averagesIndicators.taxRateAvg
-    // historicalAverages.capexGrowth = averagesIndicators.capexCAGR
-    // historicalAverages.nwcGrowth = averagesIndicators.nwcCAGR
-    // historicalAverages.cashFlowGrowth = averagesIndicators.cashFlowCAGR
-  }
-
   function calcCostOfCapital (){   // nao usa o % da media...
     // Note: uses CAPM (Capital Assets Pricing Model) formulas: Ke = Rf + beta * ( Rm - Rf) ; Kd = Cost of debt * (100% - Tax Rate)
     console.count();
@@ -264,5 +226,5 @@ export default function useValuation({assumptions, forecastedFinancialData, hist
     }
   }
 
-  return {calcForecastedCashFlow, calcValuation, calcCostOfCapital, calcHistoricalAverages};
+  return { calcForecastedCashFlow, calcValuation, calcCostOfCapital };
 }

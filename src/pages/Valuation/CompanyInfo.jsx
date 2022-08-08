@@ -36,22 +36,22 @@ companyNameText:{
 }
 }));
 
-export default function CompanyInfo({ companyData, historicalFinancialData, forecastedFinancialData, handleValuation, handlePublication, editMode, setEditMode, assumptions, setAssumptions, calculatedCostOfCapital, valuation, setValuation, handleNewValuation }){
+export default function CompanyInfo({ companyData, historicalFinancialData, forecastedFinancialData, editMode, setEditMode, assumptions, setAssumptions, calculatedCostOfCapital, valuation, handleNewValuation }){
 
   const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
   const [ isDialogOpen, setIsDialogOpen] = useState(false);
   const [ isDialogPdfOpen, setIsDialogPdfOpen] = useState(false);
-  const [ deleteValuationId, setDeleteValuationId] = useState("");
-  const { saveValuation }  = useTest ();
+  const [ valuationId, setValuationId ] = useState("");
+  const { saveValuation } = useTest ();
   const { axiosFetch: putValuation} = useAxios();
   const { axiosFetch: delValuation} = useAxios();
 
   function handleSave (){
-    saveValuation(companyData, assumptions, calculatedCostOfCapital, valuation, setValuation, forecastedFinancialData, saveSuccessCallback, errorCallback)
+    saveValuation(companyData, assumptions, calculatedCostOfCapital, valuation, setValuationId, forecastedFinancialData, saveSuccessCallback, errorCallback)
   }
 
   function handlePublish (){  // receber valuationId como parametro x usar o state
-    const { valuationId } = valuation;
+    // const { valuationId } = valuation;
     const published = "all";
     putValuation({ axiosInstance: valuationsWebApi, method: 'PUT', url: '/publication', 
       requestConfig: { 
@@ -61,13 +61,13 @@ export default function CompanyInfo({ companyData, historicalFinancialData, fore
     },publishSuccessCallback, errorCallback);
   }
 
-  function handleDelete (valuationId){
-    setDeleteValuationId(valuationId);
+  function handleDelete (){
+    // setvaluationId(valuationId);
     setDialogOptions({severity:"warning", title:"Alert", message:"Are you sure you want to delete this valuation ?",buttons:{button1:"Cancel",button2:"Confirm"},action:"delete"})
     setIsDialogOpen (true);
   }
 
-  function deleteValuation (valuationId){  
+  function deleteValuation (){  
     const userId = "martincsl"  // atualizar para state global com Context
     delValuation({ axiosInstance: valuationsWebApi, method: 'DELETE', url: '/valuations', 
       requestConfig: { 
@@ -84,8 +84,8 @@ export default function CompanyInfo({ companyData, historicalFinancialData, fore
   }
 
   function publishSuccessCallback(){
-    const publishedDate = format(new Date(),'yyyy-MM-dd HH:mm:ss') //only to update the state in the frontend
-    setValuation(prevState => ({...prevState, published:"all", publishedDate:publishedDate}))
+    // const publishedDate = format(new Date(),'yyyy-MM-dd HH:mm:ss') //only to update the state in the frontend
+    // setValuation(prevState => ({...prevState, published:"all", publishedDate:publishedDate}))
     setEditMode("published");
     setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully published",buttons:{button1:"Ok"},action:"publish"})
     setIsDialogOpen (true);
@@ -99,7 +99,7 @@ export default function CompanyInfo({ companyData, historicalFinancialData, fore
   }
 
   function errorCallback(errorMessage){
-    setDialogOptions({severity:"error", title:"Oops", message:errorMessage,buttons:{button1:"Ok"}})
+    setDialogOptions({severity:"error", title:"Rapaissss", message:errorMessage,buttons:{button1:"Ok"}})
     setIsDialogOpen (true);
   }
 
@@ -107,7 +107,7 @@ export default function CompanyInfo({ companyData, historicalFinancialData, fore
     setIsDialogOpen (false);
     setDialogOptions({severity:"",title:"",message:"",buttons:{},action:""});
     if (value === "Confirm" && action ==="delete"){  
-      deleteValuation(deleteValuationId,deleteSuccessCallback, errorCallback);
+      deleteValuation(valuationId,deleteSuccessCallback, errorCallback);
     } 
   }
 

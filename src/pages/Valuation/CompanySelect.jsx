@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+// import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 
@@ -8,13 +8,12 @@ const useStyles = makeStyles((mainTheme) => ({
   formControl: {
     marginTop: mainTheme.spacing(0),
     maxHeight: 30,
-
   },
 }));
 
 export default function CompanySelect ({ companiesList, companyIdSearch, companySearchName, setCompanyIdSearch }){
   const classes = useStyles();
-  const [wordEntered, setWordEntered] = useState("");
+  const [wordEntered, setWordEntered] = useState("");  // precisa ser state?
 
   // function onChange(e){
   //   setCompanyIdSearch(e.target.value)

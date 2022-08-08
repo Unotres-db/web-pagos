@@ -67,7 +67,7 @@ const mainTheme = createTheme ({
     MuiFilledInput:{
       root: { 
         color: "#1C1C49", 
-        fontSize:'12px',
+        fontSize:"12px",
         backgroundColor: "white",
         "&:hover": {
           color:"#1C1C49",

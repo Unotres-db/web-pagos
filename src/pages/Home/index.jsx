@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { Grid, Paper, Box, Button, Typography, Tooltip } from '@material-ui/core';
+import { Grid, Paper, Box, Button, Typography, Tooltip, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
@@ -92,6 +92,7 @@ export default function Home (){
   function userValuationsSuccessCallback(apiData){
     const allValuations = apiData;
     setValuationsList(allValuations);
+    // console.log(allValuations);
   }
 
   function errorCallback(errorMessage){
@@ -105,7 +106,6 @@ export default function Home (){
   
   return (
     <>
-    {/* {console.count()} */}
     <Header />
     <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}} >
 
@@ -147,8 +147,8 @@ export default function Home (){
               </>: 
                 <Typography style={{fontSize:14, marginTop:"15px"}}>You don't have any saved valuation</Typography>
               }
-            </>: null}
-
+            </>: <CircularProgress variant = "indeterminate" /> }
+            
           </Paper>
         </Grid>
 
@@ -161,12 +161,12 @@ export default function Home (){
             </Paper>
           </Paper>
         </Grid>
+
       </Grid>
     </Grid>
     <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
       {dialogOptions.message}
     </DialogModal>
-  
     </>
   )
 }

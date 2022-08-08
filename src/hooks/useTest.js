@@ -5,7 +5,7 @@ import valuationsWebApi from '../services/valuationsWebApi';
 
 export default function useTest () {
   
-  function saveValuation(companyData, assumptions, calculatedCostOfCapital, valuation, setValuation, forecastedFinancialData, successCallback, errorCallback){ 
+  function saveValuation(companyData, assumptions, calculatedCostOfCapital, valuation, setValuationId,forecastedFinancialData, successCallback, errorCallback){ 
     const userId = "martincsl"; // colocar userId 
     const companyId = companyData.symbol;
     const { revenueGrowth, marginTarget, opexGrowth, interestGrowth, otherGrowth, taxRate, capexGrowth, nwcGrowth, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn, debtTotalRatio, costOfDebt, published, publishedDate} = assumptions
@@ -18,10 +18,13 @@ export default function useTest () {
     api.post('/valuations', valuationData )
     .then (response => { 
       const { valuationId: valuationId, data } = response.data;
-      setValuation (prevState => ({...prevState, valuationId: valuationId}))
+      console.log("saveValuation: " + valuationId)
+      setValuationId(valuationId);
+      // setValuation (prevState => ({...prevState, valuationId: valuationId}))
       dataToProcess = forecastedFinancialData.map((item, index) => ({...item, valuationId:valuationId, forecastedId:valuationId + index.toString(), companyId:companyData.symbol})) 
       
       // map and save each period (year) forecasted....
+
       dataToProcess.map ((currElement)=> (
         api.post('/forecasted', currElement )
         .then (response => { 
@@ -41,64 +44,64 @@ export default function useTest () {
     .catch (function (err){
       if (err.response) {
         const errorMsg = Object.values(err.response.data); // ver onde gravar a info..localStorage?
-        errorCallback("There was an error in the database access. Valuation was not saved. Please try later.");
+        errorCallback("Ppq. Valuation was not saved. Please try later.");
       } else if (err.request) {
-          errorCallback("There was an error in the server access. Valuation was not saved. Please try later.");
+          errorCallback("Fudeu hein. Valuation was not saved. Please try later.");
         } else {
           console.log(err)
-            errorCallback("There was an unexpected error in the server. Valuation was not saved. Please try later.");
+            errorCallback("Vixe maria. Valuation was not saved. Please try later.");
           }
     });
   }
 
-  function publishValuation (valuation, successCallback, errorCallback) {
-    const { valuationId } = valuation;
-    const valuationData = { valuationId, published:"all" }; // Pasar published:"all" como parametro....
-    api.put('/publication', valuationData )
-    .then (response => {
-      if (response.status == 200){
-        successCallback();
-			}	else {
-        errorCallback("Action not authorized for this user");
-      }
-    })
-    .catch (function (err){
-      if (err.response) {
-        const errorMsg = Object.values(err.response.data); // ver onde gravar a info..localStorage?
-        errorCallback("There was an error in the database access. Valuation was not published. Please try later.");
-      } else if (err.request) {
-          errorCallback("There was an error in the server access. Valuation was not published. Please try later.");
-        } else {
-            errorCallback("There was an unexpected error in the server. Valuation was not published. Please try later.");
-          }
-    });
-  }
+  // function publishValuation (valuation, successCallback, errorCallback) {
+  //   // const { valuationId } = valuation;
+  //   const valuationData = { valuationId: valuationId, published:"all" }; // Pasar published:"all" como parametro....
+  //   api.put('/publication', valuationData )
+  //   .then (response => {
+  //     if (response.status == 200){
+  //       successCallback();
+	// 		}	else {
+  //       errorCallback("Action not authorized for this user");
+  //     }
+  //   })
+  //   .catch (function (err){
+  //     if (err.response) {
+  //       const errorMsg = Object.values(err.response.data); // ver onde gravar a info..localStorage?
+  //       errorCallback("There was an error in the database access. Valuation was not published. Please try later.");
+  //     } else if (err.request) {
+  //         errorCallback("There was an error in the server access. Valuation was not published. Please try later.");
+  //       } else {
+  //           errorCallback("There was an unexpected error in the server. Valuation was not published. Please try later.");
+  //         }
+  //   });
+  // }
 
-  function deleteValuation (valuationId, successCallback, errorCallback) {
+  // function deleteValuation (valuationId, successCallback, errorCallback) {
 
-    //fetchData(api.delete (`valuations/${valuationId}`,{ headers : { Authorization: "martincsl",}}),successCallback, errorCallback)
+  //   //fetchData(api.delete (`valuations/${valuationId}`,{ headers : { Authorization: "martincsl",}}),successCallback, errorCallback)
 
-    api.delete (`valuations/${valuationId}`,{ headers : { Authorization: "martincsl",}})
-    .then ( response => {
-      const deletedId = response.data;
-			if (response.status == 200){
-        successCallback();
-			}	else {
-        errorCallback("Action not authorized for this user");
-      }
-    })
-    .catch (function (err){
-      console.log(err)
-      if (err.response) {
-        const errorMsg = Object.values(err.response.data); // ver onde gravar a info..localStorage?
-        errorCallback("There was an error in the database access. Valuation was not deleted. Please try later.");
-      } else if (err.request) {
-          errorCallback("There was an error in the server access. Valuation was not deleted. Please try later.");
-        } else {
-            errorCallback("There was an unexpected error in the server. Valuation was not deleted. Please try later.");
-          }
-    });
-  }
+  //   api.delete (`valuations/${valuationId}`,{ headers : { Authorization: "martincsl",}})
+  //   .then ( response => {
+  //     const deletedId = response.data;
+	// 		if (response.status == 200){
+  //       successCallback();
+	// 		}	else {
+  //       errorCallback("Action not authorized for this user");
+  //     }
+  //   })
+  //   .catch (function (err){
+  //     console.log(err)
+  //     if (err.response) {
+  //       const errorMsg = Object.values(err.response.data); // ver onde gravar a info..localStorage?
+  //       errorCallback("There was an error in the database access. Valuation was not deleted. Please try later.");
+  //     } else if (err.request) {
+  //         errorCallback("There was an error in the server access. Valuation was not deleted. Please try later.");
+  //       } else {
+  //           errorCallback("There was an unexpected error in the server. Valuation was not deleted. Please try later.");
+  //         }
+  //   });
+  // }
 
-  return { saveValuation, publishValuation, deleteValuation }
+  return { saveValuation }
 }

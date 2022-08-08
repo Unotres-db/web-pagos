@@ -20,7 +20,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     textTransform:"none",
     fontSize: 12,
     margin: "10px",
-    minWidth:"60px",
+    minWidth:"72px",
     "&:hover": {
       color:mainTheme.palette.primary.main,
       backgroundColor:"white",
@@ -72,7 +72,7 @@ export default function DialogModal ({open, onClose, severity, title, buttons, c
   const classes = useStyles();
   return (
     <>
-    <div style={{overflowY: "visible"}}>
+    <div >
     <Dialog 
       open={open}
       onClose={onClose}
@@ -114,5 +114,5 @@ export default function DialogModal ({open, onClose, severity, title, buttons, c
     </Dialog>
     </div>
     </>
-    )
+  )
 }

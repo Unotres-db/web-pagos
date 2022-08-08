@@ -4,8 +4,30 @@ import { Paper, Grid, Tooltip, TextField, InputAdornment,Table, TableBody, Table
 import { makeStyles } from '@material-ui/core/styles';
 
 import useValuationForm from '../../hooks/useValuationForm';
-
+// MuiInputBase-input MuiFilledInput-input MuiInputBase-inputAdornedStart MuiFilledInput-inputAdornedStart MuiInputBase-inputMarginDense MuiFilledInput-inputMarginDense
 const useStyles = makeStyles( (mainTheme) => ({
+//   root:{
+//     '& .MuiFilledInput': { 
+//       root: { 
+//         color: "pink", 
+//         fontSize:"8px",
+//         backgroundColor: "white",
+//         "&:hover": {
+//           color:"#1C1C49",
+//           backgroundColor:"pink",
+//         },
+//         "&$focused": { // increase the specificity for the pseudo class
+//           color:"green",
+//           backgroundColor: "white"
+//         },
+//         "&$disabled": {
+//           color:"#1C1C49",
+//           backgroundColor: "white"
+//         },  
+//       } // - The Input-root, inside the TextField-root
+    
+//   },
+// },
   table: {
     minWidth: 300,
     maxHeight: 900

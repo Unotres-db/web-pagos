@@ -1,7 +1,9 @@
 import React from 'react';
 
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, useMediaQuery } from '@material-ui/core';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, TextField, useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+
+import useTableStyling from '../../hooks/useTableStyling';
 
 const useStyles = makeStyles( (mainTheme) => ({
   table: {
@@ -72,6 +74,7 @@ export default function TableIncomeStatement ({ combinedFinancialData, assumptio
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const { defineYearsColWidth, defineYearsColColor, defineYearsColBackColor, defineNumberFormat } = useTableStyling();
   const dataRows = [
     { id: 0,
       rowText:"Revenue",
@@ -152,63 +155,6 @@ export default function TableIncomeStatement ({ combinedFinancialData, assumptio
       dataField: "netIncome"}
   ]
 
-  function defineYearsColWidth () {
-    if (isCheckedShowPreviousYears){
-      return (0.78/(+assumptions.cashFlowDiscretePeriod + 3)*100).toString + "%"
-    } 
-    return (0.78/(+assumptions.cashFlowDiscretePeriod)*100).toString + "%"
-  }
-
-  function defineYearsColColor( index ) {
-  if (isCheckedShowPreviousYears){
-    if (isCheckedDescOrder) {
-      if (index < assumptions.cashFlowDiscretePeriod){
-        return theme.palette.secondary.main
-      } 
-      return "whitesmoke"; 
-    } if (index < 3) {
-        return "whitesmoke"; 
-      } 
-      return theme.palette.secondary.main;
-  } 
-    return theme.palette.secondary.main;
-  }
-
-  function defineYearsColBackColor( index ) {
-  if (isCheckedShowPreviousYears){
-    if (isCheckedDescOrder) {
-      if (index < assumptions.cashFlowDiscretePeriod) { 
-        return theme.palette.primary.main;
-      } 
-      return theme.palette.tertiary.main;
-    } if (index < 3) {
-        return theme.palette.tertiary.main;
-      } 
-      return theme.palette.primary.main;
-  } return theme.palette.primary.main;
-  }
-
-  function defineNumberFormat(number, style, showAsBlankIfZero){
-    
-    if (isEstimateFcffOnly && showAsBlankIfZero[0])  {
-      if (number[0] === 0.00 ) {
-        return ""
-      }
-      if (style[0] === "percent") {
-        return Intl.NumberFormat('en-US',{style:"percent", minimumFractionDigits:1,maximumFractionDigits:1}).format(number/100);
-      } else {
-          return Intl.NumberFormat('en-US',{style:"decimal", minimumFractionDigits:1,maximumFractionDigits:1}).format(number);
-        }
-    } 
-    if (number[0] === 0.00 ) {
-      return ""
-    }
-    if (style[0] === "percent") {
-        return Intl.NumberFormat('en-US',{style:"percent", minimumFractionDigits:1,maximumFractionDigits:1}).format(number/100); 
-    } else { 
-        return Intl.NumberFormat('en-US',{style:"decimal", minimumFractionDigits:1,maximumFractionDigits:1}).format(number); 
-      }
-  }
 
   return (
     <>
@@ -220,8 +166,9 @@ export default function TableIncomeStatement ({ combinedFinancialData, assumptio
             <TableRow>
               <TableCell className = {classes.tableTitle} align = "left" >{isMobile || assumptions.cashFlowDiscretePeriod > 7 ? "Inc. Statement": "Income Statement"}</TableCell>  
               {combinedFinancialData.map ((currElement, index) => ( 
-                <TableCell className = {classes.yearColumnStyle} align = "right" style = {{color:defineYearsColColor(index), backgroundColor:defineYearsColBackColor(index), width:defineYearsColWidth()}} >{currElement.year}</TableCell>
+                <TableCell className = {classes.yearColumnStyle} align = "right" style = {{color:defineYearsColColor(index, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder), backgroundColor:defineYearsColBackColor(index, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder), width:defineYearsColWidth(assumptions, isCheckedShowPreviousYears)}} >{currElement.year}</TableCell>
               ))} 
+              {/* defineYearsColColor ( index, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder ) */}
             </TableRow>
           </TableHead>
 
@@ -230,7 +177,9 @@ export default function TableIncomeStatement ({ combinedFinancialData, assumptio
             <TableRow>
               <TableCell align="left" className = {accountElement.grayBackground ? classes.firstColumnGrayStyle : classes.firstColumnWhiteStyle } >{isMobile || assumptions.cashFlowDiscretePeriod > 7 ? accountElement.rowMobileText: accountElement.rowText}</TableCell>
               {combinedFinancialData.map ((yearElement) => ( 
-                <TableCell align="right" className = {accountElement.grayBackground ? classes.dataColumnGrayStyle : classes.dataColumnWhiteStyle} style = {{ width:defineYearsColWidth()}} >{defineNumberFormat([yearElement[accountElement.dataField]], [accountElement.style], [accountElement.showAsBlankIfZero]) }</TableCell>
+                <TableCell align="right" className = {accountElement.grayBackground ? classes.dataColumnGrayStyle : classes.dataColumnWhiteStyle} style = {{ width:defineYearsColWidth(assumptions, isCheckedShowPreviousYears)}} > 
+                  {defineNumberFormat([yearElement[accountElement.dataField]], [accountElement.style], [accountElement.showAsBlankIfZero],isEstimateFcffOnly) }
+                </TableCell>
               ))}
             </TableRow>
           ))}
@@ -242,3 +191,64 @@ export default function TableIncomeStatement ({ combinedFinancialData, assumptio
     </>
   )
 }
+
+  // function defineYearsColWidth () {
+  //   if (isCheckedShowPreviousYears){
+  //     return (0.78/(+assumptions.cashFlowDiscretePeriod + 3)*100).toString + "%"
+  //   } 
+  //   return (0.78/(+assumptions.cashFlowDiscretePeriod)*100).toString + "%"
+  // }
+
+  // function defineYearsColColor( index ) {
+  // if (isCheckedShowPreviousYears){
+  //   if (isCheckedDescOrder) {
+  //     if (index < assumptions.cashFlowDiscretePeriod){
+  //       return theme.palette.secondary.main
+  //     } 
+  //     return "whitesmoke"; 
+  //   } if (index < 3) {
+  //       return "whitesmoke"; 
+  //     } 
+  //     return theme.palette.secondary.main;
+  // } 
+  //   return theme.palette.secondary.main;
+  // }
+
+  // function defineYearsColBackColor( index ) {
+  // if (isCheckedShowPreviousYears){
+  //   if (isCheckedDescOrder) {
+  //     if (index < assumptions.cashFlowDiscretePeriod) { 
+  //       return theme.palette.primary.main;
+  //     } 
+  //     return theme.palette.tertiary.main;
+  //   } if (index < 3) {
+  //       return theme.palette.tertiary.main;
+  //     } 
+  //     return theme.palette.primary.main;
+  // } return theme.palette.primary.main;
+  // }
+
+  // function defineNumberFormat(number, style, showAsBlankIfZero){
+    
+  //   if (isEstimateFcffOnly && showAsBlankIfZero[0])  {
+  //     if (number[0] === 0.00 ) {
+  //       return ""
+  //     }
+  //     if (style[0] === "percent") {
+  //       return Intl.NumberFormat('en-US',{style:"percent", minimumFractionDigits:1,maximumFractionDigits:1}).format(number/100);
+  //     } else {
+  //         return Intl.NumberFormat('en-US',{style:"decimal", minimumFractionDigits:1,maximumFractionDigits:1}).format(number);
+  //       }
+  //   } 
+  //   if (number[0] === 0.00 ) {
+  //     return ""
+  //   }
+  //   if (style[0] === "percent") {
+  //       return Intl.NumberFormat('en-US',{style:"percent", minimumFractionDigits:1,maximumFractionDigits:1}).format(number/100); 
+  //   } else { 
+  //       return Intl.NumberFormat('en-US',{style:"decimal", minimumFractionDigits:1,maximumFractionDigits:1}).format(number); 
+  //     }
+  // }
+
+                  {/* {defineNumberFormat([yearElement[accountElement.dataField]], [accountElement.style], [accountElement.showAsBlankIfZero]) } */}
+
