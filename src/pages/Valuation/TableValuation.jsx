@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@material-ui/core';
+import { Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles( (mainTheme) => ({
+const useStyles = makeStyles((mainTheme) => ({
 table: {
   // minWidth: 300,
   maxHeight: 900
@@ -36,24 +36,52 @@ TableCurrentPrice:{
 },
 }));
 
-export default function TableValuation ({valuation, historicalFinancialData, calculatedCostOfCapital, assumptions, companyData}){
+export default function TableValuation ({valuation, historicalFinancialData, combinedFinancialData, calculatedCostOfCapital, assumptions, companyData}){
 
   const classes = useStyles();
-  const [ firstYear, setFirstYear ] = useState(0);
-  const [ finalYear, setFinalYear ] = useState(0);
+  // const [ firstYear, setFirstYear ] = useState(0);
+  // const [ finalYear, setFinalYear ] = useState(0);
+  // const firstYear = historicalFinancialData ? historicalFinancialData[0].year + 1 : "";
+  // const finalYear = historicalFinancialData && assumptions ? historicalFinancialData[0].year + parseInt(assumptions.cashFlowDiscretePeriod) : "" ;
+  const finalYear = combinedFinancialData ? combinedFinancialData[0].year : "";
+  const firstYear = combinedFinancialData ? combinedFinancialData[combinedFinancialData.length-1].year : "" ;
+
   // const priceRange = `${Intl.NumberFormat('en-US',{style:'currency',currency:'USD' }).format(companyData.fiftyTwoWeekLow)} - ${Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(companyData.fiftyTwoWeekHigh)}`
+  // const dataRows = [
+  //   { id: 0,
+  //     rowText:"Earnings Before Interest & Taxes",
+  //     rowMobileText:"EBIT",
+  //     grayBackground:true,
+  //     showAsBlankIfZero:true,  
+  //     style:"decimal",
+  //     dataField:"ebit" },
+  //   { id: 1,
+  //     rowText:"(-) Income Taxes",
+  //     rowMobileText:"(-) Taxes",
+  //     grayBackground:false,
+  //     showAsBlankIfZero:true,
+  //     style:"decimal",
+  //     dataField:"incomeTaxExpense" },  
+  //   { id: 2,
+  //     rowText:"(+) Depreciation",
+  //     rowMobileText:"(+) Depreciation",
+  //     grayBackground:false,
+  //     showAsBlankIfZero:true,
+  //     style:"decimal",
+  //     dataField:"depreciation"}
+  // ]  
 
-
-  useEffect (()=> {
-    if (historicalFinancialData){
-      setFirstYear(historicalFinancialData[0].year + 1)
-      const calcFinalYear = historicalFinancialData[0].year + +assumptions.cashFlowDiscretePeriod
-      setFinalYear(calcFinalYear);
-    } 
-  },[assumptions]);
+  // useEffect (()=> {
+  //   if (historicalFinancialData){
+  //     setFirstYear(historicalFinancialData[0].year + 1)
+  //     const calcFinalYear = historicalFinancialData[0].year + +assumptions.cashFlowDiscretePeriod
+  //     setFinalYear(calcFinalYear);
+  //   } 
+  // },[assumptions]);
 
   return (
   <>
+  {/* {console.log(combinedFinancialData)} */}
   <TableContainer component={Paper}>
     <Table className={classes.table} size="small" aria-label="stycky header">
       <TableHead className={classes.TableHeader}>

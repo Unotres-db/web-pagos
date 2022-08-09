@@ -18,7 +18,7 @@ const mainTheme = createTheme ({
   },
   sectionTitle:{
     fontSize: 14,
-    color:"#344955",
+    color:"#344955",   //palette.primary
     marginTop:"5px",
     marginLeft:"5px",
     MarginBottom:"5px",
@@ -67,7 +67,7 @@ const mainTheme = createTheme ({
     MuiFilledInput:{
       root: { 
         color: "#1C1C49", 
-        fontSize:"12px",
+        fontSize:"11px",
         backgroundColor: "white",
         "&:hover": {
           color:"#1C1C49",

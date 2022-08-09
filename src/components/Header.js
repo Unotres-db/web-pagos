@@ -40,11 +40,9 @@ logoStyle: {
   // padding: "24px",
   top:"0px"
 },
-
 toolbarButtons: {
   marginLeft: 'auto',
 },
-
 drawer: {
   width: '240',
   flexShrink: 0,
@@ -69,38 +67,34 @@ function Header() {
       route:"/home"
     },
     { id:1,
-      title:"Company Data",           //  "Company Data"  //  "Dados de Empresas"  //  "Datos de Empresas"
-      route:"/company-data"
-    },
-    { id:2,
       title:"Dividend Yield Model",   //  "Dividend Yield Model"  //  "Modelo Bazin"  //  "Dividendos"
       route:"/dividend-yield"
     },
-    { id:3,
+    { id:2,
       title:"Graham Model",           //  "Graham Model"  //  "Modelo Graham"  //  "Modelo Graham"
       route:"/graham"
     },
-    { id:4,
+    { id:3,
       title:"Valuation",              // 
       route:"/valuation"
     },
-    { id:5,
+    { id:4,
       title:"Books",                 //  "Books"  //  Livros"  //  "Libros"
       route:"/books"
     },
-    { id:6,
+    { id:5,
       title:"Pricing",
       route:"/pricing"
     },
-    { id:7,
+    { id:6,
       title:"Who Am I",             //  "Quem Sou"  //  "Quien Soy"
       route:"/who-we-are"
     },
-    { id:8,
+    { id:7,
       title:"Contact",              //  "Contato"  //  "Contacto"
       route:"/contact"
     },
-    { id:9,
+    { id:8,
       title:"Login",               //  "Login"  //  "Iniciar Sessão"  //  "Iniciar Sesión"
       route:"/login"
     },
@@ -130,11 +124,11 @@ function Header() {
           <Button component={Link} to={menuOptions[3].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[3].title}</Button>
           <Button component={Link} to={menuOptions[4].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[4].title}</Button>
           <Button component={Link} to={menuOptions[5].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[5].title}</Button>
-          <Button component={Link} to={menuOptions[6].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[6].title}</Button>
+          {/* <Button component={Link} to={menuOptions[6].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[6].title}</Button> */}
           <div className={classes.grow} />
+          <Button component={Link} to={menuOptions[6].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[6].title}</Button>
           <Button component={Link} to={menuOptions[7].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[7].title}</Button>
           <Button component={Link} to={menuOptions[8].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[8].title}</Button>
-          <Button component={Link} to={menuOptions[9].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[9].title}</Button>
       </Hidden>
 
       <div className={classes.toolbarButtons}> 
@@ -178,20 +172,20 @@ function Header() {
           <ListItem button component={Link} to={menuOptions[5].route} disableRipple className={classes.buttonDrawerStyle} >
             <ListItemText primary={menuOptions[5].title} />
           </ListItem> 
-          <ListItem button component={Link} to={menuOptions[6].route} disableRipple className={classes.buttonDrawerStyle} >
+          {/* <ListItem button component={Link} to={menuOptions[6].route} disableRipple className={classes.buttonDrawerStyle} >
             <ListItemText primary={menuOptions[6].title} />
-          </ListItem> 
+          </ListItem>  */}
         </List>
         <Divider />
         <List>
+          <ListItem button component={Link} to={menuOptions[6].route} disableRipple className={classes.buttonDrawerStyle} >
+            <ListItemText primary={menuOptions[6].title} />
+          </ListItem> 
           <ListItem button component={Link} to={menuOptions[7].route} disableRipple className={classes.buttonDrawerStyle} >
             <ListItemText primary={menuOptions[7].title} />
           </ListItem> 
           <ListItem button component={Link} to={menuOptions[8].route} disableRipple className={classes.buttonDrawerStyle} >
             <ListItemText primary={menuOptions[8].title} />
-          </ListItem> 
-          <ListItem button component={Link} to={menuOptions[9].route} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary={menuOptions[9].title} />
           </ListItem> 
       </List>
       </div>

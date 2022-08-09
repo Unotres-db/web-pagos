@@ -24,7 +24,7 @@ export default function useAxios () {
                 ...requestConfig,
                 
             });
-            console.log(res);
+            // console.log(res);
             setResponse(res.data);
             if (res.status == 200){
                 successCallback(res.data);

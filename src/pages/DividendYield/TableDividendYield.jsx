@@ -1,6 +1,6 @@
 import React, { useState }  from 'react';
 
-import { Paper, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, TablePagination, TableSortLabel, Button, Tooltip } from '@material-ui/core';
+import { Paper, TableContainer, Table, TableBody, TableHead, TableSortLabel, TableRow, TableCell, TableFooter, TablePagination, Tooltip, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import useTableSorting from '../../hooks/useTableSorting';
@@ -13,7 +13,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   },
   TableHeader:{
     color: "white",
-    backgroundColor: mainTheme.palette.primary.main
+    backgroundColor: mainTheme.palette.tertiary.main
   },
   TableTitle:{
     color: "white",
@@ -36,8 +36,6 @@ const useStyles = makeStyles( (mainTheme) => ({
     fontSize: 11
   }
 }));
-
-
 
 export default function TableDividendYield ({companiesList}) {
   const classes = useStyles();
@@ -101,28 +99,26 @@ export default function TableDividendYield ({companiesList}) {
         </TableHead>
         
         <TableBody>
-          
           {(rowsPerPage > 0 ? 
-          
             companiesList.slice().sort(getComparator(orderDirection, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : companiesList
-          ).map((company) => (
-            <TableRow key={company.companyId}>
-              <TableCell align="left" className={classes.TableRows} style={{width:"50%",position:"sticky", left:0,  paddingLeft:"6px", paddingRight:"0px", backgroundColor:"white"}} >{company.shortName}</TableCell>  
-              <TableCell align="right" className={classes.TableRows} >{company.companyId}</TableCell>
-              <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(company.dividendRate)}</TableCell>
-              <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(company.regularMarketPrice)}</TableCell>
-              <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(company.dividendYield)}</TableCell>
-              <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(company.fiveYearAvgDividendYield/100)}</TableCell>
-            </TableRow>
-          ))}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 28.72 * emptyRows }}>
-              <TableCell colSpan={6} />
-            </TableRow>
-          )}
-
+            ).map((company) => (
+              <TableRow key={company.companyId}>
+                <TableCell align="left" className={classes.TableRows} style={{width:"50%",position:"sticky", left:0,  paddingLeft:"6px", paddingRight:"0px", backgroundColor:"white"}} >{company.shortName}</TableCell>  
+                <TableCell align="right" className={classes.TableRows} >{company.companyId}</TableCell>
+                <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(company.dividendRate)}</TableCell>
+                <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(company.regularMarketPrice)}</TableCell>
+                <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(company.dividendYield)}</TableCell>
+                <TableCell align="right" className={classes.TableRows} >{Intl.NumberFormat('en-US',{style:'percent', minimumFractionDigits:2}).format(company.fiveYearAvgDividendYield/100)}</TableCell>
+              </TableRow>
+            ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 28.72 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
         </TableBody>
+        
         <TableFooter>
           <TableRow>
             <TablePagination

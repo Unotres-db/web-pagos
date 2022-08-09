@@ -1,14 +1,16 @@
 import React from 'react';
 
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, useMediaQuery } from '@material-ui/core';
+import { Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Typography, Tooltip, TextField, useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+
+import useTableStyling from '../../hooks/useTableStyling';
 
 const useStyles = makeStyles( (mainTheme) => ({
   table: {
     minWidth: 360,
     height:"100%",
   },
-  tableTitle:{
+  tableTitle: {
     width:"22%",
     paddingLeft:"6px",
     paddingRight:"0px",
@@ -72,6 +74,7 @@ export default function TableCashFlow ({combinedFinancialData, assumptions, isCh
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+  const { defineYearsColWidth, defineYearsColColor, defineYearsColBackColor, defineNumberFormat } = useTableStyling();
 
   const dataRows = [
     { id: 0,
@@ -125,60 +128,6 @@ export default function TableCashFlow ({combinedFinancialData, assumptions, isCh
       dataField: "discountedCashFlow"} 
   ]
 
-  function defineYearsColWidth (){
-    if (isCheckedShowPreviousYears){
-      return (0.78/(+assumptions.cashFlowDiscretePeriod + 3)*100).toString + "%"
-    } 
-    return (0.78/(+assumptions.cashFlowDiscretePeriod)*100).toString + "%"
-  }
-
-  function defineYearsColColor( index ){
-  if (isCheckedShowPreviousYears){
-    if (isCheckedDescOrder){
-      if (index < assumptions.cashFlowDiscretePeriod){
-        return theme.palette.secondary.main
-      } 
-      return "whitesmoke"; 
-    } if (index < 3){
-        return "whitesmoke"; 
-      } 
-      return theme.palette.secondary.main;
-  } 
-    return theme.palette.secondary.main;
-  }
-
-  function defineYearsColBackColor( index ){
-  if (isCheckedShowPreviousYears){
-    if (isCheckedDescOrder){
-      if (index < assumptions.cashFlowDiscretePeriod) { 
-        return theme.palette.primary.main;
-      } 
-      return theme.palette.tertiary.main;
-    } if (index < 3){
-        return theme.palette.tertiary.main;
-      } 
-      return theme.palette.primary.main;
-  } return theme.palette.primary.main;
-  }
-
-  function defineNumberFormat(number, style, showAsBlankIfZero, dataField){
-    if (isEstimateFcffOnly && showAsBlankIfZero[0])  {
-      if (number[0] === 0.00 ) {
-        return ""
-      }
-      return Intl.NumberFormat('en-US',{style:style,minimumFractionDigits:1,maximumFractionDigits:1}).format(number);
-    } 
-    if (number[0] === 0.00 ) {
-      return ""
-    }
-    // if depreciation, change sign (note: only in the cash flow, not income statement)
-    if (dataField[0] === "depreciation" ) {
-      return Intl.NumberFormat('en-US',{style:style,minimumFractionDigits:1,maximumFractionDigits:1}).format(number*-1);  
-      
-    }
-    return Intl.NumberFormat('en-US',{style:style,minimumFractionDigits:1,maximumFractionDigits:1}).format(number); 
-  } 
-
   return (
     <>
     <Paper>
@@ -191,7 +140,7 @@ export default function TableCashFlow ({combinedFinancialData, assumptions, isCh
             <TableCell className={classes.tableTitle} align="left" >{isMobile || assumptions.cashFlowDiscretePeriod > 7 ? "FCFF": "Free Cash Flow of the Firm"}</TableCell>  
             </Tooltip>
             {combinedFinancialData.map ((currElement, index) => ( 
-              <TableCell className={classes.yearColumnStyle} align="right" style={{color:defineYearsColColor(index), backgroundColor:defineYearsColBackColor(index), width:defineYearsColWidth()}}>{currElement.year}</TableCell>
+              <TableCell className={classes.yearColumnStyle} align="right" style={{color:defineYearsColColor(index, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder), backgroundColor:defineYearsColBackColor(index, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder), width:defineYearsColWidth(assumptions, isCheckedShowPreviousYears)}}>{currElement.year}</TableCell>
             ))} 
           </TableRow>
         </TableHead>
@@ -201,11 +150,10 @@ export default function TableCashFlow ({combinedFinancialData, assumptions, isCh
           <TableRow>
             <TableCell align="left" className = {accountElement.grayBackground ? classes.firstColumnGrayStyle : classes.firstColumnWhiteStyle } >{isMobile || assumptions.cashFlowDiscretePeriod > 7 ? accountElement.rowMobileText: accountElement.rowText}</TableCell>
             {combinedFinancialData.map ((yearElement) => ( 
-              <TableCell align="right" className = {accountElement.grayBackground ? classes.dataColumnGrayStyle : classes.dataColumnWhiteStyle} style = {{ width:defineYearsColWidth()}} >{defineNumberFormat([yearElement[accountElement.dataField]], [accountElement.style], [accountElement.showAsBlankIfZero],[accountElement.dataField]) }</TableCell>
+              <TableCell align="right" className = {accountElement.grayBackground ? classes.dataColumnGrayStyle : classes.dataColumnWhiteStyle} style = {{ width:defineYearsColWidth(assumptions, isCheckedShowPreviousYears)}} >{defineNumberFormat([yearElement[accountElement.dataField]], [accountElement.style], [accountElement.showAsBlankIfZero],[accountElement.dataField],isEstimateFcffOnly) }</TableCell>
             ))}
           </TableRow>
         ))}
-
         </TableBody>
       </Table>
     </TableContainer>
@@ -213,3 +161,57 @@ export default function TableCashFlow ({combinedFinancialData, assumptions, isCh
   </>
   )
 }
+
+  // function defineYearsColWidth (){
+  //   if (isCheckedShowPreviousYears){
+  //     return (0.78/(+assumptions.cashFlowDiscretePeriod + 3)*100).toString + "%"
+  //   } 
+  //   return (0.78/(+assumptions.cashFlowDiscretePeriod)*100).toString + "%"
+  // }
+
+  // function defineYearsColColor( index ){
+  // if (isCheckedShowPreviousYears){
+  //   if (isCheckedDescOrder){
+  //     if (index < assumptions.cashFlowDiscretePeriod){
+  //       return theme.palette.secondary.main
+  //     } 
+  //     return "whitesmoke"; 
+  //   } if (index < 3){
+  //       return "whitesmoke"; 
+  //     } 
+  //     return theme.palette.secondary.main;
+  // } 
+  //   return theme.palette.secondary.main;
+  // }
+
+  // function defineYearsColBackColor( index ){
+  // if (isCheckedShowPreviousYears){
+  //   if (isCheckedDescOrder){
+  //     if (index < assumptions.cashFlowDiscretePeriod) { 
+  //       return theme.palette.primary.main;
+  //     } 
+  //     return theme.palette.tertiary.main;
+  //   } if (index < 3){
+  //       return theme.palette.tertiary.main;
+  //     } 
+  //     return theme.palette.primary.main;
+  // } return theme.palette.primary.main;
+  // }
+
+  // function defineNumberFormat(number, style, showAsBlankIfZero, dataField){
+  //   if (isEstimateFcffOnly && showAsBlankIfZero[0])  {
+  //     if (number[0] === 0.00 ) {
+  //       return ""
+  //     }
+  //     return Intl.NumberFormat('en-US',{style:style,minimumFractionDigits:1,maximumFractionDigits:1}).format(number);
+  //   } 
+  //   if (number[0] === 0.00 ) {
+  //     return ""
+  //   }
+  //   // if depreciation, change sign (note: only in the cash flow, not income statement)
+  //   if (dataField[0] === "depreciation" ) {
+  //     return Intl.NumberFormat('en-US',{style:style,minimumFractionDigits:1,maximumFractionDigits:1}).format(number*-1);  
+      
+  //   }
+  //   return Intl.NumberFormat('en-US',{style:style,minimumFractionDigits:1,maximumFractionDigits:1}).format(number); 
+  // } 

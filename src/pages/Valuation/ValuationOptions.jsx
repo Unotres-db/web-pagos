@@ -15,7 +15,6 @@ import valuationsWebApi from '../../services/valuationsWebApi';
 import useAxios from '../../hooks/useAxios';
 
 import DialogModal from '../../components/modals/DialogModal';
-import PrintValuation from './PrintValuation';
 import TestPrint from './TestPrint';
 
 const useStyles = makeStyles( (mainTheme) => ({
@@ -36,7 +35,7 @@ companyNameText:{
 }
 }));
 
-export default function CompanyInfo({ companyData, historicalFinancialData, forecastedFinancialData, editMode, setEditMode, assumptions, setAssumptions, calculatedCostOfCapital, valuation, handleNewValuation }){
+export default function ValuationOptions({ companyData, historicalFinancialData, forecastedFinancialData, editMode, setEditMode, assumptions, setAssumptions, calculatedCostOfCapital, valuation, handleNewValuation }){
 
   const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
   const [ isDialogOpen, setIsDialogOpen] = useState(false);

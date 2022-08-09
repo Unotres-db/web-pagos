@@ -10,6 +10,14 @@ const useStyles = makeStyles( (mainTheme) => ({
     // minWidth: 300,
     // maxHeight: 900
   },
+  textFieldStyle:{
+    // "& .MuiFilledInput-root":{
+    //   fontSize:"8px",
+    //   color: "red",
+    //   backgroundColor:"yellow",
+    //   height: "28px",
+    // }
+  },
   TableHeader:{
     color:  "white",
     backgroundColor:  mainTheme.palette.secondary.main
@@ -37,7 +45,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
         <TableRow>
           <Grid container>
             <Grid item xs={4} >
-              <TextField label="Revenue Growth Rate" size="small" type="number" variant="filled" fullWidth
+              <TextField label="Revenue Growth Rate" className={classes.textFieldStyle} size="small" type="number" variant="filled" fullWidth
                 value={assumptions.revenueGrowth}
                 onChange={(e) => {handleChange (e,[])}}
                 name="revenueGrowth"
@@ -46,7 +54,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
             </Grid>
             <Grid item xs={4} >
               <Tooltip title="Estimate Margin for next years">
-                <TextField label="Margin Target" size="small" type="number" variant="filled" fullWidth
+                <TextField label="Margin Target" className={classes.textFieldStyle} size="small" type="number" variant="filled" fullWidth
                   value={assumptions.marginTarget}
                   onChange={(e) => {handleChange (e,[])}}
                   name="marginTarget"
@@ -55,7 +63,7 @@ export default function FormBusinessData ({assumptions, setAssumptions}){
               </Tooltip>
             </Grid>
             <Grid item xs={4} >
-              <TextField label="Expenses Growth Rate" size="small" type="number" variant="filled" fullWidth
+              <TextField label="Expenses Growth Rate" className={classes.textFieldStyle} size="small" type="number" variant="filled" fullWidth
                 value={assumptions.opexGrowth}
                 onChange={(e) => {handleChange (e,[])}}
                 name="opexGrowth"

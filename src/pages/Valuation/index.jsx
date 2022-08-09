@@ -6,17 +6,17 @@ import valuationsWebApi from '../../services/valuationsWebApi';
 import useAxios from '../../hooks/useAxios';
 import useUnsavedWarning from '../../hooks/useUnsavedWarning';
 import useDataHandling from '../../hooks/useDataHandling';
-import useValuation2 from '../../hooks/useValuation2';
+import useValuation from '../../hooks/useValuation';
 
 import Header from '../../components/Header'; 
 import DialogModal from '../../components/modals/DialogModal';
-import TableHistoricalData2 from './TableHistoricalData2'; // revisar
+import TableHistoricalData from './TableHistoricalData'; // revisar
 import FormOptions from './FormOptions'; 
 import FormBusinessData from './FormBusinessData';
 import FormCashFlowData from './FormCashFlowData';
 import FormCostOfCapitalData from './FormCostOfCapitalData';
 import CompanySelect from './CompanySelect';
-import CompanyInfo from './CompanyInfo';
+import ValuationOptions from './ValuationOptions';
 import TableCheckBoxes from './TableCheckBoxes';
 import TableIncomeStatement from './TableIncomeStatement';
 import TableCashFlow from './TableCashFlow';
@@ -88,13 +88,13 @@ export default function Valuation () {
   const companySearchName = companyData.symbol !=="" ? (companyData.symbol + " - " + companyData.shortName) : "" ;
   const [ assumptions, setAssumptions ] = useState({revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",cashFlowGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: 3, cashFlowDiscretePeriod:5, companyBeta:0, riskFreeReturn:3.0790, marketReturn:10.05, debtTotalRatio:0, costOfDebt:5});
   const { createFinancialHistoricalData, createCombinedData} = useDataHandling();
-  const { calcForecastedCashFlow, calcValuation, calcCostOfCapital, checkValuationStatus } = useValuation2();
+  const { calcForecastedCashFlow, calcValuation, calcCostOfCapital, checkValuationStatus } = useValuation();
   const { axiosFetch: getAllCompanies } = useAxios();                                     // function to fecth data from all companies
   const { axiosFetch: getCompany } = useAxios();                                          // function to fecth general data from one specific company
   const { axiosFetch: getFinancials } = useAxios();                                       // function to fecth previous years financial data from one specific company
   const calculatedCostOfCapital = historicalFinancialData && companyData ? calcCostOfCapital(historicalFinancialData, companyData, assumptions): { costOfEquity:0, costOfCapital:0 }  ;
-  const forecastedFinancialData = historicalFinancialData ? calcForecastedCashFlow (historicalFinancialData, assumptions, calculatedCostOfCapital, isEstimateFcffOnly):(Array.from({ length: 5 }, (a,b) => ({ year:currentYear + b, period:0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, grossProfitPercent:0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0 }))).reverse();
-  const combinedFinancialData = historicalFinancialData ? createCombinedData(historicalFinancialData, forecastedFinancialData, isCheckedShowPreviousYears, isCheckedDescOrder): (Array.from({ length: 8 }, (a,b) => ({ year:currentYear-3 + b, period:0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, grossProfitPercent:0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0 }))).reverse();
+  const forecastedFinancialData = historicalFinancialData ? calcForecastedCashFlow (historicalFinancialData, assumptions, calculatedCostOfCapital, isEstimateFcffOnly): (Array.from({ length: assumptions.cashFlowDiscretePeriod }, (a,b) => ({ year:currentYear + b, period:0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, grossProfitPercent:0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0 }))).reverse();
+  const combinedFinancialData = historicalFinancialData ? createCombinedData(historicalFinancialData, forecastedFinancialData, isCheckedShowPreviousYears, isCheckedDescOrder): (Array.from({ length: parseInt(assumptions.cashFlowDiscretePeriod) + 3 }, (a,b) => ({ year:currentYear-3 + b, period:0, totalRevenue:0, costOfRevenue: 0, grossProfit: 0, grossProfitPercent:0, operatingExpenses: 0, depreciation: 0, interestExpense: 0, other: 0, incomeBeforeTax: 0, incomeTaxExpense: 0, netIncome: 0, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0 }))).reverse();
   const valuation = forecastedFinancialData ? calcValuation(companyData, historicalFinancialData, assumptions, calculatedCostOfCapital, forecastedFinancialData): {revenueGrowth:"", marginTarget:"", opexGrowth:"", interestGrowth:"", otherGrowth:"",cashFlowGrowthRate:"", taxRate:"", capexGrowth:"", nwcGrowth:"", perpetualGrowthRate: 3, cashFlowDiscretePeriod:5, companyBeta:0, riskFreeReturn:3.0790, marketReturn:10.05, debtTotalRatio:0, costOfDebt:5} ;
   const [ Prompt, setIsDirty, setIsPristine ] = useUnsavedWarning();
   const [ editMode, setEditMode ] = useState("blank");                                    // blank, edited, completed, saved, published
@@ -181,12 +181,10 @@ export default function Valuation () {
     }
   },[isEstimateFcffOnly]); 
 
-
-
   return(
     <>
     <Header />
-
+    {console.count()}
     { combinedFinancialData ? <div>
       {/* className={classes.container} */}
     <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}}  >
@@ -197,7 +195,7 @@ export default function Valuation () {
         <Grid item xs={12} md={3} >
           <Paper className={classes.paperStyle} elevation={3}>
 
-            <TableHistoricalData2 historicalFinancialData = {historicalFinancialData} />
+            <TableHistoricalData historicalFinancialData = {historicalFinancialData} />
 
             <Box style={{height:"5px"}}/>
             <FormOptions isEstimateFcffOnly = {isEstimateFcffOnly} setIsEstimateFcffOnly = {setIsEstimateFcffOnly} isDisabledChkBox = {isDisabledChkBox} />
@@ -232,7 +230,7 @@ export default function Valuation () {
               <Box style = {{height:"10px"}}/>
               
               { companyData ? <>
-                <CompanyInfo 
+                <ValuationOptions 
                   companyData = {companyData} 
                   historicalFinancialData={historicalFinancialData}
                   forecastedFinancialData = {forecastedFinancialData}
@@ -288,6 +286,7 @@ export default function Valuation () {
             <TableValuation 
               valuation = {valuation} 
               historicalFinancialData = {historicalFinancialData} 
+              combinedFinancialData = {combinedFinancialData}
               calculatedCostOfCapital = {calculatedCostOfCapital}
               assumptions = {assumptions}
               companyData = {companyData}

@@ -1,14 +1,7 @@
-import { useTheme } from '@mui/material/styles';
-import mainTheme from '../mainTheme';
+import { useTheme } from "@material-ui/core";
 
 export default function useTableStyling () {
-  const theme = useTheme(mainTheme);
-  const primary = theme.palette.primary.main;
-  const secondary = theme.palette.secondary.main;
-  const tertiary = "#3C6E76";
-  // const primary="#344955";
-  // const secondary="#F9AA33";
-  // const tertiary="#3C6E76";
+  const theme = useTheme();
 
   function defineYearsColWidth ( assumptions, isCheckedShowPreviousYears) {
     if (isCheckedShowPreviousYears){
@@ -18,38 +11,34 @@ export default function useTableStyling () {
   }
 
   function defineYearsColColor ( index, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder ) {
-    // const primary="#344955";
-    // const secondary="#F9AA33";
-    // const tertiary="#3C6E76";
+
     if (isCheckedShowPreviousYears){
       if (isCheckedDescOrder) {
         if (index < assumptions.cashFlowDiscretePeriod){
-          return secondary
+          return theme.palette.secondary.main
         } 
         return "whitesmoke"; 
       } if (index < 3) {
           return "whitesmoke"; 
         } 
-        return secondary;
+        return theme.palette.secondary.main;
     } 
-      return secondary;
+      return theme.palette.secondary.main;
   }
 
   function defineYearsColBackColor ( index, assumptions, isCheckedShowPreviousYears, isCheckedDescOrder ) {
-    const primary="#344955";
-    const secondary="#F9AA33";
-    const tertiary="#3C6E76";
+
   if (isCheckedShowPreviousYears){
     if (isCheckedDescOrder) {
       if (index < assumptions.cashFlowDiscretePeriod) { 
-        return primary;
+        return theme.palette.primary.main;
       } 
-      return tertiary;
+      return theme.palette.tertiary.main;
     } if (index < 3) {
-        return tertiary;
+        return theme.palette.tertiary.main;
       } 
-      return primary;
-  } return primary;
+      return theme.palette.primary.main;
+  } return theme.palette.primary.main;
   }
 
   function defineNumberFormat ( number, style, showAsBlankIfZero, isEstimateFcffOnly ){
