@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 
 import { AppBar, Toolbar, IconButton, Box, Button, Hidden, Drawer, List, ListItem, ListItemText, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
 import MenuIcon from '@material-ui/icons/Menu';
-import mainLogo from '../assets/Group 292.svg';
 
-const useStyles = makeStyles( (mainTheme) => ({
-  root: {
+import mainLogo from '../assets/Logo.svg';
+
+const useStyles = makeStyles((mainTheme) => ({
+root: {
     display: 'flex',
   },  
-  grow:{
+grow:{
     flexGrow: 1
   },
 buttonMenuStyle: {
@@ -54,13 +54,17 @@ drawerPaper: {
 },
 drawerContainer: {
   overflow: 'auto',
+},
+drawerText:{
+  fontSize:"13px"
 }
 })); 
 
-function Header() {
+function HeaderTest() {
 
   const classes = useStyles();
   const [ isDrawerOpen, setIsDrawerOpen ] = useState(false);
+  const dividerOption = 6;
   const menuOptions = [
     { id:0,
       title:"Home",                   //  "Home"  //  "Principal"  //  "Principal"
@@ -117,18 +121,13 @@ function Header() {
         <img src = {mainLogo} alt="Logo" className={classes.logoStyle} />
       </Link>
       <Hidden smDown>
-        <Box style={{ width: '20px' }}/>    
-          <Button component={Link} to={menuOptions[0].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[0].title}</Button>
-          <Button component={Link} to={menuOptions[1].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[1].title}</Button>
-          <Button component={Link} to={menuOptions[2].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[2].title}</Button>
-          <Button component={Link} to={menuOptions[3].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[3].title}</Button>
-          <Button component={Link} to={menuOptions[4].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[4].title}</Button>
-          <Button component={Link} to={menuOptions[5].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[5].title}</Button>
-          {/* <Button component={Link} to={menuOptions[6].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[6].title}</Button> */}
-          <div className={classes.grow} />
-          <Button component={Link} to={menuOptions[6].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[6].title}</Button>
-          <Button component={Link} to={menuOptions[7].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[7].title}</Button>
-          <Button component={Link} to={menuOptions[8].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[8].title}</Button>
+        <Box style={{ width: '20px' }}/>   
+        { menuOptions.map ( (currElement) => (
+          <>
+          { dividerOption===currElement.id? <div className={classes.grow} />: null}
+          <Button component={Link} to={menuOptions[currElement.id].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[currElement.id].title}</Button>
+          </>
+        ))} 
       </Hidden>
 
       <div className={classes.toolbarButtons}> 
@@ -153,45 +152,20 @@ function Header() {
       }}
     >
     <div className={classes.drawerContainer}>
-        <List>
-          <ListItem button component={Link} to={menuOptions[0].route} disableRipple className={classes.buttonDrawerStyle}>
-            <ListItemText primary={menuOptions[0].title} />
-          </ListItem>
-          <ListItem button component={Link} to={menuOptions[1].route} disableRipple className={classes.buttonDrawerStyle}>
-            <ListItemText primary={menuOptions[1].title} />
-          </ListItem> 
-          <ListItem button component={Link} to={menuOptions[2].route} disableRipple className={classes.buttonDrawerStyle}>
-            <ListItemText primary={menuOptions[2].title} />
-          </ListItem> 
-          <ListItem button component={Link} to={menuOptions[3].route} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary={menuOptions[3].title} />
-          </ListItem> 
-          <ListItem button component={Link} to={menuOptions[4].route} disableRipple className={classes.buttonDrawerStyle}>
-            <ListItemText primary={menuOptions[4].title} />
-          </ListItem> 
-          <ListItem button component={Link} to={menuOptions[5].route} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary={menuOptions[5].title} />
-          </ListItem> 
-          {/* <ListItem button component={Link} to={menuOptions[6].route} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary={menuOptions[6].title} />
-          </ListItem>  */}
-        </List>
-        <Divider />
-        <List>
-          <ListItem button component={Link} to={menuOptions[6].route} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary={menuOptions[6].title} />
-          </ListItem> 
-          <ListItem button component={Link} to={menuOptions[7].route} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary={menuOptions[7].title} />
-          </ListItem> 
-          <ListItem button component={Link} to={menuOptions[8].route} disableRipple className={classes.buttonDrawerStyle} >
-            <ListItemText primary={menuOptions[8].title} />
-          </ListItem> 
+      <List>
+        { menuOptions.map ( (currElement) => (
+          <>
+            { dividerOption===currElement.id? <Divider /> : null}
+            <ListItem button component={Link} to={menuOptions[currElement.id].route} disableRipple className={classes.buttonDrawerStyle}>
+              <ListItemText primary={menuOptions[currElement.id].title} disableTypography className={classes.drawerText}/>
+            </ListItem>
+          </>
+        ))} 
       </List>
-      </div>
+    </div>
     </Drawer>
   </Hidden>
   </>
   )
 }
-export default memo(Header)
+export default memo(HeaderTest)

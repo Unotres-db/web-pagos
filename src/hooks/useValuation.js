@@ -64,7 +64,7 @@ export default function useValuation2() {
         estFinancialDataArr[0].year = historicalFinancialData[0].year + 1;
         // estFinancialDataArr[0].period = 0;
         estFinancialDataArr[0].period = estFinancialDataArr.length-1;
-        if (isEstimateFcffOnly){ // calculate only the fcff (free casf flow of the firm)
+        if (isEstimateFcffOnly){ // calculate only the free casf flow of the firm (income statement and cash flow accounts will be equal to zero)
           const baseFcff = historicalFinancialData[0].ebit
                           + historicalFinancialData[0].incomeTaxExpense
                           - historicalFinancialData[0].depreciation
@@ -88,7 +88,7 @@ export default function useValuation2() {
               estFinancialDataArr[i].discountedCashFlow = estFinancialDataArr[i].cashFlow/(Math.pow((1+parseFloat(calculatedCostOfCapital.costOfCapital/100)),(i+1))); 
             } 
           }
-        } else {  //calculate all accounts
+        } else {  //calculate all income statement and cash flow accounts
             // if (  historicalFinancialData[0].totalRevenue !== undefined &&  historicalFinancialData[0].totalRevenue !== null && historicalFinancialData[0].totalRevenue !== 0){ 
             if (assumptions.revenueGrowth === "") {
               estFinancialDataArr[0].totalRevenue = 0
@@ -180,7 +180,8 @@ export default function useValuation2() {
   } 
 
   function calcValuation(companyData, historicalFinancialData, assumptions, calculatedCostOfCapital, forecastedFinancialData) {
-    let valuationResultsArr = {valuationId:"none", cashFlowAvgGrowth:0, sumOfCashFlowPresentValue:0, perpetuityValue:0, perpetuityPresentValue:0, enterpriseValue:0, cash:0, debt:0, equityValue:0, sharesOutstanding:0, targetStockPrice:0, marketCap:0, published:"", publishedDate:""};;
+    // valuationId:"none"
+    let valuationResultsArr = {valuationId:"", cashFlowAvgGrowth:0, sumOfCashFlowPresentValue:0, perpetuityValue:0, perpetuityPresentValue:0, enterpriseValue:0, cash:0, debt:0, equityValue:0, sharesOutstanding:0, targetStockPrice:0, marketCap:0, updated_at:"",published:"", publishedDate:""};
   //  Reviisar Ifs ++++++++++++++++++++
     if (historicalFinancialData && forecastedFinancialData && assumptions) {
       if (forecastedFinancialData && assumptions.cashFlowDiscretePeriod !==undefined && assumptions.cashFlowDiscretePeriod !==null ){
@@ -216,13 +217,18 @@ export default function useValuation2() {
     return valuationResultsArr
   }
 
-  function checkValuationStatus(companyData, assumptions, isEstimateFcffOnly) {
+  function checkValuationStatus(companyData, assumptions, isEstimateFcffOnly, savedValuationData) {
+    // revisar y hacer tb con isDirty/isPristine
     const { revenueGrowth, marginTarget, opexGrowth, interestGrowth, otherGrowth,  taxRate, capexGrowth, nwcGrowth, cashFlowGrowthRate, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn, costOfDebt} = assumptions;
     const { symbol } = companyData;
     let fieldsCompleted = 0;
     if (! symbol){
       return "blank"
     }
+    // if (savedValuationData.published){
+    //   return "published"
+    // }
+
     // Note: check only fields that are considered "required" for a valuation to be complete
     let valuesToCheck = { revenueGrowth, marginTarget, opexGrowth, taxRate, capexGrowth, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn,costOfDebt }
 

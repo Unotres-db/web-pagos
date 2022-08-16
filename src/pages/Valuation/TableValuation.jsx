@@ -39,49 +39,11 @@ TableCurrentPrice:{
 export default function TableValuation ({valuation, historicalFinancialData, combinedFinancialData, calculatedCostOfCapital, assumptions, companyData}){
 
   const classes = useStyles();
-  // const [ firstYear, setFirstYear ] = useState(0);
-  // const [ finalYear, setFinalYear ] = useState(0);
-  // const firstYear = historicalFinancialData ? historicalFinancialData[0].year + 1 : "";
-  // const finalYear = historicalFinancialData && assumptions ? historicalFinancialData[0].year + parseInt(assumptions.cashFlowDiscretePeriod) : "" ;
   const finalYear = combinedFinancialData ? combinedFinancialData[0].year : "";
   const firstYear = combinedFinancialData ? combinedFinancialData[combinedFinancialData.length-1].year : "" ;
 
-  // const priceRange = `${Intl.NumberFormat('en-US',{style:'currency',currency:'USD' }).format(companyData.fiftyTwoWeekLow)} - ${Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(companyData.fiftyTwoWeekHigh)}`
-  // const dataRows = [
-  //   { id: 0,
-  //     rowText:"Earnings Before Interest & Taxes",
-  //     rowMobileText:"EBIT",
-  //     grayBackground:true,
-  //     showAsBlankIfZero:true,  
-  //     style:"decimal",
-  //     dataField:"ebit" },
-  //   { id: 1,
-  //     rowText:"(-) Income Taxes",
-  //     rowMobileText:"(-) Taxes",
-  //     grayBackground:false,
-  //     showAsBlankIfZero:true,
-  //     style:"decimal",
-  //     dataField:"incomeTaxExpense" },  
-  //   { id: 2,
-  //     rowText:"(+) Depreciation",
-  //     rowMobileText:"(+) Depreciation",
-  //     grayBackground:false,
-  //     showAsBlankIfZero:true,
-  //     style:"decimal",
-  //     dataField:"depreciation"}
-  // ]  
-
-  // useEffect (()=> {
-  //   if (historicalFinancialData){
-  //     setFirstYear(historicalFinancialData[0].year + 1)
-  //     const calcFinalYear = historicalFinancialData[0].year + +assumptions.cashFlowDiscretePeriod
-  //     setFinalYear(calcFinalYear);
-  //   } 
-  // },[assumptions]);
-
   return (
   <>
-  {/* {console.log(combinedFinancialData)} */}
   <TableContainer component={Paper}>
     <Table className={classes.table} size="small" aria-label="stycky header">
       <TableHead className={classes.TableHeader}>
@@ -135,11 +97,10 @@ export default function TableValuation ({valuation, historicalFinancialData, com
           <TableCell align="left" className={classes.TableValuationPrice}>Target Stock Price </TableCell>
           <TableCell align="right" className={classes.TableValuationPrice} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(valuation.targetStockPrice)}</TableCell>
         </TableRow>
-        <TableRow>
+        {/* <TableRow>
           <TableCell align="left" className={classes.TableCurrentPrice}>Current Equity Value</TableCell>
           <TableCell align="right" className={classes.TableCurrentPrice} >{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:1,maximumFractionDigits:1}).format(companyData.marketCap)}</TableCell>
-        </TableRow>
-
+        </TableRow> */}
         <TableRow>
           <TableCell className={classes.TableCurrentPrice} align="left">Current Stock Price</TableCell>
           <TableCell align="right" className={classes.TableCurrentPrice} >{Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(companyData.regularMarketPrice)}</TableCell>

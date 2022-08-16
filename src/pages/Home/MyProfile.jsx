@@ -126,7 +126,7 @@ export default function MyProfile (){
       </Box>
       <Box style={{height:"2px"}}/>
       
-      <Grid container> 
+      {/* <Grid container> 
         <Grid item xs={1}>
           <EmailIcon fontSize="small" className={classes.iconStyleInfo} />
         </Grid>
@@ -185,11 +185,7 @@ export default function MyProfile (){
         <Grid item xs={11}>
           <Typography style={{fontSize: 9, marginLeft: "10px", marginTop:"2px"}}>valuationsweb</Typography>
         </Grid>
-      </Grid> 
-
-
-
-
+      </Grid>  */}
 
       <Grid container justify="center">
         <Tooltip title="Edit and save changes to your profile">

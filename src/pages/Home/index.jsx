@@ -89,6 +89,7 @@ export default function Home (){
     history.push('/valuation')
   }
 
+
   function userValuationsSuccessCallback(apiData){
     const allValuations = apiData;
     setValuationsList(allValuations);

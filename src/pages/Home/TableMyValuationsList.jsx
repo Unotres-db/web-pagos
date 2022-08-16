@@ -1,4 +1,5 @@
 import React, { useState }  from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, TableFooter, TablePagination, TableSortLabel, Button, IconButton, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -77,10 +78,16 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
   const [ dialogOptions, setDialogOptions ] = useState({severity:"",title:"",message:"",buttons:{},action:""});
   const [ deleteValuationId, setDeleteValuationId ] = useState("")
   const { axiosFetch: delValuation} = useAxios();
+  const { axiosFetch: putValuation} = useAxios();
   const { getComparator, handleRequestSort } = useTableSorting();
-
   var emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - valuationsList.length) : 0; // Avoid a layout jump when reaching the last page with empty rows.
+  const history = useHistory();
   
+
+  function handleSavedValuation (valuationId) {
+    history.push(`/saved-valuation/${valuationId}`)
+  }
+
   function handleDelete (valuationId){
     setDeleteValuationId(valuationId);
     setDialogOptions({severity:"warning", title:"Alert", message:"Are you sure you want to delete this valuation ?",buttons:{button1:"Cancel",button2:"Confirm"}, action:"delete"})
@@ -102,21 +109,45 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
     setIsDialogOpen (true);
   }
 
+  function publishSuccessCallback(){
+    setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully published.",buttons:{button1:"Ok"},action:"publish"})
+    setIsDialogOpen (true);
+  }
+
   function errorCallback(errorMessage){
     setDialogOptions({severity:"error", title:"Oops", message:errorMessage,buttons:{button1:"Ok"}})
     setIsDialogOpen (true);
   }
 
-  function deleteValuation (valuationId){  
-    const userId = "martincsl"  // atualizar para state global com Context
-    delValuation({ axiosInstance: valuationsWebApi, method: 'DELETE', url: '/valuations', 
-      requestConfig: { 
-        data : {valuationId: valuationId }, //testar com params e nao body
-        headers: {'Authorization': userId,},
-      }
-    },deleteSuccessCallback, errorCallback);
+  function handlePublish (valuationId){  
+    const userId = "martincsl";
+    const published = "all";
+    const dataToProcess =  {valuationId: valuationId, published: published};
+    putValuation({ axiosInstance: valuationsWebApi, 
+                    method: 'PUT', 
+                    url: '/publication', 
+                    data: dataToProcess, 
+                    headers:{'Authorization': userId,}
+    },publishSuccessCallback, errorCallback);
   }
 
+  function deleteValuation (valuationIdParam){  
+    const userId = "martincsl"  // atualizar para state global com Context
+    const valuationToDelete = valuationIdParam
+    delValuation({ axiosInstance: valuationsWebApi, 
+                    method: 'DELETE', 
+                    url: '/valuations', 
+                    // data: valuationToDelete, 
+                    // params: { valuationIdParam }, 
+                    headers:{'Authorization': userId,}
+    },deleteSuccessCallback, errorCallback);
+  }
+  // headers:{'Authorization': userId,},
+
+        // requestConfig: { 
+      //   headers: {'Authorization': userId,},
+      //   data : {valuationId: valuationId } //testar com params e nao body
+      // }
   const createSorthandler=(property) => (event) => {
     handleRequestSort(event, property, orderDirection, setOrderDirection, orderBy, setOrderBy);
   }
@@ -176,7 +207,9 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
                   <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{format(parseISO(currValuation.updated_at),"yyyy MMMM,dd")}</Button>
                 </TableCell>
                 <TableCell align="left" className={classes.TableRows}  style={{fontSize: 11, width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
-                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.shortName}</Button>
+                  {/* <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.shortName}</Button> */}
+                  <Button onClick={(e) => (handleSavedValuation (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.shortName}</Button>
+
                 </TableCell>
                 <TableCell align="left" className={classes.TableRows} style={{width:"9%", paddingLeft:"5px", paddingRight:"5px"}}>
                   <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{currValuation.published ? "Public": "Private"}</Button>
@@ -193,6 +226,7 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
                 <TableCell>
                   <Tooltip title={`Delete this ${currValuation.shortName} Valuation`}>
                     <IconButton className={classes.iconButtonStyle} onClick={(e) => (handleDelete (currValuation.valuationId))} disableRipple size="small" aria-label="delete">
+                    {/* <IconButton className={classes.iconButtonStyle} onClick={(e) => (handlePublish (currValuation.valuationId))} disabled = {currValuation.published==="all"} disableRipple size="small" aria-label="delete"> */}
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>

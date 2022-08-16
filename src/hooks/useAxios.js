@@ -1,4 +1,4 @@
-// Function from Dave Gray
+// Note: Function based on Dave Gray video
 import { useState, useEffect } from "react";
 
 export default function useAxios () {
@@ -12,19 +12,24 @@ export default function useAxios () {
             axiosInstance,
             method,
             url,
+            data,
+            params,
+            headers,
             requestConfig = {}
         } = configObj;
-
         // signal: ctrl.signal
         try {
             setLoading(true);
             // const ctrl = new AbortController();
             // setController(ctrl);
-            const res = await axiosInstance[method.toLowerCase()](url, {
-                ...requestConfig,
-                
-            });
-            // console.log(res);
+
+              const res = await axiosInstance[method.toLowerCase()](url, data? data: params,{ headers } );
+  
+            // , {...requestConfig}
+
+            // const res = await axiosInstance[method.toLowerCase()](url, {
+            //     ...requestConfig,
+            // });
             setResponse(res.data);
             if (res.status == 200){
                 successCallback(res.data);
@@ -35,20 +40,12 @@ export default function useAxios () {
             // successCallback(res.data);
         } catch (err) {
             console.log(err.message);
-            errorCallback("Error Accessing the server. Please try later.");
+            errorCallback(`Error Accessing the server. Please try later. ${url}`);
             setError(err.message);
         } finally {
             setLoading(false);
         }
     }
-
-    // useEffect(() => {
-    //     console.log(controller)
-
-    //     // useEffect cleanup function
-    //     return () => controller && controller.abort();
-
-    // }, [controller]);
 
     return { response, error, loading, axiosFetch };
 }

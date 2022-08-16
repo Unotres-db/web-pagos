@@ -8,7 +8,7 @@ import PublishIcon from '@mui/icons-material/Publish';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { format } from 'date-fns';
+// import { format } from 'date-fns';
 
 import useTest from '../../hooks/useTest';
 import valuationsWebApi from '../../services/valuationsWebApi';
@@ -25,9 +25,7 @@ buttonStyle: {
   },
 },
 companyNameText:{
-  // paddingLeft:"42px",
   paddingLeft:"5px",
-// 
   fontSize: "12px",
   [mainTheme.breakpoints.down('xs')]: {
     fontSize: "12px"
@@ -50,7 +48,7 @@ export default function ValuationOptions({ companyData, historicalFinancialData,
   }
 
   function handlePublish (){  // receber valuationId como parametro x usar o state
-    // const { valuationId } = valuation;
+    const { valuationId } = valuation;
     const published = "all";
     putValuation({ axiosInstance: valuationsWebApi, method: 'PUT', url: '/publication', 
       requestConfig: { 
@@ -66,11 +64,11 @@ export default function ValuationOptions({ companyData, historicalFinancialData,
     setIsDialogOpen (true);
   }
 
-  function deleteValuation (){  
-    const userId = "martincsl"  // atualizar para state global com Context
+  function deleteValuation (valuationIdParam){  
+    const userId = "martincsl"; // atualizar para state global com Context
     delValuation({ axiosInstance: valuationsWebApi, method: 'DELETE', url: '/valuations', 
       requestConfig: { 
-        data : {valuationId: valuationId }, //testar com params e nao body
+        data : { valuationId: valuationIdParam },
         headers: {'Authorization': userId,},
       }
     },deleteSuccessCallback, errorCallback);
@@ -83,8 +81,6 @@ export default function ValuationOptions({ companyData, historicalFinancialData,
   }
 
   function publishSuccessCallback(){
-    // const publishedDate = format(new Date(),'yyyy-MM-dd HH:mm:ss') //only to update the state in the frontend
-    // setValuation(prevState => ({...prevState, published:"all", publishedDate:publishedDate}))
     setEditMode("published");
     setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully published",buttons:{button1:"Ok"},action:"publish"})
     setIsDialogOpen (true);
@@ -106,7 +102,7 @@ export default function ValuationOptions({ companyData, historicalFinancialData,
     setIsDialogOpen (false);
     setDialogOptions({severity:"",title:"",message:"",buttons:{},action:""});
     if (value === "Confirm" && action ==="delete"){  
-      deleteValuation(valuationId,deleteSuccessCallback, errorCallback);
+      deleteValuation(valuationId);
     } 
   }
 
@@ -117,7 +113,6 @@ export default function ValuationOptions({ companyData, historicalFinancialData,
   function handlePrintValuation (){
     console.log("entrou em Printvaluation");
     setIsDialogPdfOpen(true)
-    // <PrintValuation />
   }
 
   const classes = useStyles()
@@ -178,7 +173,6 @@ export default function ValuationOptions({ companyData, historicalFinancialData,
             variant = "contained" 
             className = {classes.buttonStyle} 
             startIcon={<PictureAsPdfIcon />} 
-            // disabled = {editMode=="blank" || editMode=="completed"}
             disabled = {editMode!=="saved" && editMode!=="published"}
             disableRipple
             onClick = {handlePrintValuation} 
@@ -188,7 +182,6 @@ export default function ValuationOptions({ companyData, historicalFinancialData,
             variant = "contained" 
             className = {classes.buttonStyle} 
             startIcon={<DeleteIcon />} 
-            // disabled = {editMode=="blank" || editMode=="completed"}
             disabled = {editMode!=="saved" && editMode!=="published"}
             disableRipple
             onClick={(e) => (handleDelete (valuation.valuationId))} 
