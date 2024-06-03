@@ -5,7 +5,8 @@ import { AppBar, Toolbar, IconButton, Box, Button, Hidden, Drawer, List, ListIte
 import { makeStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 
-import mainLogo from '../assets/Logo.svg';
+// import mainLogo from '../assets/Logo.svg';
+import mainLogo from '../assets/UnoTresLogo.jpg';
 
 const useStyles = makeStyles((mainTheme) => ({
 root: {
@@ -19,12 +20,13 @@ buttonMenuStyle: {
   padding: 6,
   minWidth: 0,
   color: "white",
-  backgroundColor:mainTheme.palette.primary.main,
+  backgroundColor:"#7b7d7b", //mainTheme.palette.primary.main,
   textTransform:"none",
   margin: "2px",
+  fontSize:"13px",
   "&:hover": {
-    color:mainTheme.palette.secondary.main,
-    backgroundColor:mainTheme.palette.primary.main,
+    color:"white",//mainTheme.palette.secondary.main,
+    backgroundColor:"#7b7d7b", //mainTheme.palette.primary.main,
   }
 },
 buttonDrawerStyle: {
@@ -38,7 +40,7 @@ logoStyle: {
   position: "relative",
   height: "45px",
   // padding: "24px",
-  top:"0px"
+  top:"5px"
 },
 toolbarButtons: {
   marginLeft: 'auto',
@@ -50,7 +52,7 @@ drawer: {
 drawerPaper: {
   width: '240',
   color: 'white',
-  backgroundColor:mainTheme.palette.primary.main
+  backgroundColor:"#7b7d7b", // mainTheme.palette.primary.main
 },
 drawerContainer: {
   overflow: 'auto',
@@ -60,48 +62,40 @@ drawerText:{
 }
 })); 
 
-function HeaderTest() {
+function Header() {
 
   const classes = useStyles();
   const [ isDrawerOpen, setIsDrawerOpen ] = useState(false);
   const dividerOption = 6;
   const menuOptions = [
     { id:0,
-      title:"Home",                   //  "Home"  //  "Principal"  //  "Principal"
+      title:"Principal",
       route:"/home"
     },
     { id:1,
-      title:"Dividend Yield Model",   //  "Dividend Yield Model"  //  "Modelo Bazin"  //  "Dividendos"
-      route:"/dividend-yield"
+      title:"Proyectos",
+      route:"/project"
     },
     { id:2,
-      title:"Graham Model",           //  "Graham Model"  //  "Modelo Graham"  //  "Modelo Graham"
-      route:"/graham"
+      title:"Proyectos de la Competencia",
+      route:"/competition-data"
     },
     { id:3,
-      title:"Valuation",              // 
-      route:"/valuation"
+      title:"Rolling Forecast",
+      route:"/rolling-forecast"
     },
     { id:4,
-      title:"Books",                 //  "Books"  //  Livros"  //  "Libros"
-      route:"/books"
+      title:"Valuation",
+      route:"/project"
     },
     { id:5,
-      title:"Pricing",
-      route:"/pricing"
+      title:"Balances y EERR",
+      route:"/project"
     },
     { id:6,
-      title:"Who Am I",             //  "Quem Sou"  //  "Quien Soy"
-      route:"/who-we-are"
-    },
-    { id:7,
-      title:"Contact",              //  "Contato"  //  "Contacto"
-      route:"/contact"
-    },
-    { id:8,
-      title:"Login",               //  "Login"  //  "Iniciar Sessão"  //  "Iniciar Sesión"
+      title:"Iniciar Sesión",
       route:"/login"
-    },
+    }
   ]
 
   const handleDrawerOpen = () => {
@@ -115,17 +109,18 @@ function HeaderTest() {
   return (
   <>
   <AppBar position="fixed" style={{top:'0px', height: '64px'}}>
-    <Toolbar style={{minWidth:'360',height: '64px',paddingLeft:'24px'}}>
+    <Toolbar style={{minWidth:'360',height: '64px',paddingLeft:'24px', backgroundColor:"#7b7d7b"}}>
 
       <Link to={menuOptions[0].route}>
         <img src = {mainLogo} alt="Logo" className={classes.logoStyle} />
       </Link>
       <Hidden smDown>
-        <Box style={{ width: '20px' }}/>   
+        <Box style={{ width: '20px' }}/> 
+        {/* size="small"    */}
         { menuOptions.map ( (currElement) => (
           <>
           { dividerOption===currElement.id? <div className={classes.grow} />: null}
-          <Button component={Link} to={menuOptions[currElement.id].route} className={classes.buttonMenuStyle} size="small" disableRipple>{menuOptions[currElement.id].title}</Button>
+          <Button component={Link} to={menuOptions[currElement.id].route} className={classes.buttonMenuStyle}disableRipple>{menuOptions[currElement.id].title}</Button>
           </>
         ))} 
       </Hidden>
@@ -168,4 +163,4 @@ function HeaderTest() {
   </>
   )
 }
-export default memo(HeaderTest)
+export default memo(Header)

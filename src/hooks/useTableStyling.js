@@ -41,25 +41,35 @@ export default function useTableStyling () {
   } return theme.palette.primary.main;
   }
 
-  function defineNumberFormat ( number, style, showAsBlankIfZero, isEstimateFcffOnly ){
-    
+  function defineNumberFormat ( number, style, showAsBlankIfZero, dataField, isEstimateFcffOnly ){
+    // console.log(number[0]);
+    // console.log(dataField[0]);
+    if (dataField[0]==="depreciation"){
+      // console.log(number[0]);  ///esta enviando undefined
+      // console.log("entrou em depreciation");
+    }
     if (isEstimateFcffOnly && showAsBlankIfZero[0])  {
-      if (number[0] === 0.00 ) {
+      if (Math.abs(number[0]) === 0.00 ) {
         return ""
       }
       if (style[0] === "percent") {
         return Intl.NumberFormat('en-US',{style:"percent", minimumFractionDigits:1,maximumFractionDigits:1}).format(number/100);
+        // return Intl.NumberFormat('en-US',{style:"percent", minimumFractionDigits:1,maximumFractionDigits:1}).format(number/100);
+
       } else {
-          return Intl.NumberFormat('en-US',{style:"decimal", minimumFractionDigits:1,maximumFractionDigits:1}).format(number);
+          return Intl.NumberFormat('en-US',{style:"decimal", minimumFractionDigits:0,maximumFractionDigits:0}).format(number);
+          // return Intl.NumberFormat('en-US',{style:"decimal", minimumFractionDigits:1,maximumFractionDigits:1}).format(number);
+
+
         }
     } 
-    if (number[0] === 0.00 ) {
+    if (Math.abs(number[0]) === 0.00 ) {
       return ""
     }
     if (style[0] === "percent") {
         return Intl.NumberFormat('en-US',{style:"percent", minimumFractionDigits:1,maximumFractionDigits:1}).format(number/100); 
     } else { 
-        return Intl.NumberFormat('en-US',{style:"decimal", minimumFractionDigits:1,maximumFractionDigits:1}).format(number); 
+        return Intl.NumberFormat('en-US',{style:"decimal", minimumFractionDigits:0,maximumFractionDigits:0}).format(number); 
       }
   }
 

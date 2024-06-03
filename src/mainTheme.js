@@ -2,20 +2,34 @@ import { createTheme } from '@material-ui/core';
 // import { responsiveFontSizes } from '@material-ui/core/styles';
 
 const mainTheme = createTheme ({
-  palette: {
+    palette: {
     primary: {
-      main: "#344955"
+      main: "#344955", //"#003594" // "#1C1C49"; azul oscuro "#1C1C49"     "#344955" "#344955" 
     },
     secondary: {
-      main: "#F9AA33" 
+      main:  "#344955",   // "#FF4500" orangered  "#FF4500"  "#F9AA33" "#F57F17"
     },
     tertiary :{
-      main: "#3C6E76" 
+      main: "#344955",
     },
     contrast :{
       main: "#d3d3d3"
     },
   },
+  // palette: {
+  //   primary: {
+  //     main: "#344955" // "#2E4053" //
+  //   },
+  //   secondary: {
+  //     main: "#5499C7", //"#F9AA33",
+  //   },
+  //   tertiary :{
+  //     main: "#3C6E76" 
+  //   },
+  //   contrast :{
+  //     main: "#d3d3d3"
+  //   },
+  // },
   sectionTitle:{
     fontSize: 14,
     color:"#344955",   //palette.primary
@@ -112,12 +126,12 @@ const mainTheme = createTheme ({
     },
     MuiButton:{
       contained:{
-        color: "#344955",
+        color: "white", //"#344955",
         fontSize: "11px",
         // [mainTheme.breakpoints.down('xs')]: {
         //   fontSize: "10px"
         // },
-        backgroundColor: "#F9AA33",
+        backgroundColor: "#5499C7", //"#F9AA33",
         textTransform: "none",
         // width:"120px",
         height: "30px",
@@ -125,7 +139,7 @@ const mainTheme = createTheme ({
         marginLeft:"1px",
         marginRight:"1px",
         "&:hover": {
-          backgroundColor: "#F49506ed"
+          backgroundColor: "#437a9f" //"#F49506ed"
         },
       },
       text:{
@@ -153,6 +167,14 @@ const mainTheme = createTheme ({
         fontSize:11
       } 
     },
+    MuiRadio: {
+      root: {
+        color: '#003594', // Set the custom color for the radio button circle
+        '&$checked': {
+          color: '#003594', // Set the custom color for the checked radio button circle
+        },
+      },
+    },
     MuiSlider:{
       markLabel : {
         fontSize:11
@@ -176,7 +198,7 @@ const mainTheme = createTheme ({
           color: "gray"
         },
         "&:hover": {
-          color: "#F9AA33",
+          color: "#437a9f",//"#F9AA33",
 
           '&& $icon': {
             opacity: 1,
@@ -184,12 +206,12 @@ const mainTheme = createTheme ({
           },
         },
         "&$active": {
-          color: "#F9AA33",
+          color: "#437a9f", //"#F9AA33",
 
           // && instead of & is a workaround for https://github.com/cssinjs/jss/issues/1045
           '&& $icon': {
             opacity: 1,
-            color: "#F9AA33"
+            color: "#437a9f",//"#F9AA33"
           },
         },
         

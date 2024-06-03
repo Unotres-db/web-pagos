@@ -17,7 +17,6 @@ export default function AutoSearch({ placeholder, data }){
   }
 
   const handleFilter = (event) => {
-
     const searchWord = event.target.value;
     setWordEntered(searchWord);
     const newFilter = data.filter((value) => {
@@ -37,7 +36,7 @@ export default function AutoSearch({ placeholder, data }){
 
   return (
     <>
-        <div className="container"> 
+    <div className="container"> 
     <Paper elevation={6} >
 
     <div className="search">
@@ -47,6 +46,7 @@ export default function AutoSearch({ placeholder, data }){
           placeholder={placeholder}
           value={wordEntered}
           onChange={handleFilter}
+          autoFocus
         />
         <div className="searchIcon">
           {filteredData.length === 0 ? (
@@ -62,7 +62,6 @@ export default function AutoSearch({ placeholder, data }){
           {filteredData.slice(0, 15).map((value, key) => {
             return (
               <Button size="small" disableRipple fullWidth style={{width:"100%", justifyContent: "flex-start", fontSize:"11px",textTransform: "none"}} onClick={()=>handleClick(value.searchString, value.symbol)}>{value.searchString}</Button>
-
           );
           })}
         </div>
@@ -71,7 +70,6 @@ export default function AutoSearch({ placeholder, data }){
     </div>
     </Paper>
     </div> 
-  
     </>
   )
 }

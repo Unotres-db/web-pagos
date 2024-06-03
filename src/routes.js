@@ -1,24 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router , Route, Switch } from 'react-router-dom';
 
-import Blog from './pages/Blog';
-import Books from './pages/Books';
 import Contact from './pages/Contact';
-import Valuation from './pages/Valuation';
-import SavedValuation from './pages/SavedValuation';
-import DividendYield from './pages/DividendYield';
-import Graham from './pages/Graham';
+import CompetitionData from './pages/CompetitionData';
 import Home from './pages/Home';
 import Login from './pages/Login';
-// import { RenderingTest } from './pages/RenderingTest';
-// import Update from './pages/Update';
-import Pricing from './pages/Pricing';
-// import RenderingDerivedState from './pages/RenderingDerivedState';
-// import TestApi from './pages/TestApi';
-// import TestDateFormats from './pages/TestDateFormats';
-// import TestHistorical from './pages/TestHistorical';
-import Updatebk from './pages/Updatebk';
-import Whoweare from './pages/Whoweare';
+import Projects from './pages/Projects';
 
 export default function Routes() {
 
@@ -28,20 +15,12 @@ export default function Routes() {
       <Switch>
         <Route path = "/" exact component = {Home} />
         <Route path = "/home" component = {Home} />
-        <Route path = "/dividend-yield" component = {DividendYield} />
-        <Route path = "/graham" component = {Graham} />
-        <Route path = "/valuation" component = {Valuation} />
-        <Route path = "/books" component = {Books} />
-        {/* <Route path = "/blog" component = {Blog} /> */}
-        <Route path = "/pricing" component = {Pricing} />
-        <Route path = "/saved-valuation/:id" component = {SavedValuation} />
-        <Route path = "/who-we-are" component = {Whoweare} />
+        <Route path = "/project" component = {Projects} />
+        <Route path = "/competition-data" component = {CompetitionData} />
         <Route path = "/contact" component = {Contact} />
         <Route path = "/login" component = {Login} />
-        {/* <Route path = "/update" component = {Update} /> */}
-        <Route path = "/updatebk" component = {Updatebk} />
       </Switch>
-    </Router>  
+    </Router>
 
   );
 }
