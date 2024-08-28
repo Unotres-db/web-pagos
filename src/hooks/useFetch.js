@@ -1,11 +1,11 @@
-mport { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { format, parse } from 'date-fns';
 
 import { LoginContext } from '../helpers/Context.js';
 import useAxios from './useAxios';
-import valuationsWebApi from '../services/valuationsWebApi';
+import api from '../services/api';
 // valuationsList
 export default function useFetch ( { setEditMode, setIsSnackbarOpen, setSnackbarMessage } ) {
   const { valuationsList, setValuationsList, userData, setUserData,setSavedValuationData, setIsValuationSample } = useContext (LoginContext);
@@ -45,14 +45,14 @@ export default function useFetch ( { setEditMode, setIsSnackbarOpen, setSnackbar
 
   function deleteValuation (valuationIdParam){  
     // const userId = userId; // atualizar para state global com Context
-    delValuation({ axiosInstance: valuationsWebApi, method: 'DELETE', url: `/valuations/${valuationIdParam}`, requestConfig: { headers: {'Authorization': userId,},}},deleteSuccessCb, errorCallback);
+    delValuation({ axiosInstance: api, method: 'DELETE', url: `/valuations/${valuationIdParam}`, requestConfig: { headers: {'Authorization': userId,},}},deleteSuccessCb, errorCallback);
   }
 
   function checkUserById (userIdParam){  
     // alert (userIdParam)
     if (userIdParam){
       const userId = "martincsl"; // atualizar para state global com Context
-      getUser({ axiosInstance: valuationsWebApi, method: 'GET', url: `/users/${userIdParam}`, requestConfig: { headers: {'Authorization': userId,},}},checkUserByIdSuccessCallback, checkUserByIdErrorCallback);
+      getUser({ axiosInstance: api, method: 'GET', url: `/users/${userIdParam}`, requestConfig: { headers: {'Authorization': userId,},}},checkUserByIdSuccessCallback, checkUserByIdErrorCallback);
     }
   }
 
@@ -86,7 +86,7 @@ export default function useFetch ( { setEditMode, setIsSnackbarOpen, setSnackbar
 
   function handlePublish (valuationIdParam){  
     const dataToProcess = { valuationId: valuationIdParam, published: "all" }
-    putValuation({ axiosInstance: valuationsWebApi, method: 'PUT', url: '/publication', data: dataToProcess,requestConfig: { headers: {'Authorization': userId,},}},publishSuccessCallback, errorCallback);
+    putValuation({ axiosInstance: api, method: 'PUT', url: '/publication', data: dataToProcess,requestConfig: { headers: {'Authorization': userId,},}},publishSuccessCallback, errorCallback);
   }
 
   function errorCallback(errorMessage){
@@ -119,8 +119,8 @@ const passwordErrorCb=()=>{
 const updatePassword=(id, password)=>{
   const dataToProcess={ id, password }
   // alert ("usefetch updatePassword: " + id + password)
-// putUpdatePassword({ axiosInstance: valuationsWebApi, method: 'PUT', url: '/users', data: dataToProcess,requestConfig: { headers: {'Authorization': id,},}},passwordSuccessCb, passwordErrorCb);
-  postUpdatePassword({ axiosInstance: valuationsWebApi, method: 'POST', url: '/change-password', data: dataToProcess, requestConfig: { headers: {'Authorization': id,},}},passwordSuccessCb, passwordErrorCb);
+// putUpdatePassword({ axiosInstance: api, method: 'PUT', url: '/users', data: dataToProcess,requestConfig: { headers: {'Authorization': id,},}},passwordSuccessCb, passwordErrorCb);
+  postUpdatePassword({ axiosInstance: api, method: 'POST', url: '/change-password', data: dataToProcess, requestConfig: { headers: {'Authorization': id,},}},passwordSuccessCb, passwordErrorCb);
 }
 
 const sessionSuccessCb=async(apiData)=>{
@@ -135,7 +135,7 @@ const sessionErrorCb =()=> {
 
 const createSession=(dataToProcess)=>{
   const { id, password } = dataToProcess;
-  postSession({ axiosInstance: valuationsWebApi, method: 'POST', url: '/session', data: dataToProcess, requestConfig: { headers: {'Authorization': id,},}},sessionSuccessCb, sessionErrorCb);
+  postSession({ axiosInstance: api, method: 'POST', url: '/session', data: dataToProcess, requestConfig: { headers: {'Authorization': id,},}},sessionSuccessCb, sessionErrorCb);
 }
 
   const forecastedSucessCb=(apiData)=> {
@@ -163,7 +163,7 @@ const updateUser=(data)=>{
   const { userRegistrationData } = data;
   const { confirmPassword, ...dataToProcess } = userRegistrationData;
   const userId = userRegistrationData.id;
-  putUser({ axiosInstance: valuationsWebApi, method: 'PUT', url: '/users', data: dataToProcess, requestConfig: { headers: {'Authorization': userId,},}}, putUserSuccessCb, putUserErrorCb);
+  putUser({ axiosInstance: api, method: 'PUT', url: '/users', data: dataToProcess, requestConfig: { headers: {'Authorization': userId,},}}, putUserSuccessCb, putUserErrorCb);
 }
 
 const deleteFollowerSuccessCb=(apiData)=>{
@@ -184,11 +184,11 @@ const deleteFolloweeErrorCb=(apiData)=>{
 
 function deleteFollower (userId, profileId){  
   // const dataToProcess ={ userId: profileId, followerId:userId }
-  // delFollower({ axiosInstance: valuationsWebApi, method: 'DELETE', url: "/followers", data: dataToProcess, requestConfig: { headers: {'Authorization': userId,},}},deleteFollowerSuccessCb, deleteFollowerErrorCb);
-  delFollower({ axiosInstance: valuationsWebApi, method: 'DELETE', url: `/followers?userId=${profileId}&&followerId=${userId}`, requestConfig: { headers: {'Authorization': userId,},}},deleteFollowerSuccessCb, deleteFollowerErrorCb);
+  // delFollower({ axiosInstance: api, method: 'DELETE', url: "/followers", data: dataToProcess, requestConfig: { headers: {'Authorization': userId,},}},deleteFollowerSuccessCb, deleteFollowerErrorCb);
+  delFollower({ axiosInstance: api, method: 'DELETE', url: `/followers?userId=${profileId}&&followerId=${userId}`, requestConfig: { headers: {'Authorization': userId,},}},deleteFollowerSuccessCb, deleteFollowerErrorCb);
 
-  // delFollowee({ axiosInstance: valuationsWebApi, method: 'DELETE', url: "/followees", data: dataToProcess, requestConfig: { headers: {'Authorization': userId,},}},deleteFolloweeSuccessCb, deleteFolloweeErrorCb);
-  delFollowee({ axiosInstance: valuationsWebApi, method: 'DELETE', url: `/followees?userId=${userId}&&followeeId=${profileId}`, requestConfig: { headers: {'Authorization': userId,},}},deleteFolloweeSuccessCb, deleteFolloweeErrorCb);
+  // delFollowee({ axiosInstance: api, method: 'DELETE', url: "/followees", data: dataToProcess, requestConfig: { headers: {'Authorization': userId,},}},deleteFolloweeSuccessCb, deleteFolloweeErrorCb);
+  delFollowee({ axiosInstance: api, method: 'DELETE', url: `/followees?userId=${userId}&&followeeId=${profileId}`, requestConfig: { headers: {'Authorization': userId,},}},deleteFolloweeSuccessCb, deleteFolloweeErrorCb);
 
 }
 
@@ -209,15 +209,15 @@ const saveFolloweeErrorCb=()=>{
 }  
 
 const saveFollower=(userId, profileId)=>{
-  postFollower({ axiosInstance: valuationsWebApi, method: 'POST', url: '/followers', data: { userId: profileId, followerId:userId }, requestConfig: { headers: {'Authorization': userId,},}},saveFollowerSuccessCb, saveFollowerErrorCb);
-  postFollowee({ axiosInstance: valuationsWebApi, method: 'POST', url: '/followees', data: { userId: userId, followeeId:profileId }, requestConfig: { headers: {'Authorization': userId,},}},saveFolloweeSuccessCb, saveFolloweeErrorCb);
+  postFollower({ axiosInstance: api, method: 'POST', url: '/followers', data: { userId: profileId, followerId:userId }, requestConfig: { headers: {'Authorization': userId,},}},saveFollowerSuccessCb, saveFollowerErrorCb);
+  postFollowee({ axiosInstance: api, method: 'POST', url: '/followees', data: { userId: userId, followeeId:profileId }, requestConfig: { headers: {'Authorization': userId,},}},saveFolloweeSuccessCb, saveFolloweeErrorCb);
 }
 
   // function saveUser ({userRegistrationData}){ 
     // console.log(userRegistrationData)
     // const { id, password,firstName, lastName, phone, birthday, country } = userRegistrationData; 
     // const userId = "martincsl"; // atualizar para state global com Context
-    // postUser({ : valuationsWebApi, method: 'POST', url: '/users', data: userRegistrationData, requestConfig: { headers: {'Authorization': userId,},}},userSuccessCallback, errorCallback("server error"));
+    // postUser({ : api, method: 'POST', url: '/users', data: userRegistrationData, requestConfig: { headers: {'Authorization': userId,},}},userSuccessCallback, errorCallback("server error"));
   // }
 
   function userSuccessCallback(){
@@ -233,7 +233,7 @@ const saveFollower=(userId, profileId)=>{
     const { product}=userRegistrationData
     // alert("saveUser2, product: " + product)
     const savedDate = format(new Date(),"yyyy MMM,dd");
-    valuationsWebApi.post('/users', userRegistrationData )
+    api.post('/users', userRegistrationData )
     .then (response => { 
         // const { userCode } = response.data;
         // setDialogOptions({severity:"success", title:"Thank You", message:"Regitration Completed",buttons:{button1:"Ok"},action:"save"})
@@ -267,7 +267,7 @@ const saveFollower=(userId, profileId)=>{
     // map and save each period (year) forecasted....
     // dataToProcess.map ( (currElement, index)=> {
     //   const dataFetch = dataToProcess[index]
-    //   postForecastedFinancials({ axiosInstance: valuationsWebApi, method: 'POST', url: '/forecasted', data:dataFetch, requestConfig: {}}, forecastedSucessCb, forecastedErrorCb);
+    //   postForecastedFinancials({ axiosInstance: api, method: 'POST', url: '/forecasted', data:dataFetch, requestConfig: {}}, forecastedSucessCb, forecastedErrorCb);
     // })
     // const newObject ={ valuationId, companyId, shortName, createdAt:savedDate, deletedAt:null, updatedAt:null, targetStockPrice, regularMarketPrice: dateStockPrice, costOfCapital, avgRating: null, userId, firstName, lastName }
     // setValuationsList([...valuationsList, newObject]);
@@ -283,7 +283,7 @@ const saveFollower=(userId, profileId)=>{
     const { shortName, regularMarketPrice } = companyData;
     const savedDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
 
-    return valuationsWebApi.post('/valuations', valuationData)
+    return api.post('/valuations', valuationData)
       .then(response => {
         const { valuationId } = response.data;  // solo recibe el id del backend
 

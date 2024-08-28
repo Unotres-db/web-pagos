@@ -5,9 +5,11 @@ import Contact from      './pages/Contact';
 import CompetitionData from './pages/CompetitionData';
 import Home from          './pages/Home';
 import Login from         './pages/Login';
+
 // import ResetPassword from './pages/ResetPassword.jsx';
 // import Projects from './pages/Projects';
 import Proyectos from './pages/Proyectos';
+import Reset from './pages/Reset';
 
 
 export default function Routes() {
@@ -22,7 +24,7 @@ export default function Routes() {
         <Route path = "/competition-data" component = {CompetitionData} />
         <Route path = "/contact" component = {Contact} />
         <Route path = "/login" component = {Login} />
-        {/* <Route path = "/reset" component = {ResetPassword} /> */}
+        <Route path = "/reset" component = {Reset} />
       </Switch>
     </Router>
 
