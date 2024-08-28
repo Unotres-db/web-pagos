@@ -103,6 +103,7 @@ export default function FormAddTransaction({ open, onClose }){
 
 
   const handleCancel=()=>{
+    setTransaccion("")
     onClose()
   }
 
@@ -207,15 +208,6 @@ export default function FormAddTransaction({ open, onClose }){
                     />
                     {formErrors.numeroFactura ? <div className="error-helper-text">{formErrors.numeroFactura}</div> : null}
                   </Grid>
-                  {/* <Grid item xs={12} sm={12} >
-                    <CountryAutocomplete 
-                      countryObject={countryObject} 
-                      registerData={registerData}
-                      setRegisterData={setRegisterData}
-                      isEditField={isEditField} 
-                      setIsEditField={setIsEditField}
-                    />
-                  </Grid> */}
                   <Grid item xs={6} sm={6}>
                     <TextField variant ="outlined" margin="dense" size="small" fullWidth
                       label="Monto Factura"
@@ -224,11 +216,10 @@ export default function FormAddTransaction({ open, onClose }){
                       autoComplete="monto-factura"
                       onChange={ (e) => {
                         handleChange (e,setTransaccion,[noBlanks]);
-                     // handleChange (e,setRegisterData,[isValidName]);
                       }}
-                      error={montoFactura}
+                      error={formErrors.montoFactura}
                     />
-                    {montoFactura ? <div className="error-helper-text">{montoFactura}</div> : null}
+                    {formErrors.montoFactura ? <div className="error-helper-text">{formErrors.montoFactura}</div> : null}
                   </Grid>
                   <Grid item xs={12} sm={12}>
                     <TextField variant ="outlined" margin="dense" size="small" fullWidth
@@ -255,9 +246,9 @@ export default function FormAddTransaction({ open, onClose }){
                         handleChange (e,setTransaccion,[noBlanks]);
                      // handleChange (e,setRegisterData,[isValidName]);
                       }}
-                      error={fechaPago}
+                      error={formErrors.fechaPago}
                     />
-                    {fechaPago ? <div className="error-helper-text">{fechaPago}</div> : null}
+                    {formErrors.fechaPago ? <div className="error-helper-text">{formErrors.fechaPago}</div> : null}
                   </Grid>
                   <Grid item xs={6} sm={6}>
                     <TextField variant ="outlined" margin="dense" size="small" fullWidth
@@ -269,9 +260,9 @@ export default function FormAddTransaction({ open, onClose }){
                         handleChange (e,setTransaccion,[noBlanks]);
                      // handleChange (e,setRegisterData,[isValidName]);
                       }}
-                      error={comprobantePago}
+                      error={formErrors.comprobantePago}
                     />
-                    {comprobantePago ? <div className="error-helper-text">{comprobantePago}</div> : null}
+                    {formErrors.comprobantePago ? <div className="error-helper-text">{formErrors.comprobantePago}</div> : null}
                   </Grid>
                 </Grid>
               </DialogContentText>

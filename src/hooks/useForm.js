@@ -44,7 +44,9 @@ export default function useForm (callback) {
     idTipoFlujo:""
   })
   const { contactName, contactMobile, contactEmail, contactMsg,userPassword } = {values};
+
   function noBlanks (value) {
+    // alert("noBlanks")
     if (value === "") {
         return {
           valid: false,
@@ -213,9 +215,9 @@ export default function useForm (callback) {
     const result = validation (target.value)    // value="martin" ou "0985 290979"...
     const errors = formErrors [target.name]     // le os erros do "vetor"
       if (result.valid) {                      // se o retorno da funcao eh true, ou seja se o input eh valido.....
- //       if (errors.includes (result.message)){   //"limpa" as mesgs de erro
+       if (errors.includes (result.message)){   //"limpa" as mesgs de erro
           setFormErrors (prevState => ( {...prevState, [target.name]: ""}))
- //       }
+       }
       } else { 
           if (!errors.includes(result.message)) {   // se ja existe a mensagem, nao inclui novamente
             setFormErrors (prevState => ( {...prevState, [target.name]: result.message}))
