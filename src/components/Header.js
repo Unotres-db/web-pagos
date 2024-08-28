@@ -66,33 +66,33 @@ function Header() {
 
   const classes = useStyles();
   const [ isDrawerOpen, setIsDrawerOpen ] = useState(false);
-  const dividerOption = 6;
+  const dividerOption = 3;
   const menuOptions = [
     { id:0,
       title:"Principal",
       route:"/home"
     },
+    // { id:1,
+    //   title:"Proyectos",
+    //   route:"/project"
+    // },
     { id:1,
-      title:"Proyectos",
-      route:"/project"
+      title:"Inversionistas",
+      route:"/investments"
     },
     { id:2,
-      title:"Proyectos de la Competencia",
-      route:"/competition-data"
-    },
-    { id:3,
       title:"Rolling Forecast",
       route:"/rolling-forecast"
     },
-    { id:4,
-      title:"Valuation",
-      route:"/project"
-    },
-    { id:5,
-      title:"Balances y EERR",
-      route:"/project"
-    },
-    { id:6,
+    // { id:4,
+    //   title:"Valuation",
+    //   route:"/project"
+    // },
+    // { id:5,
+    //   title:"Balances y EERR",
+    //   route:"/project"
+    // },
+    { id:3,
       title:"Iniciar Sesión",
       route:"/login"
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from 'react';
 
-import { Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, useMediaQuery } from '@material-ui/core';
+import { Paper, Box, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import useTableStyling from '../../hooks/useTableStyling';
@@ -116,7 +116,7 @@ export default function TableRollingForecast (){
       style:"decimal",
       dataField: "salesRevenue"},
     { id: 2,
-      rowText:"  Honorarios Civilia",
+      rowText:"  Honorarios Desarrollo",
       rowMobileText:"  Honorarios Civilia",
       grayBackground:false,
       showAsBlankIfZero:true,  
@@ -129,98 +129,79 @@ export default function TableRollingForecast (){
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "costOfRevenue"},  
+
     { id: 4,
-      rowText:"Deveng. Costo del Terreno",
-      rowMobileText:"Costo Terreno",
-      grayBackground:false,
-      showAsBlankIfZero:true,  
-      style:"decimal",
-      dataField: "costOfLand"},
-    { id: 5,
       rowText:"Deveng. Costo de Construcción",
       rowMobileText:"Costo Cosntruc.",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "constructionCost"},
-    { id: 6,
+    { id: 5,
       rowText:"Margen Bruto",
       rowMobileText:"Margen",
       grayBackground:true,
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "grossProfit"}, 
-    { id: 7,
+    { id: 6,
       rowText:"Margen Bruto (%)",
       rowMobileText:"Margen (%)",
       grayBackground:true,
       showAsBlankIfZero:true,  
       style:"percent",
       dataField: "grossProfitPercent"}, 
-    { id: 8,
-      rowText:"Gastos de Proyectos",
-      rowMobileText:"Gastos Projs.",
-      grayBackground:false,
-      showAsBlankIfZero:true,  
-      style:"decimal",
-      dataField: "projectExpenses"},
-    { id: 9,
+
+    { id: 7,
       rowText:"Gastos Administrativos (coba)",
       rowMobileText:"Gastos Adm",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
     dataField: "operatingExpenses"},
-    { id: 10,
-      rowText:"Participación de Inversores",
-      rowMobileText:"Particip. Inversores",
+    { id: 8,
+      rowText:"Participación en Proyectos",
+      rowMobileText:"Particip. Proyectos",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "investorShare"},
-    { id: 11,
+    { id: 9,
       rowText:"Depreciación",
       rowMobileText:"Depreciación",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "depreciation"}, 
-    { id: 12,
+    { id: 10,
       rowText:"Intereses Devengados",
       rowMobileText:"Deveng. Intereses",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "interestExpense"}, 
-    { id: 13,
-      rowText:"Crédito Fiscal IVA",
-      rowMobileText:"Crédito Fiscal IVA",
-      grayBackground:false,
-      showAsBlankIfZero:true,  
-      style:"decimal",
-      dataField: "other"}, 
-    { id: 14,
+    { id: 11,
       rowText:"Resultado antes IRE",
       rowMobileText:"Resultado a/ IRE",
       grayBackground:true,
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "incomeBeforeTax"}, 
-    { id: 15,
+    { id: 12,
       rowText:"Provision Impuesto a la Renta",
       rowMobileText:"IRE",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "incomeTaxExpense"}, 
-    { id: 16,
+    { id: 13,
       rowText:"Resultado Neto",
       rowMobileText:"Resultado Neto",
       grayBackground:true,
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "netIncome"},
-    { id: 17,
+    { id: 14,
       rowText:"Margen Neto (%)",
       rowMobileText:"Margen (%)",
       grayBackground:true,
@@ -231,20 +212,21 @@ export default function TableRollingForecast (){
 
   useEffect(() => {
     setFinancialData([
-      {year:2024, period:1, salesRevenue:4700966.56509615, reDevFees:0, totalRevenue: 4700966.56509615, costOfLand:0, constructionCost:318, costOfRevenue: 4028253, grossProfit: 672713, grossProfitPercent: 14.13, projectExpenses:0, operatingExpenses:1375 , investorShare:0, depreciation: 0, interestExpense: 167, other: 268, incomeBeforeTax: -1789, incomeTaxExpense: 0, netIncome: -1789, netMarginPercent:-161.14, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0},
-      {year:2025, period:2, salesRevenue:21382, reDevFees:1972, totalRevenue: 23354, costOfLand:4105, constructionCost:7351, costOfRevenue: 11456, grossProfit: 11898, grossProfitPercent: 50.94, projectExpenses:2592, operatingExpenses:1724 , investorShare:1724, depreciation: 0, interestExpense: 662, other: 898, incomeBeforeTax: 428, incomeTaxExpense: 430, netIncome: 3868, netMarginPercent:16.56,ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0},
+      {year:2024, period:1, salesRevenue: 4848856, reDevFees:0, totalRevenue: 4848856, costOfLand:0, constructionCost: 4161298 , costOfRevenue: 4161298, grossProfit: 687558, grossProfitPercent: 14.2, projectExpenses:0, operatingExpenses:197075 , investorShare:300000, depreciation: 0, interestExpense: 5069, other: 0, incomeBeforeTax: 785714, incomeTaxExpense: 78541, netIncome: 706862, netMarginPercent:14.6, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0},
+      {year:2025, period:2, salesRevenue:5478483, reDevFees:0, totalRevenue: 5478483, costOfLand:0, constructionCost:4880169, costOfRevenue: 4880169, grossProfit: 598314, grossProfitPercent: 10.9, projectExpenses:0, operatingExpenses:215124 , investorShare:0, depreciation: 0, interestExpense: 0, other:0, incomeBeforeTax: 383190, incomeTaxExpense: 38319, netIncome: 344871, netMarginPercent:6.3,ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0},
     ])
   }, []);
   
   return (
     <>
     <Paper >
+      <Box style={{height:"30px"}}/>
       <TableContainer component = {Paper} >
         <Table className = {classes.table} size = "small" aria-label = "stycky header">
 
           <TableHead>
             <TableRow>
-              <TableCell className = {classes.tableTitle} align = "left" >{isMobile  ? "P&L": "P&L (en Gs. millones)"}</TableCell>  
+              <TableCell className = {classes.tableTitle} align = "left" >{isMobile  ? "P&L": "P&L (en Us$)"}</TableCell>  
               {financialData.map ((currElement, index) => ( 
                 <TableCell className = {classes.tableTitle} align = "right" >
                   {currElement.year}

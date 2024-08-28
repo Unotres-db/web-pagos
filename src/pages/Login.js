@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 import { Grid, Paper, Typography, TextField, Button, Box, Grow } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
-import CastConnectedIcon from '@material-ui/icons/CastConnected';
+import LoginIcon from '@mui/icons-material/Login';
 
 import { LoginContext } from '../helpers/Context.js';
 import api from '../services/api';
@@ -23,7 +23,11 @@ const useStyles = makeStyles((mainTheme) => ({
     padding:'10px',
     minWidth: 350,
     maxWidth: 500,
-    backgroundColor:mainTheme.palette.secondary.main,  
+    backgroundColor:"#E1C16E",
+    // backgroundColor:mainTheme.palette.secondary.main,  
+  },
+  titleStyle:{
+    color: mainTheme.palette.primary.main,
   },
   buttonStyle:{
     color: "white",
@@ -32,7 +36,7 @@ const useStyles = makeStyles((mainTheme) => ({
     margin: "10px",
 //    marginTop: "15px",
     "&:hover": {
-      color:mainTheme.palette.secondary.main,
+      color:"#E1C16E",
       backgroundColor:mainTheme.palette.primary.main,
     },
   },
@@ -49,7 +53,14 @@ const useStyles = makeStyles((mainTheme) => ({
   },
   formStyle:{
     backgroundColor:'white'
-  }
+  },
+  forgotPasswordStyle:{
+    fontSize:11,
+    color:"blue"
+  },
+  greenSnackbarContent: {
+    backgroundColor: "#228B22"
+  },
 }))
 
   export default function Login () {
@@ -110,7 +121,7 @@ const useStyles = makeStyles((mainTheme) => ({
     <>
     <Header />
 
-    <Grid container alignItems="center" justify="center" className={classes.contentStyle} style={{ minHeight:'70vh'}}>
+    <Grid container alignItems="center" justify="center" className={classes.contentStyle} style={{ minHeight:'85vh'}}>
       <Grid />
       <Grow in timeout = {1000}>
       <Grid item container className={classes.formStyle}>
@@ -118,13 +129,13 @@ const useStyles = makeStyles((mainTheme) => ({
         
           <form onSubmit={handleSubmit} noValidate>
 
-            <Typography align="center" variant="subtitle1" style={{color:'white'}} gutterBottom>Login</Typography>
+            <Typography align="center" variant="subtitle1" className={classes.titleStyle} gutterBottom>Iniciar Sesión</Typography>
             <Box className={classes.iconBox} >
-              <CastConnectedIcon className={classes.iconStyle} style={{ fontSize: 40 }}/>
+              <LoginIcon className={classes.iconStyle} style={{ fontSize: 40 }}/>
             </Box>
           
             <Grid item xs={12} md={12} spacing={1}> 
-              <TextField id="userId" label="Username *" 
+              <TextField id="userId" label="Usuario *" 
                 variant ="filled" margin="dense" size="small" fullWidth  
                 name="userId" 
                 value= { userId } 
@@ -138,7 +149,7 @@ const useStyles = makeStyles((mainTheme) => ({
             </Grid>
             
             <Grid item xs={12} md={9} spacing={1}> 
-              <TextField id="userPassword" label="Password *"
+              <TextField id="userPassword" label="Contraseña *"
                   variant ="filled" margin="dense" size="small" type="password" fullWidth
                   name="userPassword" 
                   value={values.userPassword} 
@@ -148,7 +159,7 @@ const useStyles = makeStyles((mainTheme) => ({
                 }}
                 error={formErrors.userPassword}></TextField>
                 {formErrors.userPassword ? <div className="error-helper-text">{formErrors.userPassword}</div> : null}
-          
+                <Typography className={classes.forgotPasswordStyle}><a href="/reset">¿Olvidaste tu contraseña? Ingresa aquí</a></Typography>
             </Grid>
             <Grid container direction="row" alignItems="center" justify="center"> 
               <Button type="submit" className={classes.buttonStyle} variant="outlined" disableRipple >Login</Button>

@@ -27,7 +27,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   },
   TableTitle:{
     color: "white",
-    fontSize: 11
+    fontSize: 13
   },
   ButtonTable:{
     display: 'inline-block',
@@ -36,7 +36,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     minWidth: 0,
     color: mainTheme.palette.primary.main,
     backgroundColor:"white",
-    fontSize: "10px",
+    fontSize: "12px",
     textTransform:"none",
     "&:hover": {
       color:mainTheme.palette.secondary.main,
@@ -61,7 +61,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     },
   },
   TableRows:{
-    fontSize: 11
+    fontSize: 12
   }
 }));
 
@@ -94,11 +94,18 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
   };
 
   const handleButton = (id) => {
-    alert ("Button was clicked "+ id);
+    if (id==="VDB"){
+      history.push(`/project/${id}`)
+      // history.push(`/products/${productId}`)
+    } else {
+      alert ("Transacciones del proyecto todavia no cargadas: "+id);
+    }
   };
 
   return (
+    
     <>
+    { console.log(valuationsList)}
     <TableContainer component={Paper} >
       <Table className={classes.table} size="small" aria-label="stycky header" >
 
@@ -106,12 +113,13 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
           <TableRow >
           {/* width:"16%" */}
             <TableCell className={classes.TableTitle} style={{width:"10%",position:"sticky", paddingRight:"0px", left:0, zIndex:2}}  align="left" key="updated_at">
-              <TableSortLabel 
+              {/* <TableSortLabel 
                 active={orderBy==="updated_at"} 
                 // style={{width:"46%", paddingLeft:"0px", paddingRight:"2px"}}
                 direction={orderBy==="updated_at" ? orderDirection : 'desc'} 
                 onClick={createSorthandler("updated_at")}
-                >Fecha</TableSortLabel>
+                >Fecha</TableSortLabel> */}
+                Fecha
             </TableCell>
             <TableCell className={classes.TableTitle} style={{width:"30%", paddingLeft:"5px", paddingRight:"0px"}} align="left" key="shortName" >
               <TableSortLabel 
@@ -142,32 +150,32 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
             ).map((currValuation) => (
               <TableRow key={currValuation.valuationId}>
                 <TableCell align="left"  className={classes.TableRows}  >
-                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>18/07/2023</Button>
+                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} style={{fontSize:12}} disableRipple></Button>
                   {/* <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.updated_at}</Button> */}
 
                 </TableCell>
                 <TableCell align="left" className={classes.TableRows}  style={{fontSize: 11, width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
                   {/* <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.shortName}</Button> */}
                   {/* <Button onClick={(e) => (handleSavedValuation (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.shortName}</Button> */}
-                  <Button  className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.projectName}</Button>
+                  <Button  className={classes.ButtonTable} style={{fontSize:12}} disableRipple>{currValuation.projectName}</Button>
 
                 </TableCell>
                 <TableCell align="left" className={classes.TableRows} style={{width:"9%", paddingLeft:"5px", paddingRight:"5px"}}>
                   {/* <Button onClick={(e) => (handeButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{currValuation.published ? "Public": "Private"}</Button> */}
-                  <Button className={classes.ButtonTable} disableRipple>{currValuation.projectStatus}</Button>
+                  <Button className={classes.ButtonTable} style={{fontSize:"9px"}}disableRipple>{currValuation.projectStatus}</Button>
 
                 </TableCell>
                 <TableCell align="right" className={classes.TableRows} style={{width:"10%", paddingLeft:"5px", paddingRight:"5px"}} >
-                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectBudget)}</Button>
+                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectBudget)}</Button>
                 </TableCell>
                 <TableCell align="right" className={classes.TableRows} style={{width:"14%", paddingLeft:"5px", paddingRight:"5px"}}>
-                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectRevenue)}</Button>
+                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectRevenue)}</Button>
                 </TableCell>
                 <TableCell align="right" className={classes.TableRows} style={{width:"14%", paddingLeft:"5px", paddingRight:"5px"}}>
-                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectCost)}</Button>
+                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectCost)}</Button>
                 </TableCell>
                 <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
-                  <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectRevenue-currValuation.projectCost)}</Button>
+                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectRevenue-currValuation.projectCost)}</Button>
                 </TableCell>  
                 <TableCell>
                  
@@ -221,34 +229,7 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
     {/* <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
       {dialogOptions.message}
     </DialogModal>  */}
-    </>
+  </>
+
   );
 }
-
-// import PublishIcon from '@mui/icons-material/Publish';
-// import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-// import UnpublishedIcon from '@mui/icons-material/Unpublished';
-// import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-// import AddCircleIcon from '@mui/icons-material/AddCircle';  
-
-// { ! currValuation.published ? <>
-//   <TableCell>
-//     <Tooltip title={`Turn this this ${currValuation.shortName} Valuation public`}>
-//       <IconButton className={classes.iconButtonStyle} 
-//         onClick={(e) => (publicate (currValuation.valuationId))} 
-//         disableRipple size="small" aria-label="delete">
-//         <PublishedWithChangesIcon fontSize="small" />
-//       </IconButton>
-//     </Tooltip>
-//   </TableCell>
-// </>:
-// <>
-//   <TableCell>
-//     <Tooltip title={`Turn this ${currValuation.shortName} Valuation private`}>
-//       <IconButton className={classes.iconButtonStyle} 
-//           disableRipple size="small" aria-label="delete">
-//         <UnpublishedIcon fontSize="small"  />
-//       </IconButton>
-//     </Tooltip>
-//   </TableCell>
-// </>}

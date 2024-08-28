@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FormControl, FormControlLabel, Radio, RadioGroup, Typography } from '@material-ui/core';
 
 const CurrencyOptions = () => {
-  const [selectedCurrency, setSelectedCurrency] = useState('guaranies');
+  const [selectedCurrency, setSelectedCurrency] = useState('dolares');
 
   const handleCurrencyChange = (event) => {
     setSelectedCurrency(event.target.value);
@@ -25,7 +25,7 @@ const CurrencyOptions = () => {
           
         />
         <FormControlLabel
-          value="dollars"
+          value="dolares"
           control={<Radio />}
           label={<Typography style={{ fontSize: '9px', color: '#344955' }}>Mostrar Montos en Dólares</Typography>}
         />

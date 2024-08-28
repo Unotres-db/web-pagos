@@ -11,7 +11,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WebIcon from '@mui/icons-material/Web';
-import picMcl from '../../assets/lp.jpg';
+import picMcl from '../../assets/leticia.jpg';
 
 const useStyles = makeStyles((mainTheme) => ({
 buttonStyle: {
@@ -192,7 +192,7 @@ export default function MyProfile ({isEditProfile, setIsEditProfile}){
 
       <Grid container justify="center">
         <Tooltip title="Edit and save changes to your profile">
-          <Button variant="contained" onClick={handleEditProfile} disableRipple startIcon={<ModeEditIcon />} className = {classes.buttonStyle}>Editar Perfil</Button>
+          <Button variant="contained"  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} onClick={handleEditProfile} disableRipple startIcon={<ModeEditIcon />} className = {classes.buttonStyle}>Editar Perfil</Button>
         </Tooltip>
       </Grid>
       <Box style={{height:"10px"}}/>

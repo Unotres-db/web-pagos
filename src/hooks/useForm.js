@@ -3,11 +3,47 @@ import { LoginContext } from '../helpers/Context.js';
 
 export default function useForm (callback) {
   
-  const { userId, setUserId, setUserName, setSponsorName} = useContext (LoginContext);
+  const { userId, setUserId, userName, setUserName } = useContext (LoginContext);
+  const [ transaccion, setTransaccion] = useState({ 
+    idTransaccion:"",
+    idProyecto:"", 
+    idProveedor:"", 
+    nombreProveedor:"",
+    idRubro:"", 
+    nombreRubro:"",
+    idTipoTransaccion:"", 
+    descripcion:"", 
+    numeroFactura:"", 
+    fechaFactura:"", 
+    timbradoFactura:"", 
+    montoFactura:"",
+    comprobantePago:"",
+    fechaPago:"",
+    idTipoPago:"",
+    nombreTipoPago:"",
+    idTipoFlujo:""
+   })
   const [ values, setValues ] = useState ({ contactName: "", contactMobile: "", contactEmail: "", contactMsg:"", userPassword:"" });
-  const [ formErrors, setFormErrors ] = useState({contactName: "", contactMobile: "", contactEmail: "", contactMsg:"", userPassword:""});
+  const [ formErrors, setFormErrors ] = useState({ 
+    idTransaccion:"",
+    idProyecto:"", 
+    idProveedor:"", 
+    nombreProveedor:"",
+    idRubro:"", 
+    nombreRubro:"",
+    idTipoTransaccion:"", 
+    descripcion:"", 
+    numeroFactura:"", 
+    fechaFactura:"", 
+    timbradoFactura:"", 
+    montoFactura:"",
+    comprobantePago:"",
+    fechaPago:"",
+    idTipoPago:"",
+    nombreTipoPago:"",
+    idTipoFlujo:""
+  })
   const { contactName, contactMobile, contactEmail, contactMsg,userPassword } = {values};
-
   function noBlanks (value) {
     if (value === "") {
         return {
@@ -140,10 +176,23 @@ export default function useForm (callback) {
     event.preventDefault();
     callback(); 
 }
-  const handleChange = (e, validators) =>{
+  // const handleChange = (e, validators) =>{
+  //   const target = e.target;
+  //   setValues (prevState => ({...prevState, [target.name]:target.value }))
+  //   handleValidators(target, validators);
+  // }
+
+  const handleChange = (e, setterFunction, validators ) =>{
     const target = e.target;
-    setValues (prevState => ({...prevState, [target.name]:target.value }))
-    handleValidators(target, validators);
+    // alert("e.target.value em handleChange"+ e.target.value)
+    // console.log("handleChage: " + target.name)
+    setterFunction (prevState => ({...prevState, [target.name]:target.value }))
+    if (validators) {
+      handleValidators(target, validators);
+    }
+    if (formErrors[target.name] !== ""){
+      e.preventDefault()
+    }
   }
 
   // const handleChangeAssumptions = (e, validators) =>{
@@ -175,5 +224,5 @@ export default function useForm (callback) {
     })
   }
 
-  return { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, formErrors }
+  return { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, formErrors }
 }

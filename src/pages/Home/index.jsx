@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { Grid, Paper, Box, Button, Typography, Tooltip, CircularProgress } from '@material-ui/core';
+import { Grid, Paper, Box, Button, Typography, Tooltip, Snackbar, SnackbarContent, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
@@ -83,23 +83,23 @@ export default function Home (){
   const [ valuationsList, setValuationsList ] = useState([
   {
     ProjectDate:"2022-03-25 18:13:34",
-    projectId:"VB2",
-    projectName:"Villa del Bosque 2",
+    projectId:"VDB",
+    projectName:"Villa del Bosque",
     projectStatus:"En Ejecución",
-    projectBudget:3064,
-    projectRevenue:5520,
-    projectCost:311,
-    projectMargin:22,
+    projectBudget:1340556,
+    projectRevenue:1069506,
+    projectCost:1126649,
+    projectMargin:-57143,
   },
   {
     ProjectDate:"2022-03-25 18:13:34",
     projectId:"VA2",
     projectName:"Villa Adela 2",
     projectStatus:"En Ejecución",
-    projectBudget:5842,
-    projectRevenue:8400,
-    projectCost:433,
-    projectMargin:22,
+    projectBudget:680278,
+    projectRevenue:147412,
+    projectCost:65779,
+    projectMargin:81634,
   },
   {
     ProjectDate:"2022-03-25 18:13:34",
@@ -108,8 +108,8 @@ export default function Home (){
     projectStatus:"En Ejecución",
     projectBudget:3300000,
     projectRevenue:300000,
-    projectCost:98669,
-    projectMargin:23,
+    projectCost:119011,
+    projectMargin:185876,
   },
   {
     ProjectDate:"2024-05-03 18:13:34",
@@ -118,57 +118,75 @@ export default function Home (){
     projectStatus:"En Ejecución",
     projectBudget:3000000,
     projectRevenue:0,
-    projectCost:158,
-    projectMargin:23,
+    projectCost:0,
+    projectMargin:0,
   },
   {
     ProjectDate:"2022-03-25 18:13:34",
     projectId:"TSA",
     projectName:"Edificio Torre Solana",
     projectStatus:"En Ejecución",
-    projectBudget:13576,
-    projectRevenue:17920,
-    projectCost:915,
-    projectMargin:25,
+    projectBudget:3000000,
+    projectRevenue:0,
+    projectCost:8005,
+    projectMargin:-8005,
   },
   {
     ProjectDate:"2024-04-05 18:13:34",
     projectId:"TU2",
     projectName:"Tuyuti 2",
     projectStatus:"En Ejecución",
-    projectBudget:196483,
-    projectRevenue:30344,
-    projectCost:9447,
-    projectMargin:15,
+    projectBudget:170000,
+    projectRevenue:30765,
+    projectCost:9939,
+    projectMargin:20826,
   },
   {
-    ProjectDate:"2022-03-25 18:13:34",
+    ProjectDate:"2024-04-05 18:13:34",
     projectId:"RA2",
     projectName:"Ramos Alfaro",
     projectStatus:"En Ejecución",
-    projectBudget:1103,
-    projectRevenue:1360,
-    projectCost:102,
-    projectMargin:21,
+    projectBudget:170000,
+    projectRevenue:30765,
+    projectCost:12119,
+    projectMargin:18647,
   },
   {
-    ProjectDate:"2022-03-25 18:13:34",
+    ProjectDate:"2024-04-05 18:13:34",
     projectId:"PA2",
     projectName:"Picuiba 2",
     projectStatus:"Aprobado",
-    projectBudget:2387,
-    projectRevenue:3000,
-    projectCost:177,
-    projectMargin:21,
+    projectBudget:196483,
+    projectRevenue:0,
+    projectCost:0,
+    projectMargin:0,
+  },
+  {
+    ProjectDate:"2024-04-05 18:13:34",
+    projectId:"MAD",
+    projectName:"Madero",
+    projectStatus:"Aprobado",
+    projectBudget:200010,
+    projectRevenue:30708,
+    projectCost:15894,
+    projectMargin:14814,
   }
+  
   ]);
   const [ isDialogOpen, setIsDialogOpen ] = useState(false);
   const [ dialogOptions, setDialogOptions ] = useState({severity:"",title:"",message:"",buttons:{},action:""});
   const [ isEditProfile, setIsEditProfile ] = useState(false);
+  const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
+  const [ snackbarMessage, setSnackbarMessage]=useState("");
   const isLoadingValuations=false;
   // const { loading: isLoadingValuations, axiosFetch: getUserValuations} = useAxios();
   const history = useHistory();
 
+
+  const handleSnackbarClose=()=>{
+    setIsSnackbarOpen(false);
+  }
+  
   function handleDialogClose(){
     setIsDialogOpen(false);
     setDialogOptions({severity:"",title:"",message:"",buttons:{},action:""});
@@ -206,9 +224,9 @@ export default function Home (){
             <MyProfile isEditProfile={isEditProfile} setIsEditProfile={setIsEditProfile}/>
       
             <Box style={{height:"2px"}}/>
-            <Paper style={{height:"110px"}} elevation={6}>
+            {/* <Paper style={{height:"110px"}} elevation={6}> */}
               {/* <ChartValuation /> */}
-            </Paper>
+            {/* </Paper> */}
             <Box style={{height:"10px"}}/>
                  {/* <TableValuationResults />  */}
           </Paper>
@@ -223,10 +241,12 @@ export default function Home (){
               <Grid item xs={3} >
                 <Box style={{height:"5px"}}/>
                 <Tooltip title="Crear un nuevo Proyecto">
+                {/* variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} */}
                   <Button 
                     variant = "contained" 
                     startIcon = {<AddCircleIcon />} 
                     disableRipple
+                    style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}}
                     // onClick = {handleNewValuation} 
                     className = {classes.buttonStyle}
                     >Nuevo Proyecto
@@ -265,7 +285,7 @@ export default function Home (){
 
         <Grid item xs={12} md={3} > 
           <Paper className={classes.paperStyle} >
-            <Typography className={classes.sectionTitleStyle} >Ultimo Rolling Forecast: 2&10 2024</Typography>
+            <Typography className={classes.sectionTitleStyle} >Ultimo Rolling Forecast: 5&7 2024</Typography>
             <Box style={{height:"5px"}}/>
             <Paper>
               <TableRollingForecast/>
