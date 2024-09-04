@@ -23,10 +23,6 @@ export default function RubrosComboBox({objetoRubro, setTransaccion, isEditField
   const [ listaRubros, setListaRubros] = useState([]);
   const { loading: isLoadingRubros, axiosFetch: getRubros} = useAxios();
   const componentVariant = variant? variant : "outlined"
-  const options = [
-    { label: 'The Godfather', id: 1 },
-    { label: 'Pulp Fiction', id: 2 },
-  ];
 
   const checkChange=(newValue)=>{
     if (newValue !== null && newValue !== undefined){
@@ -39,6 +35,11 @@ export default function RubrosComboBox({objetoRubro, setTransaccion, isEditField
         }
       }
     }
+  }
+
+  const updateState=(newValue)=>{
+    // alert("id:" + newValue.id + " label:" + newValue.label )
+    setTransaccion(prevState => ({...prevState, idRubro: newValue.id}))
   }
 
   const successCallback = (apiData)=>{
@@ -59,22 +60,17 @@ export default function RubrosComboBox({objetoRubro, setTransaccion, isEditField
   return (
     <>
     {listaRubros ?
-    
     <>
-      {console.log("listaRubros-RubrosComboBox")}
-      {console.log(listaRubros)}
       <Autocomplete
         disablePortal
+        fullWidth
+        size="small"
         options={listaRubros}
-        sx={{ width: 300 }}
+        sx={{ width: "100%" }}
+        onChange={(event, newValue) => updateState(newValue) }
         renderInput={(params) => <TextField {...params} label="Rubro" />}
       />
-    {/* <Autocomplete
-      disablePortal
-      options={options}
-      sx={{ width: 300 }}
-      renderInput={(params) => <TextField {...params} label="Rubro" />}
-    /> */}
+
     </>
     : 
      alert("listaRubros vazio")

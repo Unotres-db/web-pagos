@@ -25,12 +25,12 @@ export default function useForm (callback) {
    })
   const [ values, setValues ] = useState ({ contactName: "", contactMobile: "", contactEmail: "", contactMsg:"", userPassword:"" });
   const [ formErrors, setFormErrors ] = useState({ 
-    idTransaccion:"",
+    // idTransaccion:"",
     idProyecto:"", 
     idProveedor:"", 
-    nombreProveedor:"",
+    // nombreProveedor:"",
     idRubro:"", 
-    nombreRubro:"",
+    // nombreRubro:"",
     idTipoTransaccion:"", 
     descripcion:"", 
     numeroFactura:"", 
@@ -44,6 +44,7 @@ export default function useForm (callback) {
     idTipoFlujo:""
   })
   const { contactName, contactMobile, contactEmail, contactMsg,userPassword } = {values};
+
 
   function noBlanks (value) {
     // alert("noBlanks")
@@ -185,6 +186,7 @@ export default function useForm (callback) {
   // }
 
   const handleChange = (e, setterFunction, validators ) =>{
+    alert("handleChange, target.name" + e.target.name)
     const target = e.target;
     // alert("e.target.value em handleChange"+ e.target.value)
     // console.log("handleChage: " + target.name)
@@ -211,6 +213,7 @@ export default function useForm (callback) {
   }
 
   const handleValidators = (target, validators) => {
+    alert("target.name" + target.name)
     validators.forEach(validation => {         // array 
     const result = validation (target.value)    // value="martin" ou "0985 290979"...
     const errors = formErrors [target.name]     // le os erros do "vetor"

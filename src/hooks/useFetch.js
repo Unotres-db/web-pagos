@@ -166,66 +166,31 @@ const updateUser=(data)=>{
   putUser({ axiosInstance: api, method: 'PUT', url: '/users', data: dataToProcess, requestConfig: { headers: {'Authorization': userId,},}}, putUserSuccessCb, putUserErrorCb);
 }
 
-const deleteFollowerSuccessCb=(apiData)=>{
-
-}
-
-const deleteFollowerErrorCb=(apiData)=>{
-  alert("There was a problem in the server")
-}
-
-const deleteFolloweeSuccessCb=(apiData)=>{
-
-}
-
-const deleteFolloweeErrorCb=(apiData)=>{
-  alert("There was a problem in the server")
-}
-
-function deleteFollower (userId, profileId){  
-  // const dataToProcess ={ userId: profileId, followerId:userId }
-  // delFollower({ axiosInstance: api, method: 'DELETE', url: "/followers", data: dataToProcess, requestConfig: { headers: {'Authorization': userId,},}},deleteFollowerSuccessCb, deleteFollowerErrorCb);
-  delFollower({ axiosInstance: api, method: 'DELETE', url: `/followers?userId=${profileId}&&followerId=${userId}`, requestConfig: { headers: {'Authorization': userId,},}},deleteFollowerSuccessCb, deleteFollowerErrorCb);
-
-  // delFollowee({ axiosInstance: api, method: 'DELETE', url: "/followees", data: dataToProcess, requestConfig: { headers: {'Authorization': userId,},}},deleteFolloweeSuccessCb, deleteFolloweeErrorCb);
-  delFollowee({ axiosInstance: api, method: 'DELETE', url: `/followees?userId=${userId}&&followeeId=${profileId}`, requestConfig: { headers: {'Authorization': userId,},}},deleteFolloweeSuccessCb, deleteFolloweeErrorCb);
-
-}
-
-const saveFollowerSuccessCb=()=>{
-  // alert("Your are following this user ")
-}
-
-const saveFollowerErrorCb=()=>{
-  alert("There was an error inthe server")
-} 
-
-const saveFolloweeSuccessCb=()=>{
-  // alert("Your are following this user ")
-}
-
-const saveFolloweeErrorCb=()=>{
-  alert("There was an error inthe server")
-}  
-
-const saveFollower=(userId, profileId)=>{
-  postFollower({ axiosInstance: api, method: 'POST', url: '/followers', data: { userId: profileId, followerId:userId }, requestConfig: { headers: {'Authorization': userId,},}},saveFollowerSuccessCb, saveFollowerErrorCb);
-  postFollowee({ axiosInstance: api, method: 'POST', url: '/followees', data: { userId: userId, followeeId:profileId }, requestConfig: { headers: {'Authorization': userId,},}},saveFolloweeSuccessCb, saveFolloweeErrorCb);
-}
-
-  // function saveUser ({userRegistrationData}){ 
-    // console.log(userRegistrationData)
-    // const { id, password,firstName, lastName, phone, birthday, country } = userRegistrationData; 
-    // const userId = "martincsl"; // atualizar para state global com Context
-    // postUser({ : api, method: 'POST', url: '/users', data: userRegistrationData, requestConfig: { headers: {'Authorization': userId,},}},userSuccessCallback, errorCallback("server error"));
-  // }
-
   function userSuccessCallback(){
 
   }
 
   const forecastedErrorCb=(apiData)=>{
     // alert ("Erro gravando o forecated");
+  }
+
+  async function saveTransaction(transaccion)  {
+    return api.post('/transacciones', transaccion)
+      .then(response => {
+        const { idTransaccion: id } = response.data;  // solo recibe el id del backend
+        //actualiza el state en el caller
+      })
+      .catch(function (err) {
+
+        if (err.response) {
+          const errorMsg = Object.values(err.response.data);
+          errorCallback("Hubo un error en el acceso a la base de datos. Por favor, inténtalo más tarde, gracias!");
+        } else if (err.request) {
+          errorCallback("Hubo un error en el acceso a la base de datos. Por favor, inténtalo más tarde, gracias!");
+        } else {
+          errorCallback("Hubo un error en el acceso a la base de datos. Por favor, inténtalo más tarde, gracias!");
+        }
+      });
   }
 
   function saveUser2({userRegistrationData}){
@@ -311,5 +276,5 @@ const saveFollower=(userId, profileId)=>{
       });
   }
   
-  return { saveUser2, saveFollower, deleteFollower, updatePassword, updateUser, createSession, checkUserById, saveValuation, handlePublish, handleDelete, deleteValuation, dialogOptions, setDialogOptions, handleDialogClose, isDialogOpen, setIsDialogOpen }
+  return { saveTransaction, saveUser2, updatePassword, updateUser, createSession, checkUserById, saveValuation, handlePublish, handleDelete, deleteValuation, dialogOptions, setDialogOptions, handleDialogClose, isDialogOpen, setIsDialogOpen }
 }
