@@ -12,6 +12,7 @@ import Header from '../../components/Header';
 import TableProject from './TableProject';
 import FormInc from './FormInc';
 import FormAddTransaction from './FormAddTransaction';
+import Subtotal from './Subtotal';
 
 const useStyles = makeStyles( () => ({
   contentStyle: {
@@ -82,6 +83,7 @@ export default function Proyectos (){
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));//md
+
   const [ isEdit, setIsEdit] = useState(false); 
   const [ isAddTransaction, setIsAddTransaction] = useState(false); 
   const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
@@ -227,7 +229,8 @@ export default function Proyectos (){
                   <Box sx={{height:"5px"}}/>
                 </Box>
                 <Box sx={{height:"5px"}}/>
-                <TableContainer component={Paper} >
+                <Subtotal transactions={transactions}/>
+                {/* <TableContainer component={Paper} >
 
                   <Table className = {classes.table} size="small" aria-label="stycky header">
 
@@ -247,7 +250,7 @@ export default function Proyectos (){
                       </TableRow>  
                     </TableBody>
                   </Table>
-                </TableContainer>
+                </TableContainer> */}
                 <Box sx={{height:"5px"}}/>
                 <Box style={{display:"flex", justifyContent:"center"}}>
                  {/* "#E4D00A" "#FFBF00" */}

@@ -75,7 +75,7 @@ function Header() {
     },
     { id:1,
       title:"Inversionistas",
-      route:"/investments"
+      route:"/inversionistas"
     },
     { id:2,
       title:"Rolling Forecast",
