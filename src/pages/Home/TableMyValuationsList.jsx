@@ -23,7 +23,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   },
   TableHeader:{
     color: "white",
-    backgroundColor: mainTheme.palette.primary.main
+    backgroundColor:'#344955', 
   },
   TableTitle:{
     color: "white",
@@ -34,20 +34,20 @@ const useStyles = makeStyles( (mainTheme) => ({
     padding:0,
     minHeight: 0,
     minWidth: 0,
-    color: mainTheme.palette.primary.main,
+    color:'#344955',
     backgroundColor:"white",
     fontSize: "12px",
     textTransform:"none",
     "&:hover": {
-      color:mainTheme.palette.secondary.main,
-      backgroundColor:"white"
+      color:'#344955',
+      backgroundColor:"light gray"
     },
   },
   grow:{
       flexGrow: 1
     },
   iconButtonStyle:{
-    color: mainTheme.palette.primary.main,
+    color: '#344955',
     // fontSize: "11px",
     // [mainTheme.breakpoints.down('xs')]: {
     //   fontSize: "10px"

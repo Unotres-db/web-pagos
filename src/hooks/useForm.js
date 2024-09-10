@@ -24,6 +24,7 @@ export default function useForm (callback) {
     idTipoFlujo:""
    })
   const [ values, setValues ] = useState ({ contactName: "", contactMobile: "", contactEmail: "", contactMsg:"", userPassword:"" });
+  const [ inputData, setInputData] = useState ({inputId:"", inputPassword:""})
   const [ formErrors, setFormErrors ] = useState({ 
     // idTransaccion:"",
     idProyecto:"", 
@@ -41,9 +42,12 @@ export default function useForm (callback) {
     fechaPago:"",
     idTipoPago:"",
     nombreTipoPago:"",
-    idTipoFlujo:""
+    idTipoFlujo:"",
+    inputId:"",
+    inputPassword:""
   })
   const { contactName, contactMobile, contactEmail, contactMsg,userPassword } = {values};
+  const {inputId, inputPassword}=inputData
 
 
   function noBlanks (value) {
@@ -165,7 +169,7 @@ export default function useForm (callback) {
 
   function chkBlankFormLogin () {
     let isError = false;
-    const valuesToCheck = { userId, userPassword }
+    const valuesToCheck = { inputId, inputPassword }
     Object.keys(valuesToCheck).forEach( (key) => {   // key es el nombre del key
       if (values [key] === "") {                     //values[key] es el contenido del key
         setFormErrors(prevState => ( {...prevState, [key]:  "Esta información es requerida"}));
@@ -186,7 +190,7 @@ export default function useForm (callback) {
   // }
 
   const handleChange = (e, setterFunction, validators ) =>{
-    alert("handleChange, target.name" + e.target.name)
+    // alert("handleChange, target.name" + e.target.name)
     const target = e.target;
     // alert("e.target.value em handleChange"+ e.target.value)
     // console.log("handleChage: " + target.name)
@@ -213,7 +217,7 @@ export default function useForm (callback) {
   }
 
   const handleValidators = (target, validators) => {
-    alert("target.name" + target.name)
+    // alert("target.name" + target.name)
     validators.forEach(validation => {         // array 
     const result = validation (target.value)    // value="martin" ou "0985 290979"...
     const errors = formErrors [target.name]     // le os erros do "vetor"
@@ -229,5 +233,5 @@ export default function useForm (callback) {
     })
   }
 
-  return { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, formErrors }
+  return { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, formErrors, setFormErrors,inputData, setInputData, userId, setUserId, userName, setUserName }
 }

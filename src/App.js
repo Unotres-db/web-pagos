@@ -1,22 +1,24 @@
 import React,{ useState } from 'react';
 
-import { ThemeProvider } from '@material-ui/core';
+// import { ThemeProvider, StyledEngineProvider } from '@mui/material';
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+// import { ThemeProvider } from '@material-ui/core';
+// import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { LoginContext } from './helpers/Context';
+// import mainTheme from './unotresTheme';
 import mainTheme from './mainTheme';
 import Routes from './routes.js';
 import './global.css';
 
 function App() {
 
-  const [ userId, setUserId ] = useState ("");
-  const [ userName, setUserName ] = useState ("");
-
+  const [ userData, setUserData] = useState({userId:"", userPassword:"", userProduct:"", userFirstName:"", userLastName:"", userCountry:"", userCountryName:"", userPhone:"", userBirthday:""})
   return (
-    <LoginContext.Provider value = {{ userId, setUserId, userName, setUserName }} >
-      <ThemeProvider theme = { mainTheme } >
+    <LoginContext.Provider value = {{ userData, setUserData }} >
+      {/* <ThemeProvider theme = { mainTheme } > */}
         <Routes />
-      </ThemeProvider>
+      {/* </ThemeProvider> */}
     </LoginContext.Provider>
   );
 }

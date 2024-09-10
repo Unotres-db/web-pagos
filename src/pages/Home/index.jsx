@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { Grid, Paper, Box, Button, Typography, Tooltip, Snackbar, SnackbarContent, CircularProgress } from '@material-ui/core';
@@ -8,6 +8,8 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 // import api from '../../services/api';
 // import valuationsWebApi from '../../services/valuationsWebApi';
 // import useAxios from '../../hooks/useAxios';
+
+import { LoginContext } from '../../helpers/Context';
 
 import Header from '../../components/Header';
 import DialogModal from '../../components/modals/DialogModal';
@@ -20,66 +22,45 @@ import TableValuationResults from './TableValuationResults';
 import CurrencyOptions from './CurrencyOptions';
 import ChartValuation from './ChartValuation';
 
-const useStyles = makeStyles( (mainTheme) => ({
+const useStyles = makeStyles( () => ({
   contentStyle: {
     position: 'absolute',
     top: '65px',
   },
   buttonStyle: {
-    backgroundColor:"#7b7d7b",
-    [mainTheme.breakpoints.down('xs')]: {
-      fontSize: "10px"
+    textTransform:"none",
+    fontSize:"12px",
+    backgroundColor: "#E1C16E", 
+    color: '#344955', 
+    '&:hover': {
+      backgroundColor: '#bda25c', 
+      color: '#34495', 
+    },
+    '&:disabled': {
+      backgroundColor: "gray", //"#F49506ed",
+      color: '#344955', 
     },
   },
   sectionTitleStyle:{
-    fontSize: mainTheme.sectionTitle.fontSize,
-    color: mainTheme.palette.primary.main,
+    fontSize: 14,
+    color: '#344955',
     // color: mainTheme.sectionTitle.color
-  },
-  titleStyle: {
-    width: "100%",
-    padding: "15px",
-    color: mainTheme.palette.secondary.main,
-    backgroundColor: "white",
-    marginBottom: "10px",
-  },
-  boxStyle: {
-    width: "100%",
-    padding: "1px",
-    color: "white",
-    backgroundColor: mainTheme.palette.secondary.main,
-    marginBottom: "1px",
   },
   paperStyle: {
     width: "100%",   
     minHeight:"565px", // vai ser do tamanho do conteudo da tabela
     marginLeft:"3px",
     marginRight:"0px",
-    color: mainTheme.palette.primary.main,
+    color:"#344955",
     backgroundColor: "whitesmoke",
     padding: "5px",
   },
-  TableContainerStyle: {
-    width: "100%",   
-    height:"800px", // vai ser do tamanho do conteudo da tabela
-    marginLeft:"3px",
-    marginRight:"0px",
-    color: "white",
-    backgroundColor: mainTheme.palette.secondary.main,
-    padding: "10px",
-  },
-  iconStyle: {
-    textAlign: "center",
-    display: "block",
-    justifyContent: "center",
-    alignItems: "center",
-    margin: "auto",
-    marginTop: "10px",
-  }
 })) 
 
 export default function Home (){
   const classes = useStyles();
+  const { userData } = useContext(LoginContext)
+  const { userId }= userData
   const [ valuationsList, setValuationsList ] = useState([
   {
     ProjectDate:"2022-03-25 18:13:34",
@@ -173,6 +154,7 @@ export default function Home (){
   }
   
   ]);
+
   const [ isDialogOpen, setIsDialogOpen ] = useState(false);
   const [ dialogOptions, setDialogOptions ] = useState({severity:"",title:"",message:"",buttons:{},action:""});
   const [ isEditProfile, setIsEditProfile ] = useState(false);
@@ -206,95 +188,99 @@ export default function Home (){
   //   setIsDialogOpen (true);
   // }
   
-  // useEffect ( ()=> {
-  //   getUserValuations({ axiosInstance: valuationsWebApi, method: 'GET', url: '/valuations', }, userValuationsSuccessCallback, errorCallback);
-  // },[]) 
+  useEffect ( ()=> {
+    if (! userId){
+      history.push("/login")
+    }
+  },[]) 
   
   return (
     <>
     <Header />
-    <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}} >
+    { userData ? <>
+      <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}} >
 
-      <Grid item xs={12} style = {{ minHeight: '69px'}} /> 
+<Grid item xs={12} style = {{ minHeight: '69px'}} /> 
 
-      <Grid item container direction="row" spacing={1}  >
+<Grid item container direction="row" spacing={1}  >
 
-        <Grid item xs={12} md={2} >
-          <Paper className={classes.paperStyle} >
-            <MyProfile isEditProfile={isEditProfile} setIsEditProfile={setIsEditProfile}/>
-      
-            <Box style={{height:"2px"}}/>
-            {/* <Paper style={{height:"110px"}} elevation={6}> */}
-              {/* <ChartValuation /> */}
-            {/* </Paper> */}
-            <Box style={{height:"10px"}}/>
-                 {/* <TableValuationResults />  */}
-          </Paper>
+  <Grid item xs={12} md={2} >
+    <Paper className={classes.paperStyle} >
+      <MyProfile isEditProfile={isEditProfile} setIsEditProfile={setIsEditProfile}/>
+
+      <Box style={{height:"2px"}}/>
+      {/* <Paper style={{height:"110px"}} elevation={6}> */}
+        {/* <ChartValuation /> */}
+      {/* </Paper> */}
+      <Box style={{height:"10px"}}/>
+           {/* <TableValuationResults />  */}
+    </Paper>
+  </Grid>
+
+  <Grid item xs={12} md={7} > 
+    <Paper className={classes.paperStyle} >
+      <Grid container>
+        <Grid item xs={2}>
+          <Typography className={classes.sectionTitleStyle}>Proyectos</Typography>
         </Grid>
-
-        <Grid item xs={12} md={7} > 
-          <Paper className={classes.paperStyle} >
-            <Grid container>
-              <Grid item xs={2}>
-                <Typography className={classes.sectionTitleStyle}>Proyectos</Typography>
-              </Grid>
-              <Grid item xs={3} >
-                <Box style={{height:"5px"}}/>
-                <Tooltip title="Crear un nuevo Proyecto">
-                {/* variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} */}
-                  <Button 
-                    variant = "contained" 
-                    startIcon = {<AddCircleIcon />} 
-                    disableRipple
-                    style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}}
-                    // onClick = {handleNewValuation} 
-                    className = {classes.buttonStyle}
-                    >Nuevo Proyecto
-                  </Button>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={7}>
-                <CurrencyOptions />
-              </Grid>
-              
-            </Grid>
-            <Box style={{height:"15px"}}/>
-            { isEditProfile ? 
-              <>
-            
-              </> : 
-              <>
-              { ! isLoadingValuations ? 
-                <>
-                  { valuationsList ? <>
-                      <TableMyValuationsList valuationsList = {valuationsList} setValuationsList={setValuationsList} />
-                    </>: 
-                      <Typography style={{fontSize:14, marginTop:"15px"}}>You don't have any saved valuation</Typography>
-                  }
-                </>: 
-                <CircularProgress variant = "indeterminate" /> }  
-              </>
-            }
-            {/* <Box style={{height:"5px"}}/>
-            <Typography className={classes.sectionTitleStyle} gutterBottom>Valoración Actual de Civilia</Typography>
-            <TableValuationCashFlow /> */}
-            {/* <Typography>Total Flujo de Caja Descontado</Typography> */}
-            
-          </Paper>
+        <Grid item xs={3} >
+          <Box style={{height:"5px"}}/>
+          <Tooltip title="Crear un nuevo Proyecto">
+          {/* variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} */}
+            <Button 
+              variant = "contained" 
+              startIcon = {<AddCircleIcon />} 
+              disableRipple
+              // onClick = {handleNewValuation} 
+              className = {classes.buttonStyle}
+              >Nuevo Proyecto
+            </Button>
+          </Tooltip>
         </Grid>
-
-        <Grid item xs={12} md={3} > 
-          <Paper className={classes.paperStyle} >
-            <Typography className={classes.sectionTitleStyle} >Ultimo Rolling Forecast: 5&7 2024</Typography>
-            <Box style={{height:"5px"}}/>
-            <Paper>
-              <TableRollingForecast/>
-            </Paper>
-          </Paper>
+        <Grid item xs={7}>
+          <CurrencyOptions />
         </Grid>
-
+        
       </Grid>
-    </Grid>
+      <Box style={{height:"15px"}}/>
+      { isEditProfile ? 
+        <>
+      
+        </> : 
+        <>
+        { ! isLoadingValuations ? 
+          <>
+            { valuationsList ? <>
+                <TableMyValuationsList valuationsList = {valuationsList} setValuationsList={setValuationsList} />
+              </>: 
+                <Typography style={{fontSize:14, marginTop:"15px"}}>You don't have any saved valuation</Typography>
+            }
+          </>: 
+          <CircularProgress variant = "indeterminate" /> }  
+        </>
+      }
+      {/* <Box style={{height:"5px"}}/>
+      <Typography className={classes.sectionTitleStyle} gutterBottom>Valoración Actual de Civilia</Typography>
+      <TableValuationCashFlow /> */}
+      {/* <Typography>Total Flujo de Caja Descontado</Typography> */}
+      
+    </Paper>
+  </Grid>
+
+  <Grid item xs={12} md={3} > 
+    <Paper className={classes.paperStyle} >
+      <Typography className={classes.sectionTitleStyle} >Ultimo Rolling Forecast: 5&7 2024</Typography>
+      <Box style={{height:"5px"}}/>
+      <Paper>
+        <TableRollingForecast/>
+      </Paper>
+    </Paper>
+  </Grid>
+
+</Grid>
+</Grid>    
+    </>: null}
+    
     <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
       {dialogOptions.message}
     </DialogModal>

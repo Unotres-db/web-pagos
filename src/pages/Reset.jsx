@@ -200,7 +200,7 @@ export default function Reset(){
   }
 
   const checkRequiredEmail=()=>{
-    if (registerData.id !==""){
+    if (userId!==""){
       return true
     }
     return false
@@ -256,7 +256,7 @@ export default function Reset(){
 
   useEffect(() => {
     if (userId !=="" && userId!==null && userId!==undefined){
-      setRegisterData (prevState => ( {...prevState, id: userId}));
+      setUserData (prevState => ( {...prevState, id: userId}));
       // setActiveStep(1);
       // const code = generateCode();
       // postResetEmail({ axiosInstance: valuationsWebApi, method: 'POST', url: '/reset-email', data: { userId: registerData.id, code : code  }, requestConfig: { headers: {'Authorization': userId,},}},postResetSuccessCb, postResetErrorCb);
@@ -286,14 +286,14 @@ export default function Reset(){
                 // disabled
                 // variant ="outlined" margin="dense" size="small" fullWidth
                 label="E-mail *"
-                name="id"
-                value={registerData.id}
+                name="userId"
+                value={userId}
                 autofocus
                 autoComplete="email"
                 // onChange={ (e) => {handleChange (e,setRegisterData,[noBlanks])}}
                 // onBlur={(e) => handleIdBlur(e)}
                 inputProps={{style: {fontSize: 14}}} 
-                error={formErrors.id}
+                error={formErrors.userId}
                 inputRef={idTextFieldRef}
               />
               {/* {formErrors.id ? <div className="error-helper-text">{formErrors.id}</div> : null}                */}
@@ -303,17 +303,17 @@ export default function Reset(){
                 variant ="filled" margin="dense" size="small" fullWidth  
                 // variant ="outlined" margin="dense" size="small" fullWidth
                 label="E-mail *"
-                name="id"
-                value={registerData.id}
+                name="userId"
+                value={userData.userId}
                 autofocus
                 autoComplete="email"
-                onChange={ (e) => {handleChange (e,setRegisterData,[noBlanks])}}
+                onChange={ (e) => {handleChange (e,userData,[noBlanks])}}
                 onBlur={(e) => handleIdBlur(e)}
                 inputProps={{style: {fontSize: 14}}} 
-                error={formErrors.id}
+                error={formErrors.userId}
                 inputRef={idTextFieldRef}
               />
-              {formErrors.id ? <div className="error-helper-text">{formErrors.id}</div> : null}
+              {formErrors.userId ? <div className="error-helper-text">{formErrors.userId}</div> : null}
               </>
               }
 
@@ -335,7 +335,7 @@ export default function Reset(){
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
               <Typography align ="center" gutterBottom className={classes.textStyle} sx={{marginTop:"10px",marginBottom:"0px", fontSize:"13px"}} >
-                {`Por favor, incluya el código de 6 dígitos que le hemos enviado por ce-mail a ${registerData.id}`}</Typography>
+                {`Por favor, incluya el código de 6 dígitos que le hemos enviado por ce-mail a ${userId}`}</Typography>
             </Grid> 
             {/* { code.generatedCode? <p>{code.generatedCode}</p> : null}    */}
             <Grid item xs={12} sm={12}>
@@ -370,17 +370,17 @@ export default function Reset(){
                 // variant ="outlined" margin="dense" size="small" 
                 fullWidth
                 label="Cree su contraseña *"
-                name="password"
+                name="userPassword"
                 type="password"
-                value={registerData.password}
+                value={userData.userPassword}
                 autoComplete="new-password"
-                onChange={(e) => { handleChange (e,setRegisterData,[noBlanks])}}
+                onChange={(e) => { handleChange (e,setUserData,[noBlanks])}}
                 onBlur={validatePasswords}
                 inputProps={{style: {fontSize: 14}}} 
                 inputRef={passwordTextFieldRef}
-                error={formErrors.password}
+                error={formErrors.userPassword}
               />
-              {formErrors.password ? <div className="error-helper-text">{formErrors.password}</div> : null}
+              {formErrors.userPassword ? <div className="error-helper-text">{formErrors.userPassword}</div> : null}
             </Grid>
 
           <Grid item xs={12}>

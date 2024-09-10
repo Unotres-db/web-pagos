@@ -1,12 +1,12 @@
 import React, { useContext, useState, useEffect} from 'react';
 
-import { parse, format, isValid } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { format, isValid, parse } from 'date-fns';
+// import { es } from 'date-fns/locale';
 
 import { PatternFormat } from 'react-number-format';
 import { NumericFormat } from 'react-number-format';
 
-import { Paper, Grid, Dialog, DialogActions, DialogContent, DialogContentText, Box, Tooltip, Button, Typography, TextField, Avatar, useTheme, useMediaQuery, InputAdornment } from '@mui/material'
+import { Paper, Grid, Dialog, DialogActions, DialogContent, DialogContentText, Box, Tooltip, Button, Typography, TextField, Avatar, useTheme, useMediaQuery, InputAdornment, Snackbar, SnackbarContent } from '@mui/material'
 import { makeStyles } from '@material-ui/core/styles';
 
 // import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -23,29 +23,15 @@ import RubrosComboBox from '../../components/RubrosComboBox';
 import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
 import PaymentAutocomplete from '../../components/PaymentAutocomplete';
 
-const useStyles = makeStyles( (mainTheme) => ({
-  contentStyle: {
-    position: 'absolute',
-    top: '65px',
-  },
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh', // Set the height of the container to full viewport height
-    // flexGrow: 1,
-  },
-  circularProgressStyle:{
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh', 
-    color:mainTheme.palette.tertiary.main,
-  },
-  circularTextStyle:{
-    fontSize:13,
-    color:mainTheme.palette.tertiary.main,
-  },
+const useStyles = makeStyles((mainTheme) => ({
+
+  // root: {
+  //   display: 'flex',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   height: '100vh', 
+  //   flexGrow: 1,
+  // },
   paperStyle: {
     width: "100%",   
     marginLeft: "2px",
@@ -55,46 +41,32 @@ const useStyles = makeStyles( (mainTheme) => ({
     backgroundColor:"cyan",
     padding: "5px",
   },
-  boxSelectStyle:{
-    height: "30px",
-    width: "100%",
-  },
-  textStyle:{
-    fontSize:"11px", 
-    marginLeft:"5px",
-    marginTop:"0px",
-    paddingTop:"5px",
-    paddingLeft:"5px",
-    color:mainTheme.palette.tertiary.main,
-  },
-  buttonStyle:{
-    textTransform: 'none',
-    width:"75px"
-  },
-  TableHeader:{
-    color: "white",
-    backgroundColor: mainTheme.palette.primary.main,
-    fontSize: 11
-  },
-  TableTitle:{
-    color: "white",
-    backgroundColor: mainTheme.palette.primary.main,
-    fontSize: 11
-  },
-
-  greenSnackbarContent: {
-    backgroundColor: "#228B22",
+  buttonStyle: {
+    textTransform:"none",
+    fontSize:"12px",
+    backgroundColor: "#E1C16E", 
+    color: '#344955', 
+    '&:hover': {
+      backgroundColor: '#bda25c', 
+      color: '#34495', 
+    },
+    '&:disabled': {
+      backgroundColor: "gray", //"#F49506ed",
+      color: '#344955', 
+    },
   },
 }));
 
-export default function FormAddTransaction({ open, onClose }){
+export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdit }){
   const classes = useStyles();
   const [ rubros, setRubros] = useState([]);
+  const [ isSnackbarOpen, setIsSnackbarOpen]= useState(false);
+  const [ snackbarMessage, setSnackbarMessage] = useState("");
   const [ proveedores, setProveedores ] = useState([]);
   const [ isEditField, setIsEditField] = useState(true)// eliminar?
   const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
   const [ isDialogOpen, setIsDialogOpen] = useState(false);
-  const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin, chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, formErrors } = useForm ();
+  const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin, chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, formErrors, setFormErrors } = useForm ();
   const { 
     idProyecto, 
     idProveedor, 
@@ -118,7 +90,50 @@ export default function FormAddTransaction({ open, onClose }){
   const { axiosFetch: getRubros, isLoading: isLoadingRubros, error: isErrorRubros } = useAxios();
   const { axiosFetch: getProveedores, isLoading: isLoadingProveedores, error: isErrorProveedores } = useAxios();
   const muiMontoFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Monto Factura", name: "montoFactura",InputProps: {startAdornment: <InputAdornment position="start">Gs.</InputAdornment> }};
+  const muiNumeroFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Numero Factura", name: "numeroFactura" };
   const muiFechaFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Fecha Factura", name: "fechaFactura" };
+
+  const muiFechaPagoProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Fecha de pago", name: "fechaPago" };
+
+  const handleSnackbarClose=()=>{
+   setIsSnackbarOpen(false);
+  }
+
+  function convertDateToUTC(dateString) {
+    // Split the date string into day, month, and year parts
+    const [day, month, year] = dateString.split('/');
+  
+    // Create a new Date object in local time
+    const localDate = new Date(year, month - 1, day); // Month is 0-based
+  
+    // Create a new Date object with the desired UTC values
+    const utcDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+  
+    // Convert the UTC date to a string
+    // const utcDateString = utcDate.toISOString();
+  
+    return utcDate;
+  }
+
+
+  function convertToMilliseconds(dateString) {
+    // Split the date string into day, month, and year parts
+    const [day, month, year] = dateString.split('/');
+  
+    // Create a new Date object in local time (adjust month to 0-based index)
+    const localDate = new Date(year, month - 1, day);
+  
+    // Check if the parsed date is valid
+    if (isNaN(localDate.getTime())) {
+      return null; // Invalid date format
+    }
+  
+    // Convert the local date to UTC milliseconds
+    const utcMilliseconds = localDate.getTime() + localDate.getTimezoneOffset() * 60000;
+  
+    return utcMilliseconds;
+  }
+
 
   const validateInvoiceDate = (date) => {
     
@@ -127,26 +142,29 @@ export default function FormAddTransaction({ open, onClose }){
       return false;
     }
   
-    // Check if date is not yet complete (less than 6 characters)
-    if (date.value.length < 6) {
+    // Check if date is not yet complete (less than 8 characters)
+    if (date.value.length < 8) {
       return true; // Incomplete date is considered valid for the purpose of this validation
     }
   
-    // Parse the date in the "31/12/2023" format
-    const parsedDate = new Date(date.formattedValue.split('/').reverse().join('-'));
-    const parsedDateTest = parse('date.formattedValue', 'P', new Date(), { locale: es });
+    const parsedDate = new Date(date.formattedValue.split('/').reverse().join('/'));
 
-    // Check if parsing was successful
     if (isNaN(parsedDate)) {
+      setFormErrors (prevState => ( {...prevState, fechaFactura: "Fecha Invalida"}));
+      setDialogOptions({severity:"error", title:"Error", message:"La fecha incluida es invalida. Favor corregir, gracias!",buttons:{button1:"Ok"}})
+      setIsDialogOpen(true)
       return false; // Invalid date format
     }
-
-    if (!isValid(parsedDateTest)) {
-      setDialogOptions({severity:"alert", title:"Ojo Diana", message:"La fecha incluida es invalida",buttons:{button1:"Ok"}})
+    if (!isValid(parsedDate)) {
+      setFormErrors (prevState => ( {...prevState, fechaFactura: "Fecha Invalida"}));
+      setDialogOptions({severity:"error", title:"Error", message:"La fecha incluida es invalida. Favor corregir, gracias!",buttons:{button1:"Ok"}})
       setIsDialogOpen(true)
       return false; 
     }
-  
+    
+    if (formErrors.fechaFactura){
+      setFormErrors (prevState => ( {...prevState, fechaFactura: ""}));
+    }
     // Get current date in UTC
     const currentDate = new Date();
     const currentUTCTime = currentDate.getTime() + currentDate.getTimezoneOffset() * 60000;
@@ -155,8 +173,9 @@ export default function FormAddTransaction({ open, onClose }){
     // Format dates for comparison
     const formattedParsedDate = format(parsedDate, 'yyyy-MM-dd');
     const formattedCurrentUTCDate = format(currentUTCDate, 'yyyy-MM-dd');
-  
+
     // Check if date is equal to or lower than today (UTC)
+
     if (formattedParsedDate > formattedCurrentUTCDate) {
       // alert("Confirma fecha posterior a la fecha de hoy?")
       setDialogOptions({severity:"warning", title:"Atención", message:"La fecha incluida es posterior a la fecha de hoy. Favor verificar, gracias!",buttons:{button1:"Ok"}})
@@ -178,6 +197,69 @@ export default function FormAddTransaction({ open, onClose }){
     return true;
   };
 
+  const validatePaymentDate = (date) => {
+    
+    // Check if date is empty
+    if (!date.value) {
+      return false;
+    }
+  
+    // Check if date is not yet complete (less than 8 characters)
+    if (date.value.length < 8) {
+      return true; // Incomplete date is considered valid for the purpose of this validation
+    }
+  
+    const parsedDate = new Date(date.formattedValue.split('/').reverse().join('/'));
+
+    if (isNaN(parsedDate)) {
+      setFormErrors (prevState => ( {...prevState, fechaPago: "Fecha Invalida"}));
+      setDialogOptions({severity:"error", title:"Error", message:"La fecha incluida es invalida. Favor corregir, gracias!",buttons:{button1:"Ok"}})
+      setIsDialogOpen(true)
+      return false; // Invalid date format
+    }
+    if (!isValid(parsedDate)) {
+      setFormErrors (prevState => ( {...prevState, fechaPago: "Fecha Invalida"}));
+      setDialogOptions({severity:"error", title:"Error", message:"La fecha incluida es invalida. Favor corregir, gracias!",buttons:{button1:"Ok"}})
+      setIsDialogOpen(true)
+      return false; 
+    }
+    
+    if (formErrors.fechaFactura){
+      setFormErrors (prevState => ( {...prevState, fechaPago: ""}));
+    }
+    // Get current date in UTC
+    const currentDate = new Date();
+    const currentUTCTime = currentDate.getTime() + currentDate.getTimezoneOffset() * 60000;
+    const currentUTCDate = new Date(currentUTCTime);
+  
+    // Format dates for comparison
+    const formattedParsedDate = format(parsedDate, 'yyyy-MM-dd');
+    const formattedCurrentUTCDate = format(currentUTCDate, 'yyyy-MM-dd');
+
+    // Check if date is equal to or lower than today (UTC)
+
+    if (formattedParsedDate > formattedCurrentUTCDate) {
+      // alert("Confirma fecha posterior a la fecha de hoy?")
+      setDialogOptions({severity:"warning", title:"Atención", message:"La fecha incluida es posterior a la fecha de hoy. Favor verificar, gracias!",buttons:{button1:"Ok"}})
+      setIsDialogOpen(true)
+      return false;
+    }
+  
+    // Check if date is from current or previous month of the current year (UTC)
+    const parsedDateYear = format(parsedDate, 'yyyy');
+    const currentUTCYear = format(currentUTCDate, 'yyyy');
+    const parsedDateMonth = format(parsedDate, 'MM');
+    const currentUTCMonth = format(currentUTCDate, 'MM');
+    if (parsedDateYear < currentUTCYear || (parsedDateYear === currentUTCYear && parsedDateMonth < currentUTCMonth - 1)) {
+      // alert("Confirma fecha de factura inferior al mes anterior?")
+      setDialogOptions({severity:"warning", title:"Atención", message:"La fecha incluida no es reciente. Favor verificar, gracias!",buttons:{button1:"Ok"}})
+      setIsDialogOpen(true)
+      return false;
+    }
+    return true;
+  };
+
+
   function handleDialogClose(){
     setIsDialogOpen(false)
   }
@@ -191,14 +273,32 @@ export default function FormAddTransaction({ open, onClose }){
       setTransaccion(prevState => ({...prevState, fechaFactura: newValue.formattedValue}))
     }
   }
+  function handleInvoiceNumber (newValue){
+    if(newValue){
+      setTransaccion(prevState => ({...prevState, numeroFactura: newValue.formattedValue}))
+    }
+      
+  }
+
+
+  function handlePaymentDate (newValue){
+    if (validatePaymentDate(newValue)){
+      setTransaccion(prevState => ({...prevState, fechaPago: newValue.formattedValue}))
+    }
+  }
 
   async function saveTransaction(transaccion)  {
+    // convertDateToUTC
     return api.post('/transacciones', transaccion)
       .then(response => {
-        const { idTransaccion: id } = response.data;  // solo recibe el id del backend
+        const { idTransaccion: id } = response.data;  
         setTransaccion (prevState => ( {...prevState, idTransaccion: id }));
-        console.log("grabando transaccion")
-        console.log(transaccion)
+        setSnackbarMessage("Transaccion grabada exitosamente en la base de datos")
+        setIsSnackbarOpen(true);
+
+        // alert("Transaccion grabada en la base de datos, con id: "+ id)
+        // console.log("grabando transaccion")
+        // console.log(transaccion)
       })
       .catch(function (err) {
         if (err.response) {
@@ -232,6 +332,7 @@ export default function FormAddTransaction({ open, onClose }){
       nombreTipoPago:"",
       idTipoFlujo:""
     }))
+    setIsEdit(true);
     onClose()
   }
 
@@ -248,13 +349,40 @@ export default function FormAddTransaction({ open, onClose }){
     return false
   }
 
+  function checkRequiredFields(){
+    if (idProveedor !=="" && idRubro !=="" && montoFactura !=="" && fechaFactura !=="" && descripcion !==""){
+      return true
+    } 
+    return false
+  }
+
   const handleSaveChanges = async () => {
-    
     if (! checkFormErrors() ) {
-      // saveTransaction(transaccion)
-      console.log("checkFormErrors "+transaccion)
-      console.log(transaccion)
-      // onClose(); // Cierra el FormEditProfile
+      // const fechaFacturaMilliseconds=convertToMilliseconds(fechaFactura)
+      // const fechaPagoMilliseconds= fechaPago? convertToMilliseconds(fechaPagoMilliseconds): ""
+      // setTransaccion(prevState => ({...prevState, fechaFactura:fechaFacturaMilliseconds, fechaPago:fechaPagoMilliseconds }))
+      // console.log("transaccion")
+      // console.log(transaccion)
+      saveTransaction(transaccion)
+      setTransaccion (prevState => ({...prevState, 
+        idProyecto:"", 
+        idProveedor:"", 
+        // nombreProveedor:"",
+        idRubro:"", 
+        // nombreRubro:"",
+        idTipoTransaccion:"", 
+        descripcion:"", 
+        numeroFactura:"", 
+        fechaFactura:"", 
+        timbradoFactura:"", 
+        montoFactura:"",
+        comprobantePago:"",
+        fechaPago:"",
+        idTipoPago:"",
+        nombreTipoPago:"",
+        idTipoFlujo:""
+      }))
+      onClose();
     } else {
       //Refactorar...Crear error handler
       console.log("Not saved in database")
@@ -283,6 +411,7 @@ export default function FormAddTransaction({ open, onClose }){
   }
 
   useEffect(() => {
+    setTransaccion(prevState => ({...prevState, idProyecto: id, idTipoFlujo:"1"}))
     getRubros({ axiosInstance: api, method: 'GET', url: `/rubros`, requestConfig: { headers: {'Authorization': "id",},}},getRubrosSuccessCb, getRubrosErrorCb);
   }, [ open ]);
 
@@ -327,8 +456,6 @@ export default function FormAddTransaction({ open, onClose }){
                     variant="filled"
                   />
                 </Grid>
-
-
                 {/* <Grid item xs={12} >
                   <LocalizationProvider locale={esES}>
                     <DatePicker
@@ -342,23 +469,31 @@ export default function FormAddTransaction({ open, onClose }){
                   </LocalizationProvider>
                 </Grid> */}
                 
-                  <Grid item xs={6} sm={6}>
-                  <PatternFormat
-                        format="##/##/####"
-                        allowEmptyFormatting mask="_"
-                        value={fechaFactura}
-                        customInput={TextField}
-                        onValueChange={(e) => {
-                          handleInvoiceDate (e)}}
-                        // onValueChange={ (e) => {
-                        //   handleChange (e,setTransaccion,[noBlanks]);
-                        // }}
-                        {...muiFechaFacturaProps}
-                      />
-                      
+                <Grid item xs={6} sm={6}>
+                    <PatternFormat
+                      format="##/##/####"
+                      allowEmptyFormatting mask="_"
+                      value={fechaFactura}
+                      customInput={TextField}
+                      onValueChange={(e) => {handleInvoiceDate (e)}}
+                      {...muiFechaFacturaProps}
+                    />
                     {formErrors.fechaFactura ? <div className="error-helper-text">{formErrors.fechaFactura}</div> : null}
-                  </Grid>
-                  <Grid item xs={6} sm={6}>
+                </Grid>
+
+                <Grid item xs={6} sm={6}>
+                  <PatternFormat
+                    format="###-###-########"
+                    allowEmptyFormatting mask="_"
+                    value={numeroFactura}
+                    customInput={TextField}
+                    onValueChange={(e) => {handleInvoiceNumber (e)}}
+                    {...muiNumeroFacturaProps}
+                  />
+                  {formErrors.numeroFactura ? <div className="error-helper-text">{formErrors.numeroFactura}</div> : null}
+                </Grid>
+
+                <Grid item xs={6} sm={6}>
                     <NumericFormat
                         value={montoFactura}
                         customInput={TextField}
@@ -371,10 +506,6 @@ export default function FormAddTransaction({ open, onClose }){
                         decimalSeparator=","
                         {...muiMontoFacturaProps}
                       />
-                  </Grid>
-                  <Grid item xs={6} sm={6}>
-
-
                   </Grid>
                   {/* <Grid item xs={6} sm={6}>
                     <TextField variant ="outlined" margin="dense" size="small" fullWidth
@@ -391,7 +522,7 @@ export default function FormAddTransaction({ open, onClose }){
                   </Grid> */}
                   <Grid item xs={12} sm={12}>
                     <TextField variant ="outlined" margin="dense" size="small" fullWidth
-                      label="Descripcion"
+                      label="Descripción"
                       name="descripcion"
                       value={descripcion}
                       autoComplete="descripcion"
@@ -404,18 +535,29 @@ export default function FormAddTransaction({ open, onClose }){
                     />
                     {formErrors.descripcion ? <div className="error-helper-text">{formErrors.descripcion}</div> : null}
                   </Grid>
+
                   <Grid item xs={12} >
-                  <PaymentAutocomplete 
-                    paymentObject={paymentObject}
-                    transaccion={transaccion}
-                    setTransaccion={setTransaccion}
-                    isEditField={isEditField}
-                    setIsEditField={setIsEditField}
-                    variant="filled"
-                  />
-                </Grid>
+                    <PaymentAutocomplete 
+                      paymentObject={paymentObject}
+                      transaccion={transaccion}
+                      setTransaccion={setTransaccion}
+                      isEditField={isEditField}
+                      setIsEditField={setIsEditField}
+                      variant="filled"
+                    />
+                  </Grid>
+
                   <Grid item xs={6} sm={6}>
-                    <TextField variant ="outlined" margin="dense" size="small" fullWidth
+                    <PatternFormat
+                      format="##/##/####"
+                      allowEmptyFormatting mask="_"
+                      value={fechaPago}
+                      customInput={TextField}
+                      onValueChange={(e) => { handlePaymentDate (e)}}
+                      {...muiFechaPagoProps}
+                    />
+                    {formErrors.fechaFactura ? <div className="error-helper-text">{formErrors.fechaFactura}</div> : null}
+                    {/* <TextField variant ="outlined" margin="dense" size="small" fullWidth
                       label="Fecha Pago"
                       name="fechaPago"
                       value={fechaPago}
@@ -426,7 +568,7 @@ export default function FormAddTransaction({ open, onClose }){
                       }}
                       error={formErrors.fechaPago}
                     />
-                    {formErrors.fechaPago ? <div className="error-helper-text">{formErrors.fechaPago}</div> : null}
+                    {formErrors.fechaPago ? <div className="error-helper-text">{formErrors.fechaPago}</div> : null} */}
                   </Grid>
 
 
@@ -435,10 +577,9 @@ export default function FormAddTransaction({ open, onClose }){
                       label="Comprobante de Pago"
                       name="comprobantePago"
                       value={comprobantePago}
-                      autoComplete="fecha-pago"
+                      autoComplete="comprobante-pago"
                       onChange={ (e) => {
                         handleChange (e,setTransaccion,[noBlanks]);
-                     // handleChange (e,setRegisterData,[isValidName]);
                       }}
                       error={formErrors.comprobantePago}
                     />
@@ -450,11 +591,14 @@ export default function FormAddTransaction({ open, onClose }){
             <DialogActions >
               <Grid container direction="row"  >
                 <Grid item xs={6} style={{textAlign:'right'}} >
-                  <Button disableRipple className={classes.buttonStyle} onClick={handleCancel} variant="contained" size="small"  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}}>
+                  <Button disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none",width:"75px"}}  onClick={handleCancel} variant="contained" size="small"  >
                     Cancelar</Button>
                 </Grid>
                 <Grid item xs={6} style={{textAlign:'left'}} >
-                  <Button disableRipple className={classes.buttonStyle} onClick={handleSaveChanges} variant="contained" size="small"  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >
+
+              {/* No esta reconociendo clasess */}
+              {/* style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} */}
+                  <Button disableRipple  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", width:"75px"}} disabled={checkFormErrors() || ! checkRequiredFields()} onClick={handleSaveChanges} variant="contained" size="small"   >
                     Grabar</Button>
                 </Grid>
               </Grid> 
@@ -462,12 +606,20 @@ export default function FormAddTransaction({ open, onClose }){
             </DialogActions>
         </Dialog>
   </Paper>
+  <Snackbar
+    open={isSnackbarOpen}
+    autoHideDuration={3000} 
+    onClose={handleSnackbarClose}
+    >
+    <SnackbarContent
+      className={classes.greenSnackbarContent}
+      message={snackbarMessage}
+    />
+  </Snackbar>
   <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
     {dialogOptions.message}
   </DialogModal>
-    
   </>: null}
   </>
   )
-
 }

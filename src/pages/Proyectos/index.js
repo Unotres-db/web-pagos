@@ -13,7 +13,7 @@ import TableProject from './TableProject';
 import FormInc from './FormInc';
 import FormAddTransaction from './FormAddTransaction';
 
-const useStyles = makeStyles( (mainTheme) => ({
+const useStyles = makeStyles( () => ({
   contentStyle: {
     position: 'absolute',
     top: '65px',
@@ -30,11 +30,11 @@ const useStyles = makeStyles( (mainTheme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100vh', 
-    color:mainTheme.palette.tertiary.main,
+    color:'#344955',
   },
   circularTextStyle:{
     fontSize:13,
-    color:mainTheme.palette.tertiary.main,
+    color:'#344955',
   },
   paperStyle: {
     width: "100%",   
@@ -54,19 +54,19 @@ const useStyles = makeStyles( (mainTheme) => ({
     marginTop:"0px",
     paddingTop:"5px",
     paddingLeft:"5px",
-    color:mainTheme.palette.tertiary.main,
+    color:'#344955',
   },
   buttonStyle:{
     textTransform: 'none'
   },
   TableHeader:{
     color: "white",
-    backgroundColor: mainTheme.palette.primary.main,
+    backgroundColor: '#344955',
     fontSize: 11
   },
   TableTitle:{
     color: "white",
-    backgroundColor: mainTheme.palette.primary.main,
+    backgroundColor: '#344955',
     fontSize: 11
   },
 
@@ -99,7 +99,6 @@ export default function Proyectos (){
   }
 
   const getProjectSuccessCb=(apiData)=>{
-    // alert("getProjectSuccessCb")
     setTransactions(apiData);
   }
 
@@ -117,6 +116,13 @@ export default function Proyectos (){
   }
 
   useEffect(() => {
+    setIsEdit(false);
+    if (id) {
+      getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "id",},}},getProjectSuccessCb, getProjectErrorCb);
+    } 
+  }, [isEdit]);
+
+  useEffect(() => {
     if (id) {
       getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "id",},}},getProjectSuccessCb, getProjectErrorCb);
     } 
@@ -125,7 +131,6 @@ export default function Proyectos (){
   return(
     <>
       { ! transactions ? <>
- 
       <div className={classes.root}>
       <Header />  
       <Grid container> 
@@ -176,7 +181,7 @@ export default function Proyectos (){
           <Paper className={classes.paperStyle} elevation={3}  > 
             { ! isMobile && ! isTablet? 
               <>
-              <TableProject  transactions={transactions}/>
+              <TableProject  transactions={transactions} isEdit={isEdit}/>
 
               <Box sx={{height:"5px"}}/>
               </>
@@ -354,6 +359,9 @@ export default function Proyectos (){
   <FormAddTransaction 
     open={isAddTransaction}
     onClose={handleAddTransactionClose}
+    id={id}
+    isEdit={isEdit}
+    setIsEdit={setIsEdit}
   />
   <Snackbar
     open={isSnackbarOpen}

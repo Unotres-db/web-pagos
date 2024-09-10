@@ -85,7 +85,7 @@ const AlertDialog = ({open, onClose, severity, title, buttons, children}) => {
       <DialogTitle id="alert-dialog-title" style={{backgroundColor:bkColor, paddingTop:"0px", paddingBottom:"0px"}}><Typography align="center" variant="subtitle2" style={{color:'white'}}>{title}</Typography></DialogTitle>
       <DialogContent style={{color:'white', paddingTop:"0px", paddingBottom:"0px", backgroundColor:bkColor}}>
         <DialogContentText id="alert-dialog-description">
-          <Typography align="center" variant="caption" style={{ color: 'white' }}>
+          <Typography align="center" variant="caption" style={{ color: 'white', fontSize:"14px" }}>
             {children}
           </Typography> 
         </DialogContentText>

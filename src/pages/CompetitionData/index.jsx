@@ -21,8 +21,8 @@ const useStyles = makeStyles( (mainTheme) => ({
     top: '65px'
   },
   sectionTitleStyle:{
-    fontSize: mainTheme.sectionTitle.fontSize,
-    color: mainTheme.sectionTitle.color,
+    fontSize: 14,
+    color: 'black',
     marginTop: "15px",
     marginLeft: "15px",
     marginBottom: "5px"

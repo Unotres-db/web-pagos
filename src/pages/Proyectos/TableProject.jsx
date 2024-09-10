@@ -11,14 +11,14 @@ import TablePaginationActions from '../../components/TablePaginationActions';
 
 import Header from '../../components/Header'
 
-const useStyles = makeStyles( (mainTheme) => ({
+const useStyles = makeStyles( () => ({
   table:{
     minWidth: 370,
     maxHeight: 900
   },
   TableHeader:{
     color: "white",
-    backgroundColor: mainTheme.palette.primary.main
+    backgroundColor: '#344955'
   },
   TableTitle:{
     color: "white",
@@ -29,12 +29,12 @@ const useStyles = makeStyles( (mainTheme) => ({
     padding:0,
     minHeight: 0,
     minWidth: 0,
-    color: mainTheme.palette.primary.main,
+    color: '#344955',
     backgroundColor:"white",
     fontSize: "9px",
     textTransform:"none",
     "&:hover": {
-      color:mainTheme.palette.secondary.main,
+      color:'#344955',
       backgroundColor:"white"
     },
   },
@@ -42,7 +42,7 @@ const useStyles = makeStyles( (mainTheme) => ({
       flexGrow: 1
     },
   iconButtonStyle:{
-    color: mainTheme.palette.primary.main,
+    color: '#344955',
     // fontSize: "11px",
     // [mainTheme.breakpoints.down('xs')]: {
     //   fontSize: "10px"
@@ -60,7 +60,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
 }));
 
-export default function TableProject({transactions}){
+export default function TableProject({transactions, isEdit}){
   const classes = useStyles();
   const [ page, setPage ] = useState(0);
   const [ rowsPerPage, setRowsPerPage ] = useState(12);
@@ -195,12 +195,13 @@ export default function TableProject({transactions}){
             : transactions
             ).map((transactions) => (<>
             
-              {console.log( (convertDate(transactions.fechaFactura)))}
+              {/* {console.log( (convertDate(transactions.fechaFactura)))} */}
               <TableRow key={transactions.valuationId}>
                 <TableCell align="left"  className={classes.TableRows}  >
                   {/* <Button onClick={(e) => (handleButton (transactions.fechaFactura))} className={classes.ButtonTable} style={{fontSize:11}} disableRipple></Button> */}
                   {/* <Button onClick={(e) => (handleButton (transactions.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{transactions.updated_at}</Button> */}
-                  <Typography style={{fontSize:"11px"}}>{convertTimestampToDate(transactions.fechaFactura)}</Typography>
+                  <Typography style={{fontSize:"11px"}}>{transactions.fechafactura}</Typography>
+                  {/* {transactions.fechaFactura} */}
                   {/* <Typography style={{fontSize:11}}>{convertToDateString(transactions.fechaFactura)}</Typography> */}
 
                 </TableCell>
@@ -237,7 +238,8 @@ export default function TableProject({transactions}){
                 </TableCell>
                 <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
                   {/* <Button  className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(transactions.fechaPago)}</Button> */}
-                  <Typography style={{fontSize:"11px"}}>{convertTimestampToDate(transactions.fechaPago)}</Typography>
+                  <Typography style={{fontSize:"11px"}}>{transactions.fechapago}</Typography>
+                  {/* {transactions.fechaPago} */}
                   {/* <Typography style={{fontSize:11}}>{convertToDateString(transactions.fechaPago)}</Typography> */}
                 </TableCell>  
                 <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>

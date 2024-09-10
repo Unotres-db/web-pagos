@@ -1,14 +1,14 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import { AppBar, Toolbar, IconButton, Box, Button, Hidden, Drawer, List, ListItem, ListItemText, Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 
-// import mainLogo from '../assets/Logo.svg';
+import { LoginContext } from '../helpers/Context';
 import mainLogo from '../assets/UnoTresLogo.jpg';
 
-const useStyles = makeStyles((mainTheme) => ({
+const useStyles = makeStyles(() => ({
 root: {
     display: 'flex',
   },  
@@ -20,21 +20,20 @@ buttonMenuStyle: {
   padding: 6,
   minWidth: 0,
   color: "white",
-  backgroundColor:"#7b7d7b", //mainTheme.palette.primary.main,
+  backgroundColor:"#7b7d7b", 
   textTransform:"none",
   margin: "2px",
   fontSize:"13px",
   "&:hover": {
-    color:"white",//mainTheme.palette.secondary.main,
-    backgroundColor:"#7b7d7b", //mainTheme.palette.primary.main,
+    color:"white",
+    backgroundColor:"#7b7d7b", 
   }
 },
 buttonDrawerStyle: {
   color: "white",
   textTransform:"none",
-  "&:hover": {
-    color:mainTheme.palette.secondary.main
-  },
+  color:"white",
+  backgroundColor:"#7b7d7b", 
 },
 logoStyle: {
   position: "relative",
@@ -52,7 +51,7 @@ drawer: {
 drawerPaper: {
   width: '240',
   color: 'white',
-  backgroundColor:"#7b7d7b", // mainTheme.palette.primary.main
+  backgroundColor:"#7b7d7b", 
 },
 drawerContainer: {
   overflow: 'auto',
@@ -65,17 +64,15 @@ drawerText:{
 function Header() {
 
   const classes = useStyles();
+  const { userData, setUserData} = useContext (LoginContext)
+  const { userId } = userData
   const [ isDrawerOpen, setIsDrawerOpen ] = useState(false);
-  const dividerOption = 3;
+  const dividerOption = userId? 4: 3;
   const menuOptions = [
     { id:0,
       title:"Principal",
       route:"/home"
     },
-    // { id:1,
-    //   title:"Proyectos",
-    //   route:"/project"
-    // },
     { id:1,
       title:"Inversionistas",
       route:"/investments"
@@ -84,17 +81,13 @@ function Header() {
       title:"Rolling Forecast",
       route:"/rolling-forecast"
     },
-    // { id:4,
-    //   title:"Valuation",
-    //   route:"/project"
-    // },
-    // { id:5,
-    //   title:"Balances y EERR",
-    //   route:"/project"
-    // },
     { id:3,
       title:"Iniciar Sesión",
       route:"/login"
+    },
+    { id:4,
+      title:"Cerrar Sesión",
+      route:"/logout"
     }
   ]
 
@@ -116,13 +109,28 @@ function Header() {
       </Link>
       <Hidden smDown>
         <Box style={{ width: '20px' }}/> 
-        {/* size="small"    */}
-        { menuOptions.map ( (currElement) => (
+        { userId ? <> 
+        
+          { menuOptions
+         .filter((menuItem) =>  menuItem.title !== 'Iniciar Sesión' ) // Si t=ya esta con la sesion iniciada, no muestra valuation sample, login y sign up...
+          .map ( (currElement) => (
           <>
           { dividerOption===currElement.id? <div className={classes.grow} />: null}
           <Button component={Link} to={menuOptions[currElement.id].route} className={classes.buttonMenuStyle}disableRipple>{menuOptions[currElement.id].title}</Button>
           </>
         ))} 
+        </> :
+        <> 
+          { menuOptions
+          .filter((menuItem) =>  menuItem.title !== 'Cerrar Sesión' ) // Si t=ya esta con la sesion iniciada, no muestra valuation sample, login y sign up...
+            .map ( (currElement) => (
+            <>
+            { dividerOption===currElement.id? <div className={classes.grow} />: null}
+            <Button component={Link} to={menuOptions[currElement.id].route} className={classes.buttonMenuStyle}disableRipple>{menuOptions[currElement.id].title}</Button>
+            </>
+          ))}         
+        </>}
+
       </Hidden>
 
       <div className={classes.toolbarButtons}> 

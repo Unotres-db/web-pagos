@@ -5,9 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import WarningIcon from '@mui/icons-material/Warning';
-import { BlockOutlined } from '@material-ui/icons';
 
-const useStyles = makeStyles( (mainTheme) => ({
+const useStyles = makeStyles( () => ({
   iconBox:{
     width:'100%',
     textAlign: 'center',
@@ -111,7 +110,6 @@ export default function DialogModal ({open, onClose, severity, title, buttons, c
               </Box>
             </Grid>
             )
-            
           })}
           { numberOfButtons = 2 ? <>
             <Grid item direction="row" xs={gridSpace}  />
@@ -121,7 +119,6 @@ export default function DialogModal ({open, onClose, severity, title, buttons, c
       </DialogActions>
       <Box style={{height:"15px", backgroundColor:bkColor}}/>
     </Dialog>
-
     </div>
     </>
   )

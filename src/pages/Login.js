@@ -27,26 +27,30 @@ const useStyles = makeStyles((mainTheme) => ({
     // backgroundColor:mainTheme.palette.secondary.main,  
   },
   titleStyle:{
-    color: mainTheme.palette.primary.main,
+    color: "#344955",
   },
-  buttonStyle:{
-    color: "white",
-    backgroundColor:mainTheme.palette.primary.main,
+  buttonStyle: {
     textTransform:"none",
-    margin: "10px",
-//    marginTop: "15px",
-    "&:hover": {
-      color:"#E1C16E",
-      backgroundColor:mainTheme.palette.primary.main,
+    fontSize:"13px",
+    backgroundColor: "#E1C16E", // "#E1C16E"
+    color: '#344955',           // #344955
+    '&:hover': {
+      backgroundColor: '#bda25c', 
+      color: '#34495', 
+    },
+    '&:disabled': {
+      backgroundColor: "gray", //"#F49506ed",
+      color: '#344955', 
     },
   },
   iconBox:{
+
     width:'100%',
     textAlign: 'center',
     AlignItems: 'center',
   },
   iconStyle:{
-    color: mainTheme.palette.primary.main, 
+    color:"#344955", 
   },
   inputStyle: {
     background: "white",
@@ -66,12 +70,15 @@ const useStyles = makeStyles((mainTheme) => ({
   export default function Login () {
 
     const classes = useStyles();  
-    const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormLogin, noBlanks, userId, values, formErrors } = useForm (submit);
+    const { userData, setUserData } = useContext (LoginContext);
+    const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormLogin, noBlanks, values, formErrors, inputData, setInputData } = useForm (submit);
+    const { inputId, inputPassword}= inputData
+
     const { userPassword } = values;
     const [ isAlertOpen, setIsAlertOpen ] = useState(false);
     const [ alertMessage, setAlertMessage ] = useState({severity:"", title:"", message:""});
     const [ Prompt, setIsDirty, setIsPristine ] = useUnsavedWarning();
-    const { setUserId, setUserName } = useContext (LoginContext);
+
     const history = useHistory();
 
     async function submit () {
@@ -83,16 +90,13 @@ const useStyles = makeStyles((mainTheme) => ({
       else {
         setIsPristine();
         try {
-          const data = { userId, userPassword } ;
-          const response = await api.post('/sessions', data );
-          setUserId (response.data.userId);
-          setUserName (response.data.userName);
-
-          setAlertMessage (prevState => ({...prevState, severity:"success", title: "Sesión iniciada con exito", message: "Iniciando la sesión en la plataforma de Quo" }));
+          const data = { id: inputId.trim(), password: inputPassword } ;
+          const res = await api.post('/session', data );
+          setUserData({userId:res.data.id, userProduct:res.data.product, userFirstName:res.data.firstName, userLastName:res.data.lastName})
+          setAlertMessage (prevState => ({...prevState, severity:"success", title: "Sesión iniciada con exito", message: "Iniciando la sesión en la plataforma de Unotres S.A." }));
           setIsAlertOpen (true);
-
-          localStorage.setItem('userId',response.data.userId);
-          localStorage.setItem('userName',response.data.userName);
+          localStorage.setItem('userId',res.data.id);
+          localStorage.setItem('userName',res.data.firstName);
         } catch (err) {
           if (err.response) {
             const errorMsg = Object.values(err.response.data);
@@ -113,7 +117,7 @@ const useStyles = makeStyles((mainTheme) => ({
     setAlertMessage(prevState => ({...prevState, severity:"", title: "", message: "" }));
     setIsAlertOpen(false);
     if ( alertMessage.severity === "success" ) {
-      history.push('/sponsor');
+      history.push('/home');
     }
   };
 
@@ -135,35 +139,40 @@ const useStyles = makeStyles((mainTheme) => ({
             </Box>
           
             <Grid item xs={12} md={12} spacing={1}> 
-              <TextField id="userId" label="Usuario *" 
-                variant ="filled" margin="dense" size="small" fullWidth  
-                name="userId" 
-                value= { userId } 
-                onChange={ (e) => {
-                  handleChangeUserId (e,[noBlanks]);
-                  setIsDirty ();
-                }}
-              error={formErrors.userId} 
-              ></TextField>
-              {formErrors.userId ? <div className="error-helper-text">{formErrors.userId}</div> : null}
-            </Grid>
-            
-            <Grid item xs={12} md={9} spacing={1}> 
-              <TextField id="userPassword" label="Contraseña *"
-                  variant ="filled" margin="dense" size="small" type="password" fullWidth
-                  name="userPassword" 
-                  value={values.userPassword} 
-                  onChange={ (e) => {
-                  handleChange (e,[noBlanks]);
-                  setIsDirty ();
-                }}
-                error={formErrors.userPassword}></TextField>
-                {formErrors.userPassword ? <div className="error-helper-text">{formErrors.userPassword}</div> : null}
-                <Typography className={classes.forgotPasswordStyle}><a href="/reset">¿Olvidaste tu contraseña? Ingresa aquí</a></Typography>
-            </Grid>
+            <TextField id="inputId" label="Your E-mail" 
+              variant ="filled" margin="dense" size="small" fullWidth  
+              name="inputId" 
+              value= { inputId } 
+              onChange={ (e) => {
+                handleChange (e,setInputData,[noBlanks]);
+                setIsDirty ();
+              }}
+              inputProps={{style: {fontSize: 14}}} 
+              error={formErrors.inputId} >
+            </TextField>
+            {formErrors.inputId ? <div className="error-helper-text">{formErrors.inputId}</div> : null}
+          </Grid>
+
+          <Grid item xs={12} md={9} spacing={1}> 
+             <TextField id="inputPassword" label="Password *"
+                 variant ="filled" margin="dense" size="small" type="password" fullWidth
+                 name="inputPassword" 
+                 value={inputPassword} 
+                 onChange={ (e) => {
+                   handleChange (e,setInputData,[noBlanks]);
+                   setIsDirty ();
+               }}
+               inputProps={{style: {fontSize: 14}}} 
+               error={formErrors.inputPassword}>
+             </TextField>
+               {formErrors.inputPassword ? <div className="error-helper-text">{formErrors.inputPassword}</div> : null}
+               <Typography className={classes.forgotPasswordStyle}><a href="/reset">¿Olvidaste tu contraseña? Ingresa aquí</a></Typography>
+           </Grid>
+           <Box style={{height:"15px"}}/>
             <Grid container direction="row" alignItems="center" justify="center"> 
               <Button type="submit" className={classes.buttonStyle} variant="outlined" disableRipple >Login</Button>
             </Grid>
+            <Box style={{height:"15px"}}/>
           </form>
         </Paper>
       </Grid>

@@ -20,7 +20,7 @@ const useStyles = makeStyles( (mainTheme) => ({
       fontSize: "9px"
     },
     color: "white",
-    backgroundColor: mainTheme.palette.primary.main,
+    backgroundColor: '#344955',
   },  
   firstColumnWhiteStyle: {
     // minWidth:"145px",
@@ -31,7 +31,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     paddingLeft:"6px",
     paddingRight:"0px",
     fontSize:"9px",
-    color:mainTheme.palette.primary.main,
+    color:'#344955',
     backgroundColor:"white"
   },  
   firstColumnGrayStyle: {
@@ -44,8 +44,8 @@ const useStyles = makeStyles( (mainTheme) => ({
     paddingLeft:"6px",
     paddingRight:"0px",
     fontSize:"9px",
-    color:mainTheme.palette.primary.main,
-    backgroundColor: mainTheme.palette.contrast.main
+    color:'#344955',
+    backgroundColor: "#D3D3D3"
   },
   dataColumnWhiteStyle:{
     paddingLeft:"4px",
@@ -54,7 +54,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     [mainTheme.breakpoints.down('xs')]: {
       fontSize: "9px"
     },
-    color:mainTheme.palette.primary.main,
+    color:'#344955',
     backgroundColor: "white",
   },
   dataColumnGrayStyle:{
@@ -64,8 +64,9 @@ const useStyles = makeStyles( (mainTheme) => ({
     [mainTheme.breakpoints.down('xs')]: {
       fontSize: "9px"
     },
-    color:mainTheme.palette.primary.main,
-    backgroundColor: mainTheme.palette.contrast.main
+    color:'#344955',
+    backgroundColor: "#D3D3D3"
+
   },
   yearColumnStyle:{
     paddingLeft:"4px",

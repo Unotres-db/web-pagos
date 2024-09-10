@@ -1,5 +1,5 @@
-import { createTheme } from '@material-ui/core';
-// import { responsiveFontSizes } from '@material-ui/core/styles';
+
+import { createTheme } from '@mui/material/styles';
 
 const mainTheme = createTheme ({
     palette: {
@@ -131,15 +131,18 @@ const mainTheme = createTheme ({
         // [mainTheme.breakpoints.down('xs')]: {
         //   fontSize: "10px"
         // },
-        backgroundColor: "#5499C7", //"#F9AA33",
+        backgroundColor: "E1C16E", //"#F9AA33",   E1C16E
         textTransform: "none",
         // width:"120px",
-        height: "30px",
+        // height: "30px",
         marginTop: "2px",
         marginLeft:"1px",
         marginRight:"1px",
         "&:hover": {
           backgroundColor: "#437a9f" //"#F49506ed"
+        },
+        "&:disabled": {
+          backgroundColor: "gray" //"#F49506ed"
         },
       },
       text:{
@@ -219,6 +222,8 @@ const mainTheme = createTheme ({
     }
     },
 });
-mainTheme.palette.tertiary = mainTheme.palette.augmentColor(mainTheme.palette.tertiary);
-mainTheme.palette.contrast = mainTheme.palette.augmentColor(mainTheme.palette.contrast);
+// mainTheme.palette.tertiary = mainTheme.palette.augmentColor(mainTheme.palette.tertiary);
+// mainTheme.palette.contrast = mainTheme.palette.augmentColor(mainTheme.palette.contrast);
 export default mainTheme;
+
+

@@ -23,7 +23,7 @@ import ShowUserImageByUserId from '../../components/ShowUserImageByUserId';
 import CountryAutocomplete from '../../components/CountryAutocomplete.jsx';
 // import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 
-const useStyles = makeStyles( (mainTheme) => ({
+const useStyles = makeStyles( () => ({
   modalStyle:{
     position: 'absolute',
     top: '50%',
@@ -48,18 +48,18 @@ const useStyles = makeStyles( (mainTheme) => ({
   textStyle:{
     marginLeft:"12px",
     fontSize:"12px",
-    color:mainTheme.palette.primary.main
+    color:'#344955'
   },
   unsubscribedTextStyle:{
     marginRight:"3px",
     fontSize:"9px",
-    color:mainTheme.palette.primary.main
+    color:'#344955'
   },
   sectionTitleStyle:{
-    fontSize: mainTheme.sectionTitle.fontSize,
-    color: mainTheme.sectionTitle.color,
-    marginTop:mainTheme.sectionTitle.marginTop,
-    marginLeft:mainTheme.sectionTitle.marginLeft,
+    fontSize: 14,
+    color: "black",
+    marginTop:"5px",
+    marginLeft:"5px",
     marginBottom:"5px"
   },
   userPhotoStyle:{
@@ -133,24 +133,6 @@ export default function FormTransactions({ open, onClose }){
 
     onClose(); // Cierra el FormEditProfile
 
-  };
-
-
-  // Graba el archivo de imagen en el servidor, a traves de la API
-  const saveUploadedFile = async (file, fileName) => {
-    const formData = new FormData();
-    formData.append('name',fileName)
-    formData.append('image', file);
-    try {
-      const response = await valuationsWebApi.put('/user-image', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      const imageUrl = response.data.imageUrl; 
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    }
   };
 
   useEffect(() => {
@@ -274,9 +256,7 @@ export default function FormTransactions({ open, onClose }){
         </DialogActions>
     </Dialog>
   </Paper>
-  {/* <DialogModal open={isDialogUnsubscribeOpen} onClose={handleDialogUnsubscribeClose} severity={dialogUnsubscribeOptions.severity} title={dialogUnsubscribeOptions.title} buttons={dialogUnsubscribeOptions.buttons} action={dialogOptions.action}>
-      {dialogUnsubscribeOptions.message}
-  </DialogModal> */}
+
   </>
   )  
 }
