@@ -599,7 +599,22 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
 
               {/* No esta reconociendo clasess */}
               {/* style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} */}
-                  <Button disableRipple  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", width:"75px"}} disabled={checkFormErrors() || ! checkRequiredFields()} onClick={handleSaveChanges} variant="contained" size="small"   >
+                  <Button disableRipple sx={{
+                    margin: '2px',
+                    color: "#344955",
+                    backgroundColor: "#E1C16E",
+                    textTransform: "none",
+                    width: "75px",
+                    '&:hover': {
+                      backgroundColor: '#E8C797', // Adjust the hover color as desired
+                    },
+                    '&:disabled': {
+                      color: "black",
+                      backgroundColor: '#BDBDBD', // Adjust the disabled color as desired
+                      cursor: 'not-allowed', // Disable cursor interaction
+                      opacity: 0.5, // Make the button appear disabled
+                    },
+  }} disabled={checkFormErrors() || ! checkRequiredFields()} onClick={handleSaveChanges} variant="contained" size="small"   >
                     Grabar</Button>
                 </Grid>
               </Grid> 
