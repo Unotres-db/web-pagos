@@ -57,7 +57,7 @@ export default function useTableStyling () {
         // return Intl.NumberFormat('en-US',{style:"percent", minimumFractionDigits:1,maximumFractionDigits:1}).format(number/100);
 
       } else {
-          return Intl.NumberFormat('en-US',{style:"decimal", minimumFractionDigits:0,maximumFractionDigits:0}).format(number);
+          return Intl.NumberFormat('de-DE',{style:"decimal", minimumFractionDigits:0,maximumFractionDigits:0}).format(number);
           // return Intl.NumberFormat('en-US',{style:"decimal", minimumFractionDigits:1,maximumFractionDigits:1}).format(number);
 
 
