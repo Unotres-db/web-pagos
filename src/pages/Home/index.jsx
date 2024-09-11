@@ -137,7 +137,7 @@ export default function Home (){
     ProjectDate:"2024-04-05 18:13:34",
     projectId:"PA2",
     projectName:"Picuiba 2",
-    projectStatus:"Aprobado",
+    projectStatus:"En Ejecución",
     projectBudget:196483,
     projectRevenue:0,
     projectCost:0,
@@ -147,7 +147,7 @@ export default function Home (){
     ProjectDate:"2024-04-05 18:13:34",
     projectId:"MAD",
     projectName:"Madero",
-    projectStatus:"Aprobado",
+    projectStatus:"En Ejecución",
     projectBudget:200010,
     projectRevenue:30708,
     projectCost:15894,
@@ -222,7 +222,7 @@ export default function Home (){
     <Paper className={classes.paperStyle} >
       <Grid container>
         <Grid item xs={6} md={2} >
-          <Typography className={classes.sectionTitleStyle}>Proyectos</Typography>
+          <Typography className={classes.sectionTitleStyle}>Proyectos (En USD)</Typography>
         </Grid>
         <Grid item xs={6} md={3}  >
           <Box style={{height:"5px"}}/>
@@ -241,7 +241,7 @@ export default function Home (){
           </Tooltip>
         </Grid>
         <Grid item xs={12} md={7}>
-          <CurrencyOptions />
+          {/* <CurrencyOptions /> */}
         </Grid>
         
       </Grid>
@@ -276,7 +276,7 @@ export default function Home (){
       {/* <Box style={{height:"5px"}}/> */}
       <Paper>
         <TableRollingForecast/>
-         <Box style={{height:"5px"}}/>
+         <Box style={{height:"10px"}}/>
         <ChartValuation />
       </Paper>
     </Paper>

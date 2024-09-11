@@ -159,16 +159,16 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
 
                 </TableCell>
                 <TableCell align="right" className={classes.TableRows} style={{width:"10%", paddingLeft:"5px", paddingRight:"5px"}} >
-                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectBudget)}</Button>
+                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('de-DE',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectBudget)}</Button>
                 </TableCell>
                 <TableCell align="right" className={classes.TableRows} style={{width:"14%", paddingLeft:"5px", paddingRight:"5px"}}>
-                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectRevenue)}</Button>
+                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('de-DE',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectRevenue)}</Button>
                 </TableCell>
                 <TableCell align="right" className={classes.TableRows} style={{width:"14%", paddingLeft:"5px", paddingRight:"5px"}}>
-                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectCost)}</Button>
+                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('de-DE',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectCost)}</Button>
                 </TableCell>
                 <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
-                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectRevenue-currValuation.projectCost)}</Button>
+                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('de-DE',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectRevenue-currValuation.projectCost)}</Button>
                 </TableCell>  
                 {/* <TableCell>
                  

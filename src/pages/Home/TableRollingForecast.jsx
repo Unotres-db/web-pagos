@@ -30,7 +30,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     },
     paddingLeft:"6px",
     paddingRight:"0px",
-    fontSize:"9px",
+    fontSize:"10px",
     color:'#344955',
     backgroundColor:"white"
   },  
@@ -43,7 +43,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     },
     paddingLeft:"6px",
     paddingRight:"0px",
-    fontSize:"9px",
+    fontSize:"10px",
     color:'#344955',
     backgroundColor: "#D3D3D3"
   },
@@ -80,7 +80,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   },
   textFieldStyle:{
     "& .MuiFilledInput-root":{
-      fontSize:"9px",
+      fontSize:"11px",
       color: "black",
       backgroundColor:"whitesmoke",
       height: "25px",

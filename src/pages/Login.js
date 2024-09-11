@@ -43,8 +43,8 @@ const useStyles = makeStyles((mainTheme) => ({
       color: '#344955', 
     },
   },
-  iconBox:{
 
+  iconBox:{
     width:'100%',
     textAlign: 'center',
     AlignItems: 'center',

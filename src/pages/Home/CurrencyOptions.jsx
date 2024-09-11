@@ -16,7 +16,8 @@ const CurrencyOptions = () => {
         value={selectedCurrency}
         onChange={handleCurrencyChange}
         row
-        color="secondary"
+        color="'#344955'"
+        // color={{ secondary: '#ff0000' }}
       >
         <FormControlLabel
           value="guaranies"
