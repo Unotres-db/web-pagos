@@ -5,10 +5,12 @@ import parseISO from 'date-fns/parseISO';
 
 import { Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, TableFooter, TablePagination, TableSortLabel, Button, IconButton, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import useTableSorting from '../../hooks/useTableSorting';
 import TablePaginationActions from '../../components/TablePaginationActions';
 
+import DialogModal from '../../components/DialogModal';
 import Header from '../../components/Header'
 
 const useStyles = makeStyles( () => ({
@@ -66,11 +68,23 @@ export default function TableProject({transactions, isEdit}){
   const [ rowsPerPage, setRowsPerPage ] = useState(20);
   const [ orderDirection, setOrderDirection ] = useState('desc');
   const [ orderBy, setOrderBy ] = useState('fechaFactura');
+  const [ dialogOptions, setDialogOptions ] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
+  const [ isDialogOpen, setIsDialogOpen ] = useState(false);
 
   // const { handlePublish, handleDelete, handleDialogClose, dialogOptions, isDialogOpen}  = useFetch({valuationsList, setValuationsList});
   const { getComparator, handleRequestSort } = useTableSorting();
   var emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - transactions.length) : 0; // Avoid a layout jump when reaching the last page with empty rows.
   const history = useHistory();
+
+
+  const handleDialogClose=(value, action)=>{
+    setIsDialogOpen(false);
+  }
+
+  function handleDelete(){
+    setDialogOptions({severity:"warning", title:"Alerta", message:"Confirma eliminación de la factura?",buttons:{button1:"No",button2:"Si"}, action:"delete"})
+    setIsDialogOpen(true);
+  }
 
   function convertTimestampToDate(timestamp) {
     const seconds = timestamp / 1000; // Convert milliseconds to seconds
@@ -184,6 +198,7 @@ export default function TableProject({transactions, isEdit}){
                 Pago</TableCell>
               <TableCell className={classes.TableTitle} style={{width:"7%", paddingLeft:"5px", paddingRight:"5px"}} align="right">
                 Comprob.</TableCell>
+              <TableCell></TableCell>  
               
 
           </TableRow>
@@ -246,6 +261,11 @@ export default function TableProject({transactions, isEdit}){
                   {/* <Button  className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(transactions.fechaPago)}</Button> */}
                   <Typography style={{fontSize:"11px"}}>{transactions.comprobantePago}</Typography>
                 </TableCell>  
+                <TableCell>
+                  <IconButton className={classes.iconButtonStyle} onClick={handleDelete} disableRipple size="small" aria-label="delete">
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </TableCell>  
               </TableRow>
               </>
           ))}
@@ -279,7 +299,9 @@ export default function TableProject({transactions, isEdit}){
         </TableFooter>
       </Table>
     </TableContainer>
-    
+    <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
+      {dialogOptions.message}
+    </DialogModal> 
     
     
     

@@ -15,20 +15,20 @@ const useStyles = makeStyles( () => ({
   iconStyle:{
     color: "white", 
   },
-  buttonStyle:{
-    backgroundColor:"white",
-    textTransform:"none",
-    fontSize: 12,
-    margin: "10px",
-    // paddingLeft:"15px",
-    minWidth:"68px",
-    borderColor:"white",
-    "&:hover": {
-      color:"white",
-      // backgroundColor:"white",
-      borderColor:"white",
-    },
-  },  
+  // buttonStyle:{
+  //   backgroundColor:"white",
+  //   textTransform:"none",
+  //   fontSize: 12,
+  //   margin: "10px",
+  //   // paddingLeft:"15px",
+  //   minWidth:"68px",
+  //   borderColor:"white",
+  //   "&:hover": {
+  //     color:"white",
+  //     // backgroundColor:"white",
+  //     borderColor:"white",
+  //   },
+  // },  
 }))
 
 export default function DialogModal ({open, onClose, severity, title, buttons, children, action}) {
@@ -105,8 +105,8 @@ export default function DialogModal ({open, onClose, severity, title, buttons, c
           {Object.keys(buttons).map( key => {
             return (
             <Grid item direction="row" xs={gridSpace}    >  
-              <Box style={{display:"flex", justifyContent:"center",paddingLeft:"8px", marginLet:"0px",marginRigth:"0px", width:"100%"}}>
-                <Button type="submit" className={classes.buttonStyle} style={{color:bkColor,backgroundColor:"white"}} onClick={() => onClose (buttons[key], action)} variant="outlined" disableRipple>{buttons[key]}</Button>
+              <Box style={{display:"flex", justifyContent:"center",paddingLeft:"8px", marginLet:"2px",marginRigth:"2px", width:"100%"}}>
+                <Button type="submit" style={{color:bkColor,backgroundColor:"white",textTransform:"none",fontSize: 12, margin: "5px"}} onClick={() => onClose (buttons[key], action)} variant="outlined" disableRipple>{buttons[key]}</Button>
               </Box>
             </Grid>
             )
