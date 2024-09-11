@@ -6,6 +6,7 @@ import useAxios from '../hooks/useAxios';
 import api from '../services/api';
 
 import Header from '../components/Header';
+import Login from './Login';
 
 export default function Logout(){
   const { userData, setUserData } = useContext(LoginContext);
@@ -30,6 +31,7 @@ export default function Logout(){
   return(
     <>
     <Header />
+    <Login />
     </>
   )
 }

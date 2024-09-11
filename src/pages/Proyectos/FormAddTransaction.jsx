@@ -483,7 +483,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
 
                 <Grid item xs={6} sm={6}>
                   <PatternFormat
-                    format="###-###-########"
+                    format="###-###-#######"
                     allowEmptyFormatting mask="_"
                     value={numeroFactura}
                     customInput={TextField}

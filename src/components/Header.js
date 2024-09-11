@@ -156,7 +156,10 @@ function Header() {
     >
     <div className={classes.drawerContainer}>
       <List>
-        { menuOptions.map ( (currElement) => (
+      { userId ? <> 
+        { menuOptions
+        .filter((menuItem) =>  menuItem.title !== 'Iniciar Sesión' ) 
+        .map ( (currElement) => (
           <>
             { dividerOption===currElement.id? <Divider /> : null}
             <ListItem button component={Link} to={menuOptions[currElement.id].route} disableRipple className={classes.buttonDrawerStyle}>
@@ -164,6 +167,29 @@ function Header() {
             </ListItem>
           </>
         ))} 
+      </>: <>
+      { menuOptions
+        .filter((menuItem) =>  menuItem.title !== 'Cerrar Sesión' ) 
+        .map ( (currElement) => (
+          <>
+            { dividerOption===currElement.id? <Divider /> : null}
+            <ListItem button component={Link} to={menuOptions[currElement.id].route} disableRipple className={classes.buttonDrawerStyle}>
+              <ListItemText primary={menuOptions[currElement.id].title} disableTypography className={classes.drawerText}/>
+            </ListItem>
+          </>
+        ))} 
+      
+      
+      
+      </>}
+        {/* { menuOptions.map ( (currElement) => (
+          <>
+            { dividerOption===currElement.id? <Divider /> : null}
+            <ListItem button component={Link} to={menuOptions[currElement.id].route} disableRipple className={classes.buttonDrawerStyle}>
+              <ListItemText primary={menuOptions[currElement.id].title} disableTypography className={classes.drawerText}/>
+            </ListItem>
+          </>
+        ))}  */}
       </List>
     </div>
     </Drawer>
