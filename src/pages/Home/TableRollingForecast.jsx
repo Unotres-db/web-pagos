@@ -30,7 +30,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     },
     paddingLeft:"6px",
     paddingRight:"0px",
-    fontSize:"10px",
+    fontSize:"11px",
     color:'#344955',
     backgroundColor:"white"
   },  
@@ -43,16 +43,16 @@ const useStyles = makeStyles( (mainTheme) => ({
     },
     paddingLeft:"6px",
     paddingRight:"0px",
-    fontSize:"10px",
+    fontSize:"11px",
     color:'#344955',
     backgroundColor: "#D3D3D3"
   },
   dataColumnWhiteStyle:{
     paddingLeft:"4px",
     paddingRight:"0px",
-    fontSize: "10px",
+    fontSize: "11px",
     [mainTheme.breakpoints.down('xs')]: {
-      fontSize: "9px"
+      fontSize: "11px"
     },
     color:'#344955',
     backgroundColor: "white",
@@ -60,9 +60,9 @@ const useStyles = makeStyles( (mainTheme) => ({
   dataColumnGrayStyle:{
     paddingLeft:"4px",
     paddingRight:"0px",
-    fontSize: "10px",
+    fontSize: "11px",
     [mainTheme.breakpoints.down('xs')]: {
-      fontSize: "9px"
+      fontSize: "11px"
     },
     color:'#344955',
     backgroundColor: "#D3D3D3"
@@ -74,7 +74,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     fontSize: "11px",
     height: '36px',
     [mainTheme.breakpoints.down('xs')]: {
-      fontSize: "10px"
+      fontSize: "11px"
     },
     color: "white",
   },
@@ -117,8 +117,8 @@ export default function TableRollingForecast (){
       style:"decimal",
       dataField: "salesRevenue"},
     { id: 2,
-      rowText:"  Honorarios Desarrollo",
-      rowMobileText:"  Honorarios Civilia",
+      rowText:"Honorarios de Desarrollo",
+      rowMobileText:"Honorarios",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
@@ -133,7 +133,7 @@ export default function TableRollingForecast (){
 
     { id: 4,
       rowText:"Deveng. Costo de Construcción",
-      rowMobileText:"Costo Cosntruc.",
+      rowMobileText:"Deveng. Costo de Construcción",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
@@ -155,14 +155,14 @@ export default function TableRollingForecast (){
 
     { id: 7,
       rowText:"Gastos Administrativos (coba)",
-      rowMobileText:"Gastos Adm",
+      rowMobileText:"Gastos Administrativos",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
     dataField: "operatingExpenses"},
     { id: 8,
       rowText:"Participación en Proyectos",
-      rowMobileText:"Particip. Proyectos",
+      rowMobileText:"Particip. en Proyectos",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
@@ -176,21 +176,21 @@ export default function TableRollingForecast (){
       dataField: "depreciation"}, 
     { id: 10,
       rowText:"Intereses Devengados",
-      rowMobileText:"Deveng. Intereses",
+      rowMobileText:"Intereses Devengados",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "interestExpense"}, 
     { id: 11,
       rowText:"Resultado antes IRE",
-      rowMobileText:"Resultado a/ IRE",
+      rowMobileText:"Resultado antes IRE",
       grayBackground:true,
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "incomeBeforeTax"}, 
     { id: 12,
-      rowText:"Provision Impuesto a la Renta",
-      rowMobileText:"IRE",
+      rowText:"Provisión Impuesto a la Renta",
+      rowMobileText:"Provisión IRE",
       grayBackground:false,
       showAsBlankIfZero:true,  
       style:"decimal",
@@ -227,7 +227,7 @@ export default function TableRollingForecast (){
 
           <TableHead>
             <TableRow>
-              <TableCell className = {classes.tableTitle} align = "left" >{isMobile  ? "P&L": "P&L (en Us$)"}</TableCell>  
+              <TableCell className = {classes.tableTitle} align = "left" >{isMobile  ? "P&L (en USD)": "P&L (en USD)"}</TableCell>  
               {financialData.map ((currElement, index) => ( 
                 <TableCell className = {classes.tableTitle} align = "right" >
                   {currElement.year}
