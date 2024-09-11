@@ -221,13 +221,14 @@ export default function Home (){
   <Grid item xs={12} md={7} > 
     <Paper className={classes.paperStyle} >
       <Grid container>
-        <Grid item xs={2}>
+        <Grid item xs={6} md={2} >
           <Typography className={classes.sectionTitleStyle}>Proyectos</Typography>
         </Grid>
-        <Grid item xs={3} >
+        <Grid item xs={6} md={3}  >
           <Box style={{height:"5px"}}/>
           <Tooltip title="Crear un nuevo Proyecto">
           {/* variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} */}
+          <Box style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
             <Button 
               variant = "contained" 
               startIcon = {<AddCircleIcon />} 
@@ -236,9 +237,10 @@ export default function Home (){
               className = {classes.buttonStyle}
               >Nuevo Proyecto
             </Button>
+            </Box>
           </Tooltip>
         </Grid>
-        <Grid item xs={7}>
+        <Grid item xs={12} md={7}>
           <CurrencyOptions />
         </Grid>
         
