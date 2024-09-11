@@ -17,7 +17,7 @@ const useStyles = makeStyles( (mainTheme) => ({
     paddingRight:"0px",
     fontSize: 11,
     [mainTheme.breakpoints.down('xs')]: {
-      fontSize: "9px"
+      fontSize: "11px"
     },
     color: "white",
     backgroundColor: '#344955',
@@ -221,7 +221,7 @@ export default function TableRollingForecast (){
   return (
     <>
     <Paper >
-      <Box style={{height:"30px"}}/>
+      {/* <Box style={{height:"30px"}}/> */}
       <TableContainer component = {Paper} >
         <Table className = {classes.table} size = "small" aria-label = "stycky header">
 

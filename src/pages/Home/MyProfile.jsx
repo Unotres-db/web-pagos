@@ -50,7 +50,8 @@ export default function MyProfile ({isEditProfile, setIsEditProfile}){
   const classes = useStyles();
   return (
     <>
-    <Paper elevation={6} style={{margin:"0px", padding:"5px", maxWidth:"300px", margin:"auto"}}>
+    {/* maxWidth:"300px" */}
+    <Paper elevation={6} style={{margin:"0px", padding:"5px",width:"100%" , margin:"auto"}}>
       {/* <Typography className={classes.sectionTitleStyle} >My Profile</Typography> */}
 
       <Grid container style={{marginTop:"5px"}}  >

@@ -32,11 +32,11 @@ const useStyles = makeStyles((mainTheme) => ({
   buttonStyle: {
     textTransform:"none",
     fontSize:"13px",
-    backgroundColor: "#E1C16E", // "#E1C16E"
+    backgroundColor: "#bda25c", // "#E1C16E"
     color: '#344955',           // #344955
     '&:hover': {
       backgroundColor: '#bda25c', 
-      color: '#34495', 
+      color: 'white', 
     },
     '&:disabled': {
       backgroundColor: "gray", //"#F49506ed",
@@ -73,12 +73,10 @@ const useStyles = makeStyles((mainTheme) => ({
     const { userData, setUserData } = useContext (LoginContext);
     const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormLogin, noBlanks, values, formErrors, inputData, setInputData } = useForm (submit);
     const { inputId, inputPassword}= inputData
-
     const { userPassword } = values;
     const [ isAlertOpen, setIsAlertOpen ] = useState(false);
     const [ alertMessage, setAlertMessage ] = useState({severity:"", title:"", message:""});
     const [ Prompt, setIsDirty, setIsPristine ] = useUnsavedWarning();
-
     const history = useHistory();
 
     async function submit () {
@@ -147,7 +145,7 @@ const useStyles = makeStyles((mainTheme) => ({
                 handleChange (e,setInputData,[noBlanks]);
                 setIsDirty ();
               }}
-              inputProps={{style: {fontSize: 14}}} 
+              inputProps={{style: {fontSize: 14, backgroundColor: 'whitesmoke'}}} 
               error={formErrors.inputId} >
             </TextField>
             {formErrors.inputId ? <div className="error-helper-text">{formErrors.inputId}</div> : null}
@@ -162,7 +160,8 @@ const useStyles = makeStyles((mainTheme) => ({
                    handleChange (e,setInputData,[noBlanks]);
                    setIsDirty ();
                }}
-               inputProps={{style: {fontSize: 14}}} 
+              //  sx={{ backgroundColor: 'lightblue' }}
+               inputProps={{style: {fontSize: 14, backgroundColor: 'whitesmoke'}}} 
                error={formErrors.inputPassword}>
              </TextField>
                {formErrors.inputPassword ? <div className="error-helper-text">{formErrors.inputPassword}</div> : null}

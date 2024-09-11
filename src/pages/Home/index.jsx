@@ -48,7 +48,8 @@ const useStyles = makeStyles( () => ({
   },
   paperStyle: {
     width: "100%",   
-    minHeight:"565px", // vai ser do tamanho do conteudo da tabela
+    // minHeight:"565px", // vai ser do tamanho do conteudo da tabela
+    height:"100%",
     marginLeft:"3px",
     marginRight:"0px",
     color:"#344955",
@@ -198,7 +199,7 @@ export default function Home (){
     <>
     <Header />
     { userData ? <>
-      <Grid container direction="column" alignItems="center" style = {{ minHeight: '80vh'}} >
+      <Grid container direction="column" alignItems="center" style = {{ minHeight: '95vh'}} >
 
 <Grid item xs={12} style = {{ minHeight: '69px'}} /> 
 
@@ -270,9 +271,11 @@ export default function Home (){
   <Grid item xs={12} md={3} > 
     <Paper className={classes.paperStyle} >
       <Typography className={classes.sectionTitleStyle} >Ultimo Rolling Forecast: 5&7 2024</Typography>
-      <Box style={{height:"5px"}}/>
+      {/* <Box style={{height:"5px"}}/> */}
       <Paper>
         <TableRollingForecast/>
+         <Box style={{height:"5px"}}/>
+        <ChartValuation />
       </Paper>
     </Paper>
   </Grid>

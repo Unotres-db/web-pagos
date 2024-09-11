@@ -29,34 +29,34 @@ export default function ChartValuation () {
   };
   const combinedFinancialData=[
     {
-      year:23,
-      cashFlow:-5677,
+      year:2024,
+      cashFlow:4635,
     },
     {
-      year:24,
-      cashFlow:694,
+      year:2025,
+      cashFlow:9346,
     },
     {
-      year:25,
-      cashFlow:2317,
+      year:2026,
+      cashFlow:6850,
     },
     {
-      year:26,
-      cashFlow:3206,
+      year:2027,
+      cashFlow:7020,
     },
     {
-      year:27,
-      cashFlow:5849,
+      year:2028,
+      cashFlow:7190,
     },
   ]
   const chartData = {
         labels:combinedFinancialData.map((currElement)=>(currElement.year)),
-        datasets:[{label:"Flujo de Caja Libre Gs.m", data:combinedFinancialData.map((currElement)=> (currElement.cashFlow)),
+        datasets:[{label:"Facturación Estimada USD", data:combinedFinancialData.map((currElement)=> (currElement.cashFlow)),
         backgroundColor:defineChartColors(),
       }]}
 
   function defineChartColors (){
-    const arrayOfForecastedColors = Array.from({ length: 5 } , () => (theme.palette.primary.main));
+    const arrayOfForecastedColors = Array.from({ length: 5 } , () => ("#344955"));
     return arrayOfForecastedColors
   }
 

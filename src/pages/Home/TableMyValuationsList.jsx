@@ -112,15 +112,9 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
         <TableHead className={classes.TableHeader}>
           <TableRow >
           {/* width:"16%" */}
-            <TableCell className={classes.TableTitle} style={{width:"10%",position:"sticky", paddingRight:"0px", left:0, zIndex:2}}  align="left" key="updated_at">
-              {/* <TableSortLabel 
-                active={orderBy==="updated_at"} 
-                // style={{width:"46%", paddingLeft:"0px", paddingRight:"2px"}}
-                direction={orderBy==="updated_at" ? orderDirection : 'desc'} 
-                onClick={createSorthandler("updated_at")}
-                >Fecha</TableSortLabel> */}
+            {/* <TableCell className={classes.TableTitle} style={{width:"10%",position:"sticky", paddingRight:"0px", left:0, zIndex:2}}  align="left" key="updated_at">
                 Fecha
-            </TableCell>
+            </TableCell> */}
             <TableCell className={classes.TableTitle} style={{width:"30%", paddingLeft:"5px", paddingRight:"0px"}} align="left" key="shortName" >
               <TableSortLabel 
                 active={orderBy==="shortName"} 
@@ -137,8 +131,8 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
               {/* width:"14%" */}
               <TableCell className={classes.TableTitle} style={{width:"10%", paddingLeft:"5px", paddingRight:"5px"}} align="right">Egresos</TableCell>
               <TableCell className={classes.TableTitle} style={{width:"14%", paddingLeft:"5px", paddingRight:"5px"}} align="right">Saldo</TableCell>
-              <TableCell className={classes.TableTitle} style={{width:"7%", paddingLeft:"5px", paddingRight:"5px"}} align="right"></TableCell>
-              <TableCell className={classes.TableTitle} style={{width:"7%", paddingLeft:"5px", paddingRight:"5px"}} align="right"></TableCell>
+              {/* <TableCell className={classes.TableTitle} style={{width:"7%", paddingLeft:"5px", paddingRight:"5px"}} align="right"></TableCell>
+              <TableCell className={classes.TableTitle} style={{width:"7%", paddingLeft:"5px", paddingRight:"5px"}} align="right"></TableCell> */}
 
           </TableRow>
         </TableHead>
@@ -149,11 +143,10 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
             : valuationsList
             ).map((currValuation) => (
               <TableRow key={currValuation.valuationId}>
-                <TableCell align="left"  className={classes.TableRows}  >
+                {/* <TableCell align="left"  className={classes.TableRows}  >
                   <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} style={{fontSize:12}} disableRipple></Button>
-                  {/* <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.updated_at}</Button> */}
 
-                </TableCell>
+                </TableCell> */}
                 <TableCell align="left" className={classes.TableRows}  style={{fontSize: 11, width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
                   {/* <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.shortName}</Button> */}
                   {/* <Button onClick={(e) => (handleSavedValuation (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.shortName}</Button> */}
@@ -177,23 +170,22 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
                 <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
                   <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(currValuation.projectRevenue-currValuation.projectCost)}</Button>
                 </TableCell>  
-                <TableCell>
+                {/* <TableCell>
                  
-                    {/* <IconButton className={classes.iconButtonStyle} onClick={(e) => (handleDelete (currValuation.valuationId))} disableRipple size="small" aria-label="delete"> */}
                     <Tooltip title="Exportar a Excel">
                     <IconButton className={classes.iconButtonStyle}  disableRipple size="small" aria-label="delete">
                       <PublishIcon fontSize="small" />
                     </IconButton>
                     </Tooltip>
                  
-                </TableCell>  
-                <TableCell>
+                </TableCell>   */}
+                {/* <TableCell>
                   
                     <IconButton className={classes.iconButtonStyle}  disableRipple size="small" aria-label="delete">
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                 
-                </TableCell>  
+                </TableCell>   */}
               </TableRow>
           ))}
           {emptyRows > 0 && (
