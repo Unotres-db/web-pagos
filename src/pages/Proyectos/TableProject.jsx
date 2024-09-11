@@ -63,7 +63,7 @@ const useStyles = makeStyles( () => ({
 export default function TableProject({transactions, isEdit}){
   const classes = useStyles();
   const [ page, setPage ] = useState(0);
-  const [ rowsPerPage, setRowsPerPage ] = useState(12);
+  const [ rowsPerPage, setRowsPerPage ] = useState(20);
   const [ orderDirection, setOrderDirection ] = useState('desc');
   const [ orderBy, setOrderBy ] = useState('fechaFactura');
 
