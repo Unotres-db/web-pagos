@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { Grid, Paper, Typography, TextField, Button, Box, Grow } from '@material-ui/core'
+import { Grid, Paper, Typography, TextField, Button, Box, Grow, Snackbar, SnackbarContent } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import LoginIcon from '@mui/icons-material/Login';
 
@@ -12,7 +12,9 @@ import useUnsavedWarning from '../hooks/useUnsavedWarning.js';
 
 import Header from '../components/Header.js';
 // import AlertMessage from '../components/modals/AlertMessage.js';
-import AlertDialog from '../components/modals/AlertDialog.js';
+// import AlertMessage from '../components/modals/AlertMessage.js';
+import DialogModal from '../components/DialogModal.jsx'
+// import DialogModal from '../components/DialogModal.jsx'
 const useStyles = makeStyles((mainTheme) => ({
   contentStyle: {
     position: 'absolute',
@@ -75,10 +77,16 @@ const useStyles = makeStyles((mainTheme) => ({
     const { inputId, inputPassword}= inputData
     const { userPassword } = values;
     const [ isAlertOpen, setIsAlertOpen ] = useState(false);
+    const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
+    const [ snackbarMessage, setSnackbarMessage]=useState("");
     const [ alertMessage, setAlertMessage ] = useState({severity:"", title:"", message:""});
     const [ Prompt, setIsDirty, setIsPristine ] = useUnsavedWarning();
     const history = useHistory();
 
+    function handleSnackbarClose(){
+      setIsSnackbarOpen(false)
+      history.push("/home");
+    }
     async function submit () {
 
     if (chkBlankFormLogin ()){
@@ -91,10 +99,13 @@ const useStyles = makeStyles((mainTheme) => ({
           const data = { id: inputId.trim(), password: inputPassword } ;
           const res = await api.post('/session', data );
           setUserData({userId:res.data.id, userProduct:res.data.product, userFirstName:res.data.firstName, userLastName:res.data.lastName})
-          setAlertMessage (prevState => ({...prevState, severity:"success", title: "Sesión iniciada con exito", message: "Iniciando la sesión en la plataforma de Unotres S.A." }));
-          setIsAlertOpen (true);
+          // setAlertMessage (prevState => ({...prevState, severity:"success", title: "Sesión iniciada con exito", message: "Iniciando la sesión en la plataforma de Unotres S.A." }));
+          // setIsAlertOpen (true);
+          setSnackbarMessage("Iniciando la sesión en la plataforma de Unotres S.A." );
+          setIsSnackbarOpen(true)
           localStorage.setItem('userId',res.data.id);
           localStorage.setItem('userName',res.data.firstName);
+     
         } catch (err) {
           if (err.response) {
             const errorMsg = Object.values(err.response.data);
@@ -184,9 +195,19 @@ const useStyles = makeStyles((mainTheme) => ({
     {/* <AlertMessage open={isAlertOpen} onClose={handleAlertClose} severity={alertMessage.severity} title={alertMessage.title}>
       {alertMessage.message}
     </AlertMessage> */}
-    <AlertDialog open={isAlertOpen} onClose={handleAlertClose} severity={alertMessage.severity} title={alertMessage.title}>
+    <DialogModal open={isAlertOpen} onClose={handleAlertClose} severity={alertMessage.severity} title={alertMessage.title}>
       {alertMessage.message}
-    </AlertDialog>
+    </DialogModal>
+    <Snackbar
+    open={isSnackbarOpen}
+    autoHideDuration={3000} 
+    onClose={handleSnackbarClose}
+    >
+    <SnackbarContent
+      className={classes.greenSnackbarContent}
+      message={snackbarMessage}
+    />
+  </Snackbar>  
     </>
   )
 }
