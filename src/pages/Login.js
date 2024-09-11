@@ -165,7 +165,9 @@ const useStyles = makeStyles((mainTheme) => ({
                error={formErrors.inputPassword}>
              </TextField>
                {formErrors.inputPassword ? <div className="error-helper-text">{formErrors.inputPassword}</div> : null}
-               <Typography className={classes.forgotPasswordStyle}><a href="/reset">¿Olvidaste tu contraseña? Ingresa aquí</a></Typography>
+               {/* <Typography className={classes.forgotPasswordStyle}><a href="/reset">¿Olvidaste tu contraseña? Ingresa aquí</a></Typography> */}
+               <Typography className={classes.forgotPasswordStyle}>¿Olvidaste tu contraseña? Ingresa aquí</Typography>
+
            </Grid>
            <Box style={{height:"15px"}}/>
             <Grid container direction="row" alignItems="center" justify="center"> 
