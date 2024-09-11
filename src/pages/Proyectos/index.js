@@ -153,10 +153,12 @@ export default function Proyectos (){
 
     { transactions.length > 0? 
     <>
+    
     <Grid container item direction="column" alignItems="center" style = {{minHeight: '80vh'}}  >
       
       {/* Grid para ocupar el heigth del app bar */}
-      <Grid item xs={12} style = {{ minHeight: '69px'}} /> 
+      {/* style = {{ minHeight: '69px'}} */}
+      <Grid item xs={12} style = {{ minHeight: '69px'}}  /> 
 
       {/* main container grid */}
       <Grid item container direction="row" spacing={1}   >
@@ -166,7 +168,7 @@ export default function Proyectos (){
         <Grid item xs={12} >
         {/* className={classes.paperStyle} */}
           <Paper  elevation={3} > 
-      
+          <TableProject  transactions={transactions} isEdit={isEdit}/>
           </Paper>
           <Box sx={{height:"5px"}}/> 
 
