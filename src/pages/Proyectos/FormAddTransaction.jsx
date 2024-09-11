@@ -293,6 +293,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
       .then(response => {
         const { idTransaccion: id } = response.data;  
         setTransaccion (prevState => ( {...prevState, idTransaccion: id }));
+        setIsEdit(true);
         setSnackbarMessage("Transaccion grabada exitosamente en la base de datos")
         setIsSnackbarOpen(true);
 
@@ -332,7 +333,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
       nombreTipoPago:"",
       idTipoFlujo:""
     }))
-    setIsEdit(true);
+
     onClose()
   }
 

@@ -119,12 +119,14 @@ export default function Proyectos (){
 
   useEffect(() => {
     setIsEdit(false);
+    // alert("Entro en useEffect[isEdit]")
     if (id) {
       getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "id",},}},getProjectSuccessCb, getProjectErrorCb);
     } 
   }, [isEdit]);
 
   useEffect(() => {
+    // alert("Entro en useEffect[]")
     if (id) {
       getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "id",},}},getProjectSuccessCb, getProjectErrorCb);
     } 
