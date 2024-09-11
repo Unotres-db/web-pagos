@@ -137,7 +137,7 @@ const useStyles = makeStyles((mainTheme) => ({
             </Box>
           
             <Grid item xs={12} md={12} spacing={1}> 
-            <TextField id="inputId" label="Your E-mail" 
+            <TextField id="inputId" label="Su E-mail" 
               variant ="filled" margin="dense" size="small" fullWidth  
               name="inputId" 
               value= { inputId } 
@@ -152,7 +152,7 @@ const useStyles = makeStyles((mainTheme) => ({
           </Grid>
 
           <Grid item xs={12} md={9} spacing={1}> 
-             <TextField id="inputPassword" label="Password *"
+             <TextField id="inputPassword" label="Contraseña *"
                  variant ="filled" margin="dense" size="small" type="password" fullWidth
                  name="inputPassword" 
                  value={inputPassword} 
