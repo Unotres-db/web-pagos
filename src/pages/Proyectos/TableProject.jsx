@@ -302,10 +302,6 @@ export default function TableProject({transactions, isEdit}){
     <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
       {dialogOptions.message}
     </DialogModal> 
-    
-    
-    
-    
     </>: null}
     
     </>

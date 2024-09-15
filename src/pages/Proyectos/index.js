@@ -101,7 +101,7 @@ export default function Proyectos (){
 
   const getProjectSuccessCb=(apiData)=>{
     if(apiData){
-      alert("setTransactions(apiData)")
+      // alert("setTransactions(apiData)")
       setTransactions(apiData);
     }
     
@@ -121,17 +121,17 @@ export default function Proyectos (){
     // setIsSnackbarOpen(true);
   }
 
-  // useEffect(() => {
-  //   setIsEdit(false);
-  //   if (id) {
-  //     getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "id",},}},getProjectSuccessCb, getProjectErrorCb);
-  //   } 
-  // }, [isEdit]);
+  useEffect(() => {
+    setIsEdit(false);
+    if (id) {
+      getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "id",},}},getProjectSuccessCb, getProjectErrorCb);
+    } 
+  }, [isEdit]);
 
   useEffect(() => {
     // alert("Entro en useEffect[]")
     if (id) {
-      alert("llama getProject")
+      // alert("llama getProject")
       getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${id}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
     } 
   }, []);
