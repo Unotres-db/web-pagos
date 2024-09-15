@@ -83,7 +83,6 @@ export default function Proyectos (){
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));//md
-
   const [ isEdit, setIsEdit] = useState(false); 
   const [ isAddTransaction, setIsAddTransaction] = useState(false); 
   const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
@@ -101,7 +100,11 @@ export default function Proyectos (){
   }
 
   const getProjectSuccessCb=(apiData)=>{
-    setTransactions(apiData);
+    if(apiData){
+      alert("setTransactions(apiData)")
+      setTransactions(apiData);
+    }
+    
   }
 
   const handleEditClose=()=>{
@@ -113,22 +116,23 @@ export default function Proyectos (){
   }
 
   const getProjectErrorCb=()=>{
-    setSnackbarMessage("Hubo un error en el servidor. No fue posible cargar las transacciones del proyecto");
-    setIsSnackbarOpen(true);
+    alert("Hubo un error en el servidor. No fue posible cargar las transacciones del proyecto")
+    // setSnackbarMessage("Hubo un error en el servidor. No fue posible cargar las transacciones del proyecto");
+    // setIsSnackbarOpen(true);
   }
 
-  useEffect(() => {
-    setIsEdit(false);
-    // alert("Entro en useEffect[isEdit]")
-    if (id) {
-      getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "id",},}},getProjectSuccessCb, getProjectErrorCb);
-    } 
-  }, [isEdit]);
+  // useEffect(() => {
+  //   setIsEdit(false);
+  //   if (id) {
+  //     getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "id",},}},getProjectSuccessCb, getProjectErrorCb);
+  //   } 
+  // }, [isEdit]);
 
   useEffect(() => {
     // alert("Entro en useEffect[]")
     if (id) {
-      getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "id",},}},getProjectSuccessCb, getProjectErrorCb);
+      alert("llama getProject")
+      getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${id}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
     } 
   }, []);
 
@@ -155,6 +159,7 @@ export default function Proyectos (){
 
     { transactions.length > 0? 
     <>
+    {console.count}
     
     <Grid container item direction="column" alignItems="center" style = {{minHeight: '80vh'}}  >
       
@@ -373,7 +378,7 @@ export default function Proyectos (){
   <Snackbar
     open={isSnackbarOpen}
     autoHideDuration={2000} 
-    onClose={handleSnackbarClose}
+    onClose={()=>handleSnackbarClose()}
     >
     <SnackbarContent
       className={classes.greenSnackbarContent}

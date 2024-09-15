@@ -35,8 +35,8 @@ export default function useAxios () {
             //     // console.log("erro, nao retornou status code 200")
             // }
         } catch (err) {
-            // alert("catch error useAxios:" + err.message)
-            // console.log(err.message);
+            // alert("UseAxios catch error useAxios:" + err.message)
+            console.log(err.message);
             setError(err.message);
             errorCallback()
 

@@ -134,7 +134,7 @@ const useStyles = makeStyles((mainTheme) => ({
     <>
     <Header />
 
-    <Grid container alignItems="center" justify="center" className={classes.contentStyle} style={{ minHeight:'85vh'}}>
+    <Grid container alignItems="center" justify="center" className={classes.contentStyle} style={{ minHeight:'85vh', backgroundColor:"white"}}>
       <Grid />
       <Grow in timeout = {1000}>
       <Grid item container className={classes.formStyle}>

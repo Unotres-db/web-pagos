@@ -92,12 +92,14 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
   const muiMontoFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Monto Factura", name: "montoFactura",InputProps: {startAdornment: <InputAdornment position="start">Gs.</InputAdornment> }};
   const muiNumeroFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Numero Factura", name: "numeroFactura" };
   const muiFechaFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Fecha Factura", name: "fechaFactura" };
-
   const muiFechaPagoProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Fecha de pago", name: "fechaPago" };
 
   const handleSnackbarClose=()=>{
    setIsSnackbarOpen(false);
   }
+
+
+  
 
   function convertDateToUTC(dateString) {
     // Split the date string into day, month, and year parts
@@ -439,8 +441,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                 <Grid item xs={12} >
                   <SuppliersAutocomplete 
                     supplierObject={supplierObject}
-                    transaccion={transaccion}
-                    setTransaccion={setTransaccion}
+                    setterFunction={setTransaccion}
                     isEditField={isEditField}
                     setIsEditField={setIsEditField}
                     variant="filled"
