@@ -9,7 +9,8 @@ import useAxios from '../hooks/useAxios';
 export default function SuppliersAutocomplete ({supplierObject, setterFunction, isEditField, setIsEditField, variant}){
   const [ suppliersList, setSuppliersList] = useState([]);
   const { loading: isLoadingSuppliers, axiosFetch: getSuppliers} = useAxios();
-  const componentVariant = variant? variant : "outlined"
+  const componentVariant = variant? variant : "outlined";
+  const label = supplierObject.label? supplierObject.label: "Proveedor"
  
  
   const updateState=(newValue)=>{
@@ -44,7 +45,7 @@ export default function SuppliersAutocomplete ({supplierObject, setterFunction, 
             options={suppliersList}
             sx={{ width: "100%"}}
             onChange={(event, newValue) => updateState(newValue) }
-            renderInput={(params) => <TextField {...params} label="Proveedor" />}
+            renderInput={(params) => <TextField {...params} label={label} />}
           />
         </>
     : 

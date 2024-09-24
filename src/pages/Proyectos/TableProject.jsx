@@ -3,15 +3,23 @@ import { useHistory } from 'react-router-dom';
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
 
-import { Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, TableFooter, TablePagination, TableSortLabel, Button, IconButton, Tooltip, Typography } from '@material-ui/core';
+import { Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, TableFooter, TablePagination, TableSortLabel, Button, IconButton, Tooltip, Typography, Snackbar, SnackbarContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
+import UpdateIcon from '@mui/icons-material/Update';
+import PaidIcon from '@mui/icons-material/Paid';
 
+import api from '../../services/api';
+import { LoginContext } from '../../helpers/Context';
+import useAxios from '../../hooks/useAxios';
 import useTableSorting from '../../hooks/useTableSorting';
+import useFetch from '../../hooks/useFetch';
 import TablePaginationActions from '../../components/TablePaginationActions';
 
 import DialogModal from '../../components/DialogModal';
 import Header from '../../components/Header'
+
+import FormEditTransaction from './FormEditTransaction';
 
 const useStyles = makeStyles( () => ({
   table:{
@@ -45,11 +53,13 @@ const useStyles = makeStyles( () => ({
     },
   iconButtonStyle:{
     color: '#344955',
+    backgroundColor:"#E1C16E",
+    
     // fontSize: "11px",
     // [mainTheme.breakpoints.down('xs')]: {
     //   fontSize: "10px"
     // },
-    backgroundColor: "whitesmoke",//mainTheme.palette.secondary.main,
+    // backgroundColor: "whitesmoke",//mainTheme.palette.secondary.main,
     textTransform: "none",
     marginTop: "2px",
     marginLeft:"2px",
@@ -59,31 +69,88 @@ const useStyles = makeStyles( () => ({
   },
   TableRows:{
     fontSize: 12
-  }
+  },
+  greenSnackbarContent: {
+    backgroundColor: "#228B22"
+  },
 }));
 
-export default function TableProject({transactions, isEdit}){
+export default function TableProject({id, transactions,setTransactions, isEdit, setIsEdit,isDelete, setIsDelete}){
   const classes = useStyles();
+  const { deletionId, setDeletionId, updateId, setUpdateId}= useContext(LoginContext);
   const [ page, setPage ] = useState(0);
   const [ rowsPerPage, setRowsPerPage ] = useState(20);
   const [ orderDirection, setOrderDirection ] = useState('desc');
   const [ orderBy, setOrderBy ] = useState('fechaFactura');
   const [ dialogOptions, setDialogOptions ] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
   const [ isDialogOpen, setIsDialogOpen ] = useState(false);
-
-  // const { handlePublish, handleDelete, handleDialogClose, dialogOptions, isDialogOpen}  = useFetch({valuationsList, setValuationsList});
+  const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
+  const [ isEditTable, setIsEditTable] = useState(false); 
+  // const [ isDelete, setIsDelete] = useState(false); 
+  const [ editMode, setEditMode ]=useState("");
+  const [ isEditTransaction, setIsEditTransaction] = useState(false); 
+  const [ transaccionEditar, setTransaccionEditar] = useState(null);
+  const [ snackbarMessage, setSnackbarMessage]=useState("");
+  const [ transactionDeleteId,setTransactionDeleteId ] = useState("");
+  const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
+  const { axiosFetch: delTransaction, isLoading: isLoadingDeletion, error: isErrorDeletion } = useAxios();
+  const { handleDeleteTransaction }  = useFetch({setEditMode});
   const { getComparator, handleRequestSort } = useTableSorting();
   var emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - transactions.length) : 0; // Avoid a layout jump when reaching the last page with empty rows.
   const history = useHistory();
+  
 
+  const handleUpdate=(param)=>{
+    // setUpdateId(param)
+    setTransaccionEditar(param)
+    setIsEditTransaction(true)
+  }
+
+  const handleEditTransaction=(param)=>{
+    setIsEditTransaction(true);
+  }
+
+  const handleEditTransactionClose=()=>{
+    setIsEditTransaction(false);
+  }
+
+const handleSnackbarClose=()=>{
+  // setIsDelete(true);
+  setIsSnackbarOpen(false)
+  getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+
+}
+
+//  const deleteTransactionSuccessCb=(apiData)=>{
+//   if (apiData){
+//     setSnackbarMessage("Transaccion eliminada con exito")
+//     setIsSnackbarOpen(true)
+//   }
+//  }
+
+//  const deleteTransactionErrorCb=()=>{
+//   alert("Transaccion no pudo ser eliminada, favor intentar mas tarde")
+//  }
+
+  // function deleteTransaction(){
+  //   delTransaction({ axiosInstance: api, method: 'DELETE', url: `/transacciones/${transactionDeleteId}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},deleteTransactionSuccessCb, deleteTransactionErrorCb);
+  // }
 
   const handleDialogClose=(value, action)=>{
     setIsDialogOpen(false);
+    if (value==="Si"){
+      // setIsDelete(true)
+      handleDeleteTransaction(deletionId)
+      // deleteTransaction(transactionDeleteId)
+      // deleteTransactionTest(transactionDeleteId)
+    }
   }
 
-  function handleDelete(){
+  function handleDelete(param){
+    // setDeletionId(param)
     setDialogOptions({severity:"warning", title:"Alerta", message:"Confirma eliminación de la factura?",buttons:{button1:"No",button2:"Si"}, action:"delete"})
     setIsDialogOpen(true);
+
   }
 
   function convertTimestampToDate(timestamp) {
@@ -149,13 +216,41 @@ export default function TableProject({transactions, isEdit}){
   };
 
   const handleButton = (id) => {
-    alert ("Transaccion "+ id);
+    // alert ("Transaccion "+ id);
   };
+
+  const getProjectSuccessCb=(apiData)=>{
+    if(apiData){
+      // alert("getProjectSuccessCb-setTransactions(apiData)")
+      setTransactions(apiData);
+    }
+  }
+
+  const getProjectErrorCb=()=>{
+    // alert("Hubo un error en el servidor. No fue posible cargar las transacciones del proyecto")
+    // setSnackbarMessage("Hubo un error en el servidor. No fue posible cargar las transacciones del proyecto");
+    // setIsSnackbarOpen(true);
+  }
+
+  useEffect(() => {
+    // alert("setIsEditTable, id: "+id)
+    // setIsEditTable(false);
+    if (transactions[0].idProyecto) {
+      // alert("llama getProject")
+      getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${transactions[0].idProyecto}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+    } 
+  }, [isEditTable]);
 
   return (
     <>
+
     <Header/>
     { transactions? <>
+      {/* {alert("table project id :" +transactions[0].idProyecto)} */}
+      {transaccionEditar? console.log("transaccionEditar: "+ transaccionEditar.idTransaccion + " " + transaccionEditar.numeroFactura + " " + transaccionEditar.montoFactura): null}
+      {/* {console.log(transactions)}
+      {console.log(transaccionEditar)} */}
+    
      
     <TableContainer component={Paper} >
       <Table className={classes.table} size="small" aria-label="stycky header" >
@@ -199,8 +294,7 @@ export default function TableProject({transactions, isEdit}){
               <TableCell className={classes.TableTitle} style={{width:"7%", paddingLeft:"5px", paddingRight:"5px"}} align="right">
                 Comprob.</TableCell>
               <TableCell></TableCell>  
-              
-
+              <TableCell></TableCell>  
           </TableRow>
         </TableHead>
 
@@ -262,10 +356,20 @@ export default function TableProject({transactions, isEdit}){
                   <Typography style={{fontSize:"11px"}}>{transactions.comprobantePago}</Typography>
                 </TableCell>  
                 <TableCell>
-                  <IconButton className={classes.iconButtonStyle} onClick={handleDelete} disableRipple size="small" aria-label="delete">
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
+                  <Tooltip title={`Eliminar datos de la factura ${transactions.numeroFactura?transactions.numeroFactura:""}`}    >  
+                    <IconButton className={classes.iconButtonStyle} onClick={()=> handleDelete(transactions.idTransaccion)} disableRipple size="small" aria-label="delete">
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>  
+                <TableCell>
+                  <Tooltip title={`Corregir datos de la factura ${transactions.numeroFactura?transactions.numeroFactura:""}`}>
+                    <IconButton className={classes.iconButtonStyle} onClick={()=> handleUpdate(transactions)} disableRipple size="small" aria-label="delete">
+                      <UpdateIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>  
+             
               </TableRow>
               </>
           ))}
@@ -299,9 +403,27 @@ export default function TableProject({transactions, isEdit}){
         </TableFooter>
       </Table>
     </TableContainer>
+    <FormEditTransaction 
+      open={isEditTransaction}
+      onClose={handleEditTransactionClose}
+      transaccionEditar={transaccionEditar}
+      isEditTable={isEditTable}
+      setIsEditTable={setIsEditTable}
+    />
     <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
       {dialogOptions.message}
     </DialogModal> 
+    <Snackbar
+      open={isSnackbarOpen}
+      autoHideDuration={3000} 
+      onClose={()=>handleSnackbarClose()}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      >
+      <SnackbarContent
+        className={classes.greenSnackbarContent}
+        message={snackbarMessage}
+      />
+    </Snackbar>  
     </>: null}
     
     </>

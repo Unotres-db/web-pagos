@@ -202,6 +202,7 @@ const useStyles = makeStyles((mainTheme) => ({
     open={isSnackbarOpen}
     autoHideDuration={3000} 
     onClose={handleSnackbarClose}
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
     >
     <SnackbarContent
       className={classes.greenSnackbarContent}

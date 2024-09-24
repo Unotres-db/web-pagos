@@ -7,12 +7,18 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 // import api from '../../services/api';
 // import valuationsWebApi from '../../services/valuationsWebApi';
-// import useAxios from '../../hooks/useAxios';
+import useAxios from '../../hooks/useAxios';
 
 import { LoginContext } from '../../helpers/Context';
 
+
 import Header from '../../components/Header';
 import DialogModal from '../../components/modals/DialogModal';
+
+
+import BankAccounts from './BankAccounts';
+import ExchangeRate from './ExchangeRate';
+import FormAddProject from './FormAddProject';
 import MyProfile from './MyProfile';
 import TableMyValuationsList from './TableMyValuationsList';
 // import TableRollingForecast from './TableLatestRollForecast';
@@ -62,6 +68,8 @@ export default function Home (){
   const classes = useStyles();
   const { userData } = useContext(LoginContext)
   const { userId }= userData
+  const [ isAddProject, setIsAddProject] = useState(false); 
+  const [ isEdit, setIsEdit]=useState(false);
   const [ valuationsList, setValuationsList ] = useState([
   {
     ProjectDate:"2022-03-25 18:13:34",
@@ -161,11 +169,18 @@ export default function Home (){
   const [ isEditProfile, setIsEditProfile ] = useState(false);
   const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
   const [ snackbarMessage, setSnackbarMessage]=useState("");
+  // const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
   const isLoadingValuations=false;
   // const { loading: isLoadingValuations, axiosFetch: getUserValuations} = useAxios();
   const history = useHistory();
 
+  const handleAddProject=()=>{
+    setIsAddProject(true); 
+  }
 
+  const handleAddTransactionClose=()=>{
+    setIsAddProject(false);
+  }
   const handleSnackbarClose=()=>{
     setIsSnackbarOpen(false);
   }
@@ -188,11 +203,20 @@ export default function Home (){
   //   setDialogOptions({severity:"error", title:"Oops", message:errorMessage,buttons:{button1:"Ok"}})
   //   setIsDialogOpen (true);
   // }
+
+  useEffect(() => {
+    setIsEdit(false);
+    // getProject({ axiosInstance: api, method: 'GET', url: `/proyectos`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+  }, [isEdit]);
+
   
   useEffect ( ()=> {
     if (! userId){
       history.push("/login")
-    }
+    } 
+    // else { 
+    //   getProject({ axiosInstance: api, method: 'GET', url: `/proyectos`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+    // }
   },[]) 
   
   return (
@@ -208,6 +232,10 @@ export default function Home (){
   <Grid item xs={12} md={2} >
     <Paper className={classes.paperStyle} >
       <MyProfile isEditProfile={isEditProfile} setIsEditProfile={setIsEditProfile}/>
+      {/* <Box style={{height:"5px"}}/>
+      <ExchangeRate /> */}
+      <Box style={{height:"5px"}}/>
+      <BankAccounts />
 
       <Box style={{height:"2px"}}/>
       {/* <Paper style={{height:"110px"}} elevation={6}> */}
@@ -233,7 +261,7 @@ export default function Home (){
               variant = "contained" 
               startIcon = {<AddCircleIcon />} 
               disableRipple
-              // onClick = {handleNewValuation} 
+              onClick = {handleAddProject} 
               className = {classes.buttonStyle}
               >Nuevo Proyecto
             </Button>
@@ -283,7 +311,13 @@ export default function Home (){
   </Grid>
 
 </Grid>
-</Grid>    
+</Grid> 
+<FormAddProject 
+    open={isAddProject}
+    onClose={handleAddTransactionClose}
+    isEdit={isEdit}
+    setIsEdit={setIsEdit}
+  />   
     </>: null}
     
     <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>

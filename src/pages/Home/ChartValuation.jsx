@@ -30,28 +30,28 @@ export default function ChartValuation () {
   const combinedFinancialData=[
     {
       year:2024,
-      cashFlow:4635,
+      cashFlow:4.635,
     },
     {
       year:2025,
-      cashFlow:9346,
+      cashFlow:9.346,
     },
     {
       year:2026,
-      cashFlow:6850,
+      cashFlow:6.850,
     },
     {
       year:2027,
-      cashFlow:7020,
+      cashFlow:7.020,
     },
     {
       year:2028,
-      cashFlow:7190,
+      cashFlow:7.190,
     },
   ]
   const chartData = {
         labels:combinedFinancialData.map((currElement)=>(currElement.year)),
-        datasets:[{label:"Facturación Estimada USD", data:combinedFinancialData.map((currElement)=> (currElement.cashFlow)),
+        datasets:[{label:"Facturación Estimada USD (millones)", data:combinedFinancialData.map((currElement)=> (currElement.cashFlow)),
         backgroundColor:defineChartColors(),
       }]}
 

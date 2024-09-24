@@ -105,7 +105,7 @@ export default function MyProfile ({isEditProfile, setIsEditProfile}){
           <Button disableRipple startIcon={<AddAPhotoIcon />} className={classes.buttonStyle}>Change Photo</Button>
         </Grid> */}
         <Grid item xs={12} >
-          <Typography align="center" gutterBottom className={classes.textStyle} >{`${userFirstName} ${userLastName}`}</Typography>
+          <Typography align="center" gutterBottom className={classes.textStyle} style={{fontSize:"14px"}} >{`${userFirstName} ${userLastName}`}</Typography>
   
         </Grid>
       </Grid>
@@ -122,7 +122,8 @@ export default function MyProfile ({isEditProfile, setIsEditProfile}){
       
       <Grid container justify="center">
         <Tooltip title="Editar y grabar cambios en tu perfil">
-          <Button variant="contained" onClick={handleEditProfile} className={classes.buttonStyle} disableRipple startIcon={<ModeEditIcon />} >
+        {/* onClick={handleEditProfile} */}
+          <Button variant="contained"  className={classes.buttonStyle} disableRipple startIcon={<ModeEditIcon />} >
           Editar Perfil</Button>
         </Tooltip>
       </Grid>

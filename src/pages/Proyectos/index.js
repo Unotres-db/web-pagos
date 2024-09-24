@@ -6,12 +6,14 @@ import { Stack, Grid, Paper, Box, Button, TableContainer, Table, TableHead, Tabl
 import { makeStyles } from '@material-ui/core/styles';
 
 import api from '../../services/api';
+import { LoginContext } from '../../helpers/Context';
 import useAxios from '../../hooks/useAxios';
 
 import Header from '../../components/Header';
 import TableProject from './TableProject';
 import FormInc from './FormInc';
 import FormAddTransaction from './FormAddTransaction';
+import FormEditTransaction from './FormEditTransaction';
 import Subtotal from './Subtotal';
 
 const useStyles = makeStyles( () => ({
@@ -78,25 +80,36 @@ const useStyles = makeStyles( () => ({
 
 export default function Proyectos (){
   const classes = useStyles();
-  // const id="VDB";
   const { id } = useParams();  
+  const { transactions, setTransactions } = useContext(LoginContext);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));//md
   const [ isEdit, setIsEdit] = useState(false); 
+  const [ isDelete, setIsDelete] = useState(false); 
   const [ isAddTransaction, setIsAddTransaction] = useState(false); 
+  const [ isEditTransaction, setIsEditTransaction] = useState(false); 
   const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
   const [ snackbarMessage, setSnackbarMessage]=useState("");
-  const [ transactions, setTransactions] = useState(null);
+  // const [ transactions, setTransactions] = useState(null);
   const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
+  const { axiosFetch: delTransaction, isLoading: isLoadingDeletion, error: isErrorDeletion } = useAxios();
 
 
   const handleAddTransaction=()=>{
     setIsAddTransaction(true);
   }
 
+  const handleEditTransaction=()=>{
+    setIsEditTransaction(true);
+  }
+
   const handleAddTransactionClose=()=>{
     setIsAddTransaction(false);
+  }
+
+  const handleEditTransactionClose=()=>{
+    setIsEditTransaction(false);
   }
 
   const getProjectSuccessCb=(apiData)=>{
@@ -104,7 +117,12 @@ export default function Proyectos (){
       // alert("setTransactions(apiData)")
       setTransactions(apiData);
     }
-    
+  }
+
+  const getProjectErrorCb=()=>{
+    // alert("Hubo un error en el servidor. No fue posible cargar las transacciones del proyecto")
+    // setSnackbarMessage("Hubo un error en el servidor. No fue posible cargar las transacciones del proyecto");
+    // setIsSnackbarOpen(true);
   }
 
   const handleEditClose=()=>{
@@ -115,29 +133,47 @@ export default function Proyectos (){
     setIsSnackbarOpen(false);
   }
 
-  const getProjectErrorCb=()=>{
-    alert("Hubo un error en el servidor. No fue posible cargar las transacciones del proyecto")
-    // setSnackbarMessage("Hubo un error en el servidor. No fue posible cargar las transacciones del proyecto");
-    // setIsSnackbarOpen(true);
-  }
+  // const deleteTransactionSuccessCb=(apiData)=>{
+  //   if (apiData){
+  //     setSnackbarMessage("Transaccion eliminada con exito")
+  //     setIsSnackbarOpen(true)
+  //   }
+  //   alert("Continua em deleteTransactionSuccessCb apos snackbar")
+  //   setDeletionId("");
+  //   getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${id}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+  //  }
+  
+  //  const deleteTransactionErrorCb=()=>{
+  //   setDeletionId("");
+  //   alert("Transaccion no pudo ser eliminada, favor intentar mas tarde")
+  //  }
+
+
+  // useEffect(() => {
+  //   if (isDelete){
+  //     setIsDelete(false);
+  //   }
+  //   delTransaction({ axiosInstance: api, method: 'DELETE', url: `/transacciones/${deletionId}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},deleteTransactionSuccessCb, deleteTransactionErrorCb);
+    
+  // }, [isDelete]);
 
   useEffect(() => {
     setIsEdit(false);
     if (id) {
-      getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "id",},}},getProjectSuccessCb, getProjectErrorCb);
+      getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${id}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
     } 
   }, [isEdit]);
 
   useEffect(() => {
-    // alert("Entro en useEffect[]")
     if (id) {
-      // alert("llama getProject")
+      // alert("llama getProject: "+id)
       getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${id}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
     } 
   }, []);
 
   return(
     <>
+    {/* {alert("index id: "+id)} */}
       { ! transactions ? <>
       <div className={classes.root}>
       <Header />  
@@ -175,7 +211,14 @@ export default function Proyectos (){
         <Grid item xs={12} >
         {/* className={classes.paperStyle} */}
           <Paper  elevation={3} > 
-          <TableProject  transactions={transactions} isEdit={isEdit}/>
+            <TableProject 
+              id={id}
+              transactions={transactions} 
+              setTransactions={setTransactions} 
+              isEdit={isEdit}
+              setIsEdit={setIsEdit}
+              isDelete={isDelete} 
+              setIsDelete={setIsDelete}/>
           </Paper>
           <Box sx={{height:"5px"}}/> 
 
@@ -239,40 +282,19 @@ export default function Proyectos (){
                 </Box>
                 <Box sx={{height:"5px"}}/>
                 <Subtotal transactions={transactions}/>
-                {/* <TableContainer component={Paper} >
-
-                  <Table className = {classes.table} size="small" aria-label="stycky header">
-
-                    <TableHead className = {classes.TableHeader}>
-                      <TableRow>
-                        <TableCell className = {classes.TableTitle} style={{fontSize:"11px",width: "34%", padding:"4px",color:"whitesmoke" }} align="right">Total Ingresos</TableCell>
-                        <TableCell className = {classes.TableTitle} style={{fontSize:"11px",width: "34%", padding:"4px",color:"whitesmoke"}} align="right">Total Egresos</TableCell>
-                        <TableCell className = {classes.TableTitle} style={{fontSize:"11px",width: "34%", padding:"4px",color:"whitesmoke"}} align="right">Saldo</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className = {classes.TableRows}  style={{fontSize:"10px", width: "34%", padding:"4px" }} align="right" >7.700.445.052</TableCell>
-                        <TableCell className = {classes.TableRows} style={{ fontSize:"10px",width: "33%", paddingRight:"5px", padding:"2px" }}  align="right" >8.111.872.591 </TableCell>
-                        <TableCell className = {classes.TableRows} style={{ fontSize:"10px",width: "33%", paddingRight:"5px", padding:"2px" }}  align="right" >-411.427.539 </TableCell>
-
-                      </TableRow>  
-                    </TableBody>
-                  </Table>
-                </TableContainer> */}
                 <Box sx={{height:"5px"}}/>
-                <Box style={{display:"flex", justifyContent:"center"}}>
+                <Box style={{display:"flex", justifyContent:"start"}}>
                  {/* "#E4D00A" "#FFBF00" */}
                   <Button variant="contained" size="small" disableRipple onClick={handleAddTransaction} style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Incluir</Button> 
-                  <Button variant="contained" size="small"  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Editar</Button>             
-                  <Button variant="contained" size="small" style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}}  >Excluir</Button>
-                  <Button variant="contained" size="small"  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Imprimir</Button>
+                  {/* <Button variant="contained" size="small"  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Editar</Button>              */}
+                  {/* <Button variant="contained" size="small" style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}}  >Excluir</Button> */}
+                  <Button variant="contained" size="small" disabled style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Imprimir</Button>
 
                 </Box>
                 <Box sx={{height:"15px"}}/>
-                <Box style={{marginTop:"10px",marginLeft:"10px",marginBottom:"10px"}}> 
-                  <Typography style={{fontSize:"12px"}}>Cuotas de inversion pendientes:</Typography>
-                  <TableContainer component={Paper} >
+                {/* <Box style={{marginTop:"10px",marginLeft:"10px",marginBottom:"10px"}}> 
+                  <Typography style={{fontSize:"12px"}}>Cuotas de inversion pendientes:</Typography> */}
+                  {/* <TableContainer component={Paper} >
 
 <Table className = {classes.table} size="small" aria-label="stycky header">
 
@@ -301,10 +323,10 @@ export default function Proyectos (){
     </TableRow>
   </TableBody>
 </Table>
-</TableContainer>
+</TableContainer> */}
                   
 
-                </Box>
+                {/* </Box> */}
 
                 {/* <ChartFreeCashFlow
                   assumptions={assumptions} 
@@ -375,6 +397,13 @@ export default function Proyectos (){
     isEdit={isEdit}
     setIsEdit={setIsEdit}
   />
+  {/* <FormEditTransaction 
+      open={isEditTransaction}
+      onClose={handleEditTransactionClose}
+      id={id}
+      isEdit={isEdit}
+      setIsEdit={setIsEdit}
+  /> */}
   <Snackbar
     open={isSnackbarOpen}
     autoHideDuration={2000} 

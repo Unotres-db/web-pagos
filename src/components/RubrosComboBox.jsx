@@ -23,6 +23,7 @@ export default function RubrosComboBox({objetoRubro, setTransaccion, isEditField
   const [ listaRubros, setListaRubros] = useState([]);
   const { loading: isLoadingRubros, axiosFetch: getRubros} = useAxios();
   const componentVariant = variant? variant : "outlined"
+  const label = objetoRubro.nombreRubro? objetoRubro.nombreRubro: "Rubro"
 
   const checkChange=(newValue)=>{
     if (newValue !== null && newValue !== undefined){
@@ -68,7 +69,7 @@ export default function RubrosComboBox({objetoRubro, setTransaccion, isEditField
         options={listaRubros}
         sx={{ width: "100%" }}
         onChange={(event, newValue) => updateState(newValue) }
-        renderInput={(params) => <TextField {...params} label="Rubro" />}
+        renderInput={(params) => <TextField {...params} label={label} />}
       />
 
     </>

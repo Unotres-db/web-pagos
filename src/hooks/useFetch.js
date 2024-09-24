@@ -6,46 +6,44 @@ import { format, parse } from 'date-fns';
 import { LoginContext } from '../helpers/Context.js';
 import useAxios from './useAxios';
 import api from '../services/api';
-// valuationsList
+
 export default function useFetch ( { setEditMode, setIsSnackbarOpen, setSnackbarMessage } ) {
-  const { valuationsList, setValuationsList, userData, setUserData,setSavedValuationData, setIsValuationSample } = useContext (LoginContext);
-  const { userId, userFirstName, userLastName } = userData
-  const [ deleteValuationId, setDeleteValuationId ] = useState("");  //Poderia ser uma variavel let?
+  const { userData, setUserData } = useContext (LoginContext);
+  const { userId, userFirstName, userLastName, transactions, setTransactions } = userData
+  const [ deleteTransactionId, setDeleteTransactionId ] = useState("");  
   const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
   const [ isDialogOpen, setIsDialogOpen] = useState(false);
-  const { response: data, axiosFetch: postForecastedFinancials } = useAxios();
-  const { axiosFetch: delValuation } = useAxios();
-  const { axiosFetch: postValuation } = useAxios();
-  const { axiosFetch: putValuation } = useAxios();
+  const { axiosFetch: delTransaction } = useAxios();
   const { axiosFetch: postUpdatePassword} = useAxios(); 
   const { axiosFetch: postSession } = useAxios();
-  const { axiosFetch: postFollower } = useAxios();
-  const { axiosFetch: postFollowee } = useAxios();
-  const { axiosFetch: delFollower } = useAxios();
-  const { axiosFetch: delFollowee } = useAxios();
   const { response: userUpdateData, axiosFetch: putUser} = useAxios();
-  // const { axiosFetch: postComment} = useAxios();
   const { response: currUserData, axiosFetch: getUser } = useAxios();
-  // const { response: postedUserData, axiosFetch: postUser } = useAxios();
   const history = useHistory();
 
-  const deleteSuccessCb=(apiData)=>{
-    if (valuationsList !== undefined && valuationsList.length > 0){ // elimina el valuation de del listado...
-      setValuationsList(valuationsList.filter(currValuation => currValuation.valuationId !== apiData.valuationId));
+
+  // refatorar
+  const deleteTransactionSuccessCb=(apiData)=>{
+    if (transactions !== undefined && transactions.length > 0){ // elimina el valuation de del listado...
+      setTransactions(transactions.filter(currTransaction => currTransaction.idTransaccion !== apiData.idTransaccion));
     } 
-    setDialogOptions({severity:"success", title:"Thank You !", message:"Your Valuation was successfully deleted.",buttons:{button1:"Ok"}, action:"deleted"})
+    setDialogOptions({severity:"success", title:"Gracias !", message:"La factura fue eliminada exitoamente",buttons:{button1:"Ok"}, action:"deleted"})
     setIsDialogOpen (true);
   }
 
-  function handleDelete (valuationId){
-    setDeleteValuationId(valuationId);
-    setDialogOptions({severity:"warning", title:"Alert", message:"Are you sure you want to delete this valuation ?",buttons:{button1:"Cancel",button2:"Confirm"}, action:"delete"})//button1:"Cancel",button2:"Confirm"
-    setIsDialogOpen (true);
+  const deleteTransactionErrorCallback=(apiData)=>{
+    alert("error eneliminacion de factura")
   }
 
-  function deleteValuation (valuationIdParam){  
+  function deleteTransaction (transactionIdParam){  
     // const userId = userId; // atualizar para state global com Context
-    delValuation({ axiosInstance: api, method: 'DELETE', url: `/valuations/${valuationIdParam}`, requestConfig: { headers: {'Authorization': userId,},}},deleteSuccessCb, errorCallback);
+    alert(transactionIdParam);
+    delTransaction({ axiosInstance: api, method: 'DELETE', url: `/transacciones/${transactionIdParam}`, requestConfig: { headers: {'Authorization': 'martincsl@hotmail.com',},}},deleteTransactionSuccessCb, deleteTransactionErrorCallback);
+  }
+
+  function handleDeleteTransaction (idTransaccion){
+    setDeleteTransactionId(idTransaccion);
+    setDialogOptions({severity:"warning", title:"Alert", message:"Esta seguro de eliminar la factura ?",buttons:{button1:"No",button2:"Si"}, action:"delete"})//button1:"Cancel",button2:"Confirm"
+    setIsDialogOpen (true);
   }
 
   function checkUserById (userIdParam){  
@@ -66,29 +64,6 @@ export default function useFetch ( { setEditMode, setIsSnackbarOpen, setSnackbar
     // alert("no econtro ese email, puede seguir")
   }
 
-  function publishSuccessCallback(apiData){
-    if (valuationsList !== undefined && valuationsList.length > 0 ){
-      let auxArray = valuationsList  // refatorar? usar diretamente o state, sem var auxiliar?
-      const objIndex = valuationsList.findIndex((currValuation => currValuation.valuationId === apiData.valuationId));
-      auxArray[objIndex].published = apiData.published;  
-      auxArray[objIndex].publishedDate = apiData.publishedDate;  
-      setValuationsList(auxArray);// usar prev?
-      // setValuationsList ( prevState => ({...prevState, [prevState[objIndex].published]: apiData.published }))
-      setSavedValuationData ( prevState => ({...prevState, published: apiData.published, publishedDate: apiData.publishedDate}))
-    } 
-    // else {
-    //     setEditMode("published");
-    // }
-    setEditMode("published");
-    setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully published.",buttons:{button1:"Ok"},action:"publish"})
-    setIsDialogOpen (true);
-  }
-
-  function handlePublish (valuationIdParam){  
-    const dataToProcess = { valuationId: valuationIdParam, published: "all" }
-    putValuation({ axiosInstance: api, method: 'PUT', url: '/publication', data: dataToProcess,requestConfig: { headers: {'Authorization': userId,},}},publishSuccessCallback, errorCallback);
-  }
-
   function errorCallback(errorMessage){
     setDialogOptions({severity:"error", title:"Error", message:errorMessage,buttons:{button1:"Ok"}})
     setIsDialogOpen (true);
@@ -97,14 +72,16 @@ export default function useFetch ( { setEditMode, setIsSnackbarOpen, setSnackbar
   function handleDialogClose (value, action) { 
     setIsDialogOpen (false);
     setDialogOptions({severity:"",title:"",message:"",buttons:{},action:""});
-    if (value === "Confirm" && action ==="delete"){  
-      deleteValuation(deleteValuationId,deleteSuccessCb, errorCallback);
-    } else {
-      if (value === "Ok" && action ==="deleted"){ 
+    alert("value: "+value)
+    if (value === "Si" && action ==="delete"){
+      deleteTransaction(deleteTransactionId);
+    }
+    else {
+      if (value === "Ok" && action ==="delete"){ 
         history.push('/home')
+      }
     }
   }
-}
 
 const passwordSuccessCb=()=>{
   setIsSnackbarOpen(true)
@@ -124,7 +101,7 @@ const updatePassword=(id, password)=>{
 }
 
 const sessionSuccessCb=async(apiData)=>{
-  setIsValuationSample(false);
+  // setIsValuationSample(false);
   await setUserData({userId:apiData.id, userPassword: apiData.password, userProduct: apiData.product, userFirstName:apiData.firstName, userLastName:apiData.lastName, userCountry:apiData.country, userCountryName:apiData.countryName,userBirthday:apiData.birthday, userDescription:apiData.description})
   history.push('/home')
 }
@@ -138,11 +115,7 @@ const createSession=(dataToProcess)=>{
   postSession({ axiosInstance: api, method: 'POST', url: '/session', data: dataToProcess, requestConfig: { headers: {'Authorization': id,},}},sessionSuccessCb, sessionErrorCb);
 }
 
-  const forecastedSucessCb=(apiData)=> {
-    // alert("exito grabando en forecasted")
-  }
-
-  const putUserSuccessCb=(apiData)=>{
+const putUserSuccessCb=(apiData)=>{
     // console.log("apiData: " + apiData.status)// Ni pasa x aca....
     if (apiData.status===200) {
       // setSnackbarMessage("Changes applyed with success")
@@ -158,20 +131,16 @@ const createSession=(dataToProcess)=>{
     // setIsSnackbarOpen(true)
   }
 
-const updateUser=(data)=>{ 
-  //refatorar...pq nao esta usando dataToProcess?
-  const { userRegistrationData } = data;
-  const { confirmPassword, ...dataToProcess } = userRegistrationData;
-  const userId = userRegistrationData.id;
-  putUser({ axiosInstance: api, method: 'PUT', url: '/users', data: dataToProcess, requestConfig: { headers: {'Authorization': userId,},}}, putUserSuccessCb, putUserErrorCb);
-}
+  const updateUser=(data)=>{ 
+    //refatorar...pq nao esta usando dataToProcess?
+    const { userRegistrationData } = data;
+    const { confirmPassword, ...dataToProcess } = userRegistrationData;
+    const userId = userRegistrationData.id;
+    putUser({ axiosInstance: api, method: 'PUT', url: '/users', data: dataToProcess, requestConfig: { headers: {'Authorization': userId,},}}, putUserSuccessCb, putUserErrorCb);
+  }
 
   function userSuccessCallback(){
 
-  }
-
-  const forecastedErrorCb=(apiData)=>{
-    // alert ("Erro gravando o forecated");
   }
 
   async function saveTransaction(transaccion)  {
@@ -217,64 +186,5 @@ const updateUser=(data)=>{
     });
   }
 
-  // const saveValuation2SuccessCb=(apiData, valuationData,setValuationId, setSavedValuationData, forecastedFinancialData)=>{
-    const saveValuation2SuccessCb=(apiData)=>{
-    const savedDate = format(new Date(),"yyyy MMM,dd"); 
-    // const { userId, companyId, shortName, cashFlowAvgGrowth, sumOfCashFlowPresentValue, perpetuityValue, perpetuityPresentValue, enterpriseValue, cash, debt, equityValue, sharesOutstanding, targetStockPrice, dateStockPrice, marketCap, revenueGrowth, marginTarget, opexGrowth, interestGrowth, otherGrowth, taxRate, capexGrowth, nwcGrowth, perpetualGrowthRate, cashFlowDiscretePeriod, companyBeta, riskFreeReturn, marketReturn, debtTotalRatio, costOfDebt, costOfEquity, costOfCapital, published, publishedDate, lastHistoricalYear }=valuationData
-    const { valuationId } = apiData;
-    // // let dataToProcess = []; 
-    // setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully saved",buttons:{button1:"Ok"},action:"save"})
-    // setIsDialogOpen (true);  
-    // alert("entrou em valuationSuccess")
-    // setValuationId (valuationId);
-    // setSavedValuationData((prevState => ({...prevState, valuationId:valuationId, profileId:userId, profileFirstName: firstName, profileLastName: lastName, symbol:companyId, createdAt:savedDate })))
-    // dataToProcess = forecastedFinancialData.map((item, index) => ({...item, valuationId:valuationId, forecastedId:valuationId + index.toString(), companyId:valuationData.companyId})) 
-    // map and save each period (year) forecasted....
-    // dataToProcess.map ( (currElement, index)=> {
-    //   const dataFetch = dataToProcess[index]
-    //   postForecastedFinancials({ axiosInstance: api, method: 'POST', url: '/forecasted', data:dataFetch, requestConfig: {}}, forecastedSucessCb, forecastedErrorCb);
-    // })
-    // const newObject ={ valuationId, companyId, shortName, createdAt:savedDate, deletedAt:null, updatedAt:null, targetStockPrice, regularMarketPrice: dateStockPrice, costOfCapital, avgRating: null, userId, firstName, lastName }
-    // setValuationsList([...valuationsList, newObject]);
-    setEditMode("saved"); // Save option (unlike Publish and Delete) will be always called by valuation page
-    setDialogOptions({severity:"success", title:"Thank You", message:"Your Valuation was sucessfully saved",buttons:{button1:"Ok"},action:"save"})
-    setIsDialogOpen (true);  
-    // alert("valuation saved with success")
-    // history.push(`/saved-valuation:${valuationId}`)
-  }
-
-  async function saveValuation({ valuationData, companyData, forecastedFinancialData }) {
-    const { userId, companyId, targetStockPrice, dateStockPrice, costOfCapital, inputedCostOfCapital, cashFlowAvgGrowth } = valuationData;
-    const { shortName, regularMarketPrice } = companyData;
-    const savedDate = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-
-    return api.post('/valuations', valuationData)
-      .then(response => {
-        const { valuationId } = response.data;  // solo recibe el id del backend
-
-        // incluye los objects literals que no hacen parte del post de valuation???
-        const newValuationObject={...valuationData, valuationId:valuationId, createdAt:savedDate, updatedAt:savedDate, deletedAt:null, shortName: shortName, regularMarketPrice:regularMarketPrice, avgRating:null, firstName:userFirstName, lastName: userLastName }
-        setValuationsList([...valuationsList, newValuationObject]);
-        // const newObject ={ valuationId:valuationId, userId:userId, companyId:companyId, shortName:shortName, createdAt:savedDate, deletedAt:null, updatedAt:savedDate, targetStockPrice:targetStockPrice, regularMarketPrice: dateStockPrice, costOfCapital:costOfCapital, avgRating: null,  firstName:userFirstName, lastName:userLastName }
-        // setValuationsList([...valuationsList, newObject]);//revisar el codigo...
-        // setValuationsList((prevValuationsList) => [...prevValuationsList, newObject]);
-        setSavedValuationData({valuationId: valuationId, profileId: userId, profileFirstName:userFirstName, profileLastName: userLastName, symbol: companyId, shortName: shortName, createdAt: savedDate, updatedAt:savedDate, published:null, publishedDate:null});
-        setEditMode("saved");
-        // history.push(`/saved-valuation:${valuationId}`);
-      })
-      .catch(function (err) {
-        // alert("erro em post valuation" + err.response);
-        // console.log("erro em post valuation" + err.response)
-        if (err.response) {
-          const errorMsg = Object.values(err.response.data);
-          errorCallback("There was an error in the database access. Valuation was not saved. Please try later.");
-        } else if (err.request) {
-          errorCallback("There was an error in the server access. Valuation was not saved. Please try later.");
-        } else {
-          errorCallback("There was an unexpected error in the server. Valuation was not saved. Please try later.");
-        }
-      });
-  }
-  
-  return { saveTransaction, saveUser2, updatePassword, updateUser, createSession, checkUserById, saveValuation, handlePublish, handleDelete, deleteValuation, dialogOptions, setDialogOptions, handleDialogClose, isDialogOpen, setIsDialogOpen }
+  return { handleDeleteTransaction, saveTransaction, saveUser2, updatePassword, updateUser, createSession, checkUserById, handleDeleteTransaction, dialogOptions, setDialogOptions, handleDialogClose, isDialogOpen, setIsDialogOpen }
 }

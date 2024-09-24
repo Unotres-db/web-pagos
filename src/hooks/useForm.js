@@ -4,13 +4,20 @@ import { LoginContext } from '../helpers/Context.js';
 export default function useForm (callback) {
   
   const { userId, setUserId, userName, setUserName } = useContext (LoginContext);
+  const [ proyecto, setProyecto]= useState({ 
+    idProyecto: "",
+    nombre: "",
+    descripcion:"",
+    metrosCuadrados:"",
+    margenEstimado: ""
+  });
   const [ transaccion, setTransaccion] = useState({ 
     idTransaccion:"",
     idProyecto:"", 
     idProveedor:"", 
-    nombreProveedor:"",
+    proveedor:"",
     idRubro:"", 
-    nombreRubro:"",
+    rubro:"",
     idTipoTransaccion:"", 
     descripcion:"", 
     numeroFactura:"", 
@@ -22,12 +29,12 @@ export default function useForm (callback) {
     idTipoPago:"",
     nombreTipoPago:"",
     idTipoFlujo:""
-   })
+   });
   const [ values, setValues ] = useState ({ contactName: "", contactMobile: "", contactEmail: "", contactMsg:"", userPassword:"" });
   const [ inputData, setInputData] = useState ({inputId:"", inputPassword:""})
   const [ formErrors, setFormErrors ] = useState({ 
     // idTransaccion:"",
-    idProyecto:"", 
+
     idProveedor:"", 
     // nombreProveedor:"",
     idRubro:"", 
@@ -44,7 +51,11 @@ export default function useForm (callback) {
     nombreTipoPago:"",
     idTipoFlujo:"",
     inputId:"",
-    inputPassword:""
+    inputPassword:"",
+    idProyecto:"", 
+    nombre:"",
+    metrosCuadrados:"",
+    margenEstimado:"",
   })
   const { contactName, contactMobile, contactEmail, contactMsg,userPassword } = {values};
   const {inputId, inputPassword}=inputData
@@ -233,5 +244,5 @@ export default function useForm (callback) {
     })
   }
 
-  return { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, formErrors, setFormErrors,inputData, setInputData, userId, setUserId, userName, setUserName }
+  return { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, proyecto, setProyecto, formErrors, setFormErrors,inputData, setInputData, userId, setUserId, userName, setUserName }
 }

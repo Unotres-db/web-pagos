@@ -83,12 +83,13 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     fechaPago,
     idTipoPago,
     idTipoFlujo } = transaccion
-    const objetoRubro = {idRubro: "4", nombreRubro: "Artefactos Electricos"}
+    const objetoRubro = {idRubro: "0", nombreRubro: ""}
     const supplierObject = {id: "0", label: ""}
     const paymentObject = {id: "0", label: ""}
 
   const { axiosFetch: getRubros, isLoading: isLoadingRubros, error: isErrorRubros } = useAxios();
   const { axiosFetch: getProveedores, isLoading: isLoadingProveedores, error: isErrorProveedores } = useAxios();
+  const { axiosFetch: getFactura, isLoading: isLoadingFactura, error: isErrorFactura } = useAxios();
   const muiMontoFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Monto Factura", name: "montoFactura",InputProps: {startAdornment: <InputAdornment position="start">Gs.</InputAdornment> }};
   const muiNumeroFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Numero Factura", name: "numeroFactura" };
   const muiFechaFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Fecha Factura", name: "fechaFactura" };
@@ -97,9 +98,6 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
   const handleSnackbarClose=()=>{
    setIsSnackbarOpen(false);
   }
-
-
-  
 
   function convertDateToUTC(dateString) {
     // Split the date string into day, month, and year parts
@@ -275,13 +273,30 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
       setTransaccion(prevState => ({...prevState, fechaFactura: newValue.formattedValue}))
     }
   }
-  function handleInvoiceNumber (newValue){
-    if(newValue){
-      setTransaccion(prevState => ({...prevState, numeroFactura: newValue.formattedValue}))
-    }
-      
+
+  function getInvoiceSuccessCb(){
+    // setTransaccion(prevState => ({...prevState, numeroFactura: newValue.formattedValue}))
   }
 
+  function getInvoiceErrorCb(){
+    setTransaccion(prevState => ({...prevState, numeroFactura: ""}))
+    setDialogOptions({severity:"error", title:"Error", message:"La factura ya esta cargada en el sistema. Favor corregir, gracias!",buttons:{button1:"Ok"}})
+    setIsDialogOpen(true)
+  }
+
+  function handleInvoiceNumber (newValue){
+    if(newValue){
+      // alert(newValue.value);
+      // console.log("newValue")
+      // console.log(newValue.value)
+      //tetear si ya esta grabada
+      if (newValue.value.length===13){
+        // const dataToProcess = { id_proveedor:"2", numero_factura: "001-001-0000565" }
+        getFactura({ axiosInstance: api, method: 'GET', url: `/factura?id_proveedor=${transaccion.idProveedor}&numero_factura=${newValue.formattedValue}`, requestConfig: { headers: {'Authorization': "id",},}},getInvoiceSuccessCb, getInvoiceErrorCb);
+      }
+      setTransaccion(prevState => ({...prevState, numeroFactura: newValue.formattedValue}))
+    }
+  }
 
   function handlePaymentDate (newValue){
     if (validatePaymentDate(newValue)){
@@ -290,7 +305,6 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
   }
 
   async function saveTransaction(transaccion)  {
-    // convertDateToUTC
     return api.post('/transacciones', transaccion)
       .then(response => {
         const { idTransaccion: id } = response.data;  
@@ -298,10 +312,6 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
         setIsEdit(true);
         setSnackbarMessage("Transaccion grabada exitosamente en la base de datos")
         setIsSnackbarOpen(true);
-
-        // alert("Transaccion grabada en la base de datos, con id: "+ id)
-        // console.log("grabando transaccion")
-        // console.log(transaccion)
       })
       .catch(function (err) {
         if (err.response) {
@@ -495,7 +505,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                   {formErrors.numeroFactura ? <div className="error-helper-text">{formErrors.numeroFactura}</div> : null}
                 </Grid>
 
-                <Grid item xs={6} sm={6}>
+                <Grid item xs={12} sm={6}>
                     <NumericFormat
                         value={montoFactura}
                         customInput={TextField}
