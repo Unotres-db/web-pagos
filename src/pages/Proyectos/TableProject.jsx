@@ -77,7 +77,8 @@ const useStyles = makeStyles( () => ({
 
 export default function TableProject({id, transactions,setTransactions, isEdit, setIsEdit,isDelete, setIsDelete}){
   const classes = useStyles();
-  const { deletionId, setDeletionId, updateId, setUpdateId}= useContext(LoginContext);
+  // const { deletionId, setDeletionId, updateId, setUpdateId}= useContext(LoginContext);
+  const [ deletionId, setDeletionId ] = useState("")
   const [ page, setPage ] = useState(0);
   const [ rowsPerPage, setRowsPerPage ] = useState(20);
   const [ orderDirection, setOrderDirection ] = useState('desc');
@@ -118,7 +119,6 @@ const handleSnackbarClose=()=>{
   // setIsDelete(true);
   setIsSnackbarOpen(false)
   getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
-
 }
 
  const deleteTransactionSuccessCb=(apiData)=>{
@@ -128,12 +128,13 @@ const handleSnackbarClose=()=>{
   }
  }
 
- const deleteTransactionErrorCb=()=>{
-  alert("Transaccion no pudo ser eliminada, favor intentar mas tarde")
- }
+  const deleteTransactionErrorCb=()=>{
+    alert("Transaccion no pudo ser eliminada, favor intentar mas tarde")
+  }
 
   function deleteTransaction(){
-    delTransaction({ axiosInstance: api, method: 'DELETE', url: `/transacciones/${transactionDeleteId}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},deleteTransactionSuccessCb, deleteTransactionErrorCb);
+    alert("Llama delTransaction")
+    delTransaction({ axiosInstance: api, method: 'DELETE', url: `/transacciones/${deletionId}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},deleteTransactionSuccessCb, deleteTransactionErrorCb);
   }
 
   const handleDialogClose=(value, action)=>{
@@ -232,14 +233,11 @@ const handleSnackbarClose=()=>{
     // setIsSnackbarOpen(true);
   }
 
-  useEffect(() => {
-    // alert("setIsEditTable, id: "+id)
-    // setIsEditTable(false);
-    if (transactions[0].idProyecto) {
-      // alert("llama getProject")
-      getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${transactions[0].idProyecto}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
-    } 
-  }, [isEditTable]);
+  // useEffect(() => {
+  //   if (transactions[0].idProyecto) {
+  //     getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${transactions[0].idProyecto}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+  //   } 
+  // }, [isEditTable]);
 
   return (
     <>

@@ -14,8 +14,8 @@ import './global.css';
 function App() {
 
   const [ userData, setUserData ] = useState({userId:"", userPassword:"", userProduct:"", userFirstName:"", userLastName:"", userCountry:"", userCountryName:"", userPhone:"", userBirthday:""})
-  const [ deletionId, setDeletionId ] = useState("");
-  const [ updateId, setUpdateId ]= useState("")
+  // const [ deletionId, setDeletionId ] = useState("");
+  // const [ updateId, setUpdateId ]= useState("")
   const [ transactions, setTransactions]= useState([])
   return (
     <LoginContext.Provider value = {{ userData, setUserData,transactions, setTransactions }} >
