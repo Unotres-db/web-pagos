@@ -10,6 +10,9 @@ import { LoginContext } from '../../helpers/Context';
 import useAxios from '../../hooks/useAxios';
 
 import Header from '../../components/Header';
+import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
+import SuppliersListByProject from '../../components/SuppliersListByProject';
+import TypesListByProjecy from '../../components/TypesListByProject';
 import TableProject from './TableProject';
 import FormInc from './FormInc';
 import FormAddTransaction from './FormAddTransaction';
@@ -82,9 +85,12 @@ export default function Proyectos (){
   const classes = useStyles();
   const { id } = useParams();  
   const { transactions, setTransactions } = useContext(LoginContext);
+  const { allTransactions, setAllTransactions } = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));//md
+  const [ supplierSearchId, setSuppliersSearchId]= useState("");
+  const [ isEditField, setIsEditField] = useState(true)// eliminar?
   const [ isEdit, setIsEdit] = useState(false); 
   const [ isDelete, setIsDelete] = useState(false); 
   const [ isAddTransaction, setIsAddTransaction] = useState(false); 
@@ -94,6 +100,40 @@ export default function Proyectos (){
   // const [ transactions, setTransactions] = useState(null);
   const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
   const { axiosFetch: delTransaction, isLoading: isLoadingDeletion, error: isErrorDeletion } = useAxios();
+  const objetoRubro = {idRubro: "0", nombreRubro: ""}
+  const supplierObject = {id: "0", label: ""}
+  const paymentObject = {id: "0", label: ""}
+  let projectSuppliersList = transactions ? [
+    { id: "0", label: "Todos" },
+    ...
+    transactions
+    .map(transaction => ({
+        id: transaction.idProveedor,
+        label: transaction.proveedor
+    }))
+    .reduce((acc, cur) => {
+        const existing = acc.find(item => item.id === cur.id);
+        if (!existing) {
+            acc.push(cur);
+        }
+        return acc;
+    }, [].sort((a, b) => a.label.localeCompare(b.label)))]:[];
+
+    let projectTypesList = transactions ? [
+      { id: "0", label: "Todos" },
+      ...
+      transactions
+      .map(transaction => ({
+          id: transaction.idRubro,
+          label: transaction.rubro
+      }))
+      .reduce((acc, cur) => {
+          const existing = acc.find(item => item.id === cur.id);
+          if (!existing) {
+              acc.push(cur);
+          }
+          return acc;
+      }, [].sort((a, b) => a.label.localeCompare(b.label)))]:[];
 
 
   const handleAddTransaction=()=>{
@@ -116,6 +156,7 @@ export default function Proyectos (){
     if(apiData){
       // alert("setTransactions(apiData)")
       setTransactions(apiData);
+      setAllTransactions(apiData)
     }
   }
 
@@ -131,6 +172,22 @@ export default function Proyectos (){
 
   const handleSnackbarClose=()=>{
     setIsSnackbarOpen(false);
+  }
+
+  const filterFunction=(supplierId)=>{
+    console.log("allTransactions")
+    console.log(allTransactions)
+    // alert("filterFunction, supplierId:"+supplierId)
+    if (supplierId !==""){
+      const filteredTransactions = transactions.filter((list) => (list.idProveedor === supplierId ))  
+      console.log(filteredTransactions)
+      // return transactions.filter((list) => (list.idProveedor === supplierId ))  
+      alert("filteredTransactions.length"+filteredTransactions.length)
+      if (filteredTransactions.length > 0){
+        return filteredTransactions
+      }
+      return allTransactions
+    }
   }
 
   // const deleteTransactionSuccessCb=(apiData)=>{
@@ -158,6 +215,15 @@ export default function Proyectos (){
   // }, [isDelete]);
 
   useEffect(() => {
+    // alert("ueEffect supplierSearchId: "+supplierSearchId.idProveedor)
+    console.log(supplierSearchId.idProveedor)
+    if (supplierSearchId.idProveedor){
+      setTransactions(filterFunction(supplierSearchId.idProveedor));
+    }
+  }, [supplierSearchId]);
+
+
+  useEffect(() => {
     setIsEdit(false);
     if (id) {
       getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${id}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
@@ -174,9 +240,10 @@ export default function Proyectos (){
   return(
     <>
     {/* {alert("index id: "+id)} */}
-      { ! transactions ? <>
+      { ! transactions ? 
+      <>
       <div className={classes.root}>
-      <Header />  
+      {/* <Header />   */}
       <Grid container> 
         <Grid item xs={12}>
           <Typography align="center" className={classes.circularTextStyle}>Cargando proyecto de la base de datos</Typography>
@@ -189,13 +256,15 @@ export default function Proyectos (){
         </Grid>
         </Grid>   
       </div>
-      
       </>
+    
   : <>
 
     { transactions.length > 0? 
     <>
     {console.count}
+    {console.log("projectSuppliersList")}
+    {console.log(projectSuppliersList)}
     
     <Grid container item direction="column" alignItems="center" style = {{minHeight: '80vh'}}  >
       
@@ -292,6 +361,46 @@ export default function Proyectos (){
 
                 </Box>
                 <Box sx={{height:"15px"}}/>
+
+
+                <Paper elevation={6} >
+                  <Typography style={{fontSize:"13px", marginLeft:"5px"}}>Filtrar datos</Typography>
+                  <Box style={{height:"5px"}}/>
+                  <Box style={{display:"flex", justifyContent:"center",margin:"5px"}}>
+                    <Grid container>
+                      <Grid item xs={12} spacing={3}>
+                        <SuppliersListByProject
+                          supplierObject={supplierObject} 
+                          setterFunction={setSuppliersSearchId} 
+                          projectSuppliersList={projectSuppliersList}
+                        />
+                      </Grid>
+                      <Grid item xs={12} >
+                      <Box style={{height:"5px"}}/>  
+                      <TypesListByProjecy
+                        supplierObject={supplierObject} 
+                        setterFunction={setSuppliersSearchId} 
+                        projectSuppliersList={projectTypesList}
+                      />
+                        
+                      </Grid>
+
+
+                    </Grid>
+                    {/* <SuppliersAutocomplete 
+                      supplierObject={supplierObject}
+                      setterFunction={setSuppliersSearchId}///
+                      isEditField={isEditField}
+                      setIsEditField={setIsEditField}
+                      variant="filled"
+                    /> */}
+
+                 
+
+                  </Box>
+                  <Box style={{height:"15px"}}/>
+
+                </Paper>
                 {/* <Box style={{marginTop:"10px",marginLeft:"10px",marginBottom:"10px"}}> 
                   <Typography style={{fontSize:"12px"}}>Cuotas de inversion pendientes:</Typography> */}
                   {/* <TableContainer component={Paper} >

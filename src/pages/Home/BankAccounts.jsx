@@ -21,7 +21,7 @@ const useStyles = makeStyles( () => ({
     fontSize: 11,
   },
   tableRowsStyle:{
-    fontSize: 11,
+    fontSize: 9,
     margin:"0px",
     padding:"0px"
   }

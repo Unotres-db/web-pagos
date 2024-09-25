@@ -150,12 +150,12 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
                 <TableCell align="left" className={classes.TableRows}  style={{fontSize: 11, width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
                   {/* <Button onClick={(e) => (handleButton (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.shortName}</Button> */}
                   {/* <Button onClick={(e) => (handleSavedValuation (currValuation.valuationId))} className={classes.ButtonTable} style={{fontSize:9}} disableRipple>{currValuation.shortName}</Button> */}
-                  <Button  className={classes.ButtonTable} style={{fontSize:12}} disableRipple>{currValuation.projectName}</Button>
+                  <Button  onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} style={{fontSize:12}} disableRipple>{currValuation.projectName}</Button>
 
                 </TableCell>
                 <TableCell align="left" className={classes.TableRows} style={{width:"9%", paddingLeft:"5px", paddingRight:"5px"}}>
                   {/* <Button onClick={(e) => (handeButton (currValuation.valuationId))} className={classes.ButtonTable} disableRipple>{currValuation.published ? "Public": "Private"}</Button> */}
-                  <Button className={classes.ButtonTable} style={{fontSize:"9px"}}disableRipple>{currValuation.projectStatus}</Button>
+                  <Button onClick={(e) => (handleButton (currValuation.projectId))} className={classes.ButtonTable} style={{fontSize:"9px"}}disableRipple>{currValuation.projectStatus}</Button>
 
                 </TableCell>
                 <TableCell align="right" className={classes.TableRows} style={{width:"10%", paddingLeft:"5px", paddingRight:"5px"}} >

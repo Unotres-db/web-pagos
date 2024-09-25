@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router , Route, Switch } from 'react-router-dom';
 
+import Header from './components/Header';
 import Contact from './pages/Contact';
 import CompetitionData from './pages/CompetitionData';
 import Home from './pages/Home';
@@ -20,6 +21,7 @@ export default function Routes() {
   return (
   
     <Router>
+      <Header />
       <Switch>
         <Route path = "/" exact component = {Home} />
         <Route path = "/home" component = {Home} />

@@ -154,7 +154,7 @@ export default function TableRollingForecast (){
       dataField: "grossProfitPercent"}, 
 
     { id: 7,
-      rowText:"Gastos Administrativos (coba)",
+      rowText:"Gastos Administrativos",
       rowMobileText:"Gastos Administrativos",
       grayBackground:false,
       showAsBlankIfZero:true,  
@@ -189,7 +189,7 @@ export default function TableRollingForecast (){
       style:"decimal",
       dataField: "incomeBeforeTax"}, 
     { id: 12,
-      rowText:"Provisión Impuesto a la Renta",
+      rowText:"Provisión IRE",
       rowMobileText:"Provisión IRE",
       grayBackground:false,
       showAsBlankIfZero:true,  

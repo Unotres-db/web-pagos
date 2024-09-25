@@ -94,7 +94,7 @@ export default function TableProject({id, transactions,setTransactions, isEdit, 
   const [ transactionDeleteId,setTransactionDeleteId ] = useState("");
   const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
   const { axiosFetch: delTransaction, isLoading: isLoadingDeletion, error: isErrorDeletion } = useAxios();
-  const { handleDeleteTransaction }  = useFetch({setEditMode});
+  // const { handleDeleteTransaction }  = useFetch({setEditMode});
   const { getComparator, handleRequestSort } = useTableSorting();
   var emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - transactions.length) : 0; // Avoid a layout jump when reaching the last page with empty rows.
   const history = useHistory();
@@ -121,33 +121,33 @@ const handleSnackbarClose=()=>{
 
 }
 
-//  const deleteTransactionSuccessCb=(apiData)=>{
-//   if (apiData){
-//     setSnackbarMessage("Transaccion eliminada con exito")
-//     setIsSnackbarOpen(true)
-//   }
-//  }
+ const deleteTransactionSuccessCb=(apiData)=>{
+  if (apiData){
+    setSnackbarMessage("Transaccion eliminada con exito")
+    setIsSnackbarOpen(true)
+  }
+ }
 
-//  const deleteTransactionErrorCb=()=>{
-//   alert("Transaccion no pudo ser eliminada, favor intentar mas tarde")
-//  }
+ const deleteTransactionErrorCb=()=>{
+  alert("Transaccion no pudo ser eliminada, favor intentar mas tarde")
+ }
 
-  // function deleteTransaction(){
-  //   delTransaction({ axiosInstance: api, method: 'DELETE', url: `/transacciones/${transactionDeleteId}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},deleteTransactionSuccessCb, deleteTransactionErrorCb);
-  // }
+  function deleteTransaction(){
+    delTransaction({ axiosInstance: api, method: 'DELETE', url: `/transacciones/${transactionDeleteId}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},deleteTransactionSuccessCb, deleteTransactionErrorCb);
+  }
 
   const handleDialogClose=(value, action)=>{
     setIsDialogOpen(false);
     if (value==="Si"){
       // setIsDelete(true)
-      handleDeleteTransaction(deletionId)
-      // deleteTransaction(transactionDeleteId)
+      // handleDeleteTransaction(deletionId)
+      deleteTransaction(deletionId)
       // deleteTransactionTest(transactionDeleteId)
     }
   }
 
   function handleDelete(param){
-    // setDeletionId(param)
+    setDeletionId(param)
     setDialogOptions({severity:"warning", title:"Alerta", message:"Confirma eliminación de la factura?",buttons:{button1:"No",button2:"Si"}, action:"delete"})
     setIsDialogOpen(true);
 
@@ -244,7 +244,7 @@ const handleSnackbarClose=()=>{
   return (
     <>
 
-    <Header/>
+    {/* <Header/> */}
     { transactions? <>
       {/* {alert("table project id :" +transactions[0].idProyecto)} */}
       {transaccionEditar? console.log("transaccionEditar: "+ transaccionEditar.idTransaccion + " " + transaccionEditar.numeroFactura + " " + transaccionEditar.montoFactura): null}
