@@ -133,7 +133,7 @@ const handleSnackbarClose=()=>{
   }
 
   function deleteTransaction(){
-    alert("Llama delTransaction")
+    // alert("Llama delTransaction")
     delTransaction({ axiosInstance: api, method: 'DELETE', url: `/transacciones/${deletionId}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},deleteTransactionSuccessCb, deleteTransactionErrorCb);
   }
 
