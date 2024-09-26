@@ -71,6 +71,8 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
   const [ rowsPerPage, setRowsPerPage ] = useState(10);
   const [ orderDirection, setOrderDirection ] = useState('desc');
   const [ orderBy, setOrderBy ] = useState('updated_at');
+  const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
+  const [ isDialogOpen, setIsDialogOpen] = useState(false);
   // const { handlePublish, handleDelete, handleDialogClose, dialogOptions, isDialogOpen}  = useFetch({valuationsList, setValuationsList});
   const { getComparator, handleRequestSort } = useTableSorting();
   var emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - valuationsList.length) : 0; // Avoid a layout jump when reaching the last page with empty rows.
@@ -93,13 +95,21 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
     setPage(0);
   };
 
+
+  const handleDialogClose=()=>{
+    setIsDialogOpen(false)
+
+  }
+
   const handleButton = (id) => {
     if (id==="3KD"){
     // if (id==="VDB"){
       history.push(`/project/${id}`)
       // history.push(`/products/${productId}`)
     } else {
-      alert ("Transacciones del proyecto todavia no cargadas: "+id);
+       setDialogOptions({severity:"success", title:"Información", message:"Transacciones del proyecto todavia no fueron cargadas en la base de datos",buttons:{button1:"Ok"}})
+       setIsDialogOpen(true);
+      // alert ("Transacciones del proyecto todavia no cargadas: "+id);
     }
   };
 
@@ -219,9 +229,9 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
         </TableFooter>
       </Table>
     </TableContainer>
-    {/* <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
+    <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
       {dialogOptions.message}
-    </DialogModal>  */}
+    </DialogModal> 
   </>
 
   );

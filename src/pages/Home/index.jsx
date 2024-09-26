@@ -10,7 +10,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import useAxios from '../../hooks/useAxios';
 
 import { LoginContext } from '../../helpers/Context';
-
+import api from '../../services/api';
 
 import Header from '../../components/Header';
 import DialogModal from '../../components/modals/DialogModal';
@@ -70,6 +70,8 @@ export default function Home (){
   const { userId }= userData
   const [ isAddProject, setIsAddProject] = useState(false); 
   const [ isEdit, setIsEdit]=useState(false);
+  const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
+  const [ isDialogOpen, setIsDialogOpen] = useState(false);
   const [ valuationsList, setValuationsList ] = useState([
   {
     ProjectDate:"2022-03-25 18:13:34",
@@ -164,10 +166,10 @@ export default function Home (){
   
   ]);
 
-  const [ isDialogOpen, setIsDialogOpen ] = useState(false);
-  const [ dialogOptions, setDialogOptions ] = useState({severity:"",title:"",message:"",buttons:{},action:""});
   const [ isEditProfile, setIsEditProfile ] = useState(false);
+  const [ projectTransactions, setProjectTransactions]= useState([]);
   const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
+  const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
   const [ snackbarMessage, setSnackbarMessage]=useState("");
   // const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
   const isLoadingValuations=false;
@@ -194,6 +196,32 @@ export default function Home (){
     history.push('/project')
   }
 
+  const getProjectSuccessCb=(apiData)=>{
+    if (apiData){
+      // alert("getProjectSuccessCb")
+      setProjectTransactions(apiData);
+      const ingresos = projectTransactions.filter(transaction => transaction.idTipoFlujo === "0").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
+      const egresos = projectTransactions.filter(transaction => transaction.idTipoFlujo === "1").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
+      const saldo = ingresos - egresos
+      // alert("saldo: " + saldo)
+      // setValuationsList(valuationsList.map(valuation => {
+      //   if (valuation.projectId === '3KD') {
+      //     return {
+      //       ...valuation,
+      //       projectRevenue:ingresos,
+      //       projectCost:egresos,
+      //       projectMargin:saldo,
+      //     };
+      //   }
+      //   return valuation;
+      // }));
+    }
+  }
+
+  const getProjectErrorCb=()=>{
+
+  }
+
   // function userValuationsSuccessCallback(apiData){
   //   const allValuations = apiData;
   //   setValuationsList(allValuations);
@@ -214,6 +242,7 @@ export default function Home (){
     if (! userId){
       history.push("/login")
     } 
+    getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/3KD`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
     // else { 
     //   getProject({ axiosInstance: api, method: 'GET', url: `/proyectos`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
     // }
