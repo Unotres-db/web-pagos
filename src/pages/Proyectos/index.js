@@ -343,10 +343,10 @@ export default function Proyectos (){
               <Box sx={{height:"5px"}}/>
               <Paper elevation={3} >
                 <Box style={{marginTop:"10px",marginLeft:"10px",marginBottom:"10px"}}> 
-                  <Typography style={{fontSize:"14px"}}>Proyecto: Villa del Bosque</Typography>
-                  <Typography style={{fontSize:"12px"}}>Construcción de 15 casas en Luque</Typography>
-                  <Typography style={{fontSize:"12px"}}>2.400 metros cuadrados</Typography>
-                  <Typography style={{fontSize:"12px"}}>Monto: Gs. 9.652 millones</Typography>
+                  <Typography style={{fontSize:"14px"}}>Proyecto: Edificio Tres Kandu</Typography>
+                  <Typography style={{fontSize:"12px"}}>Construcción edificio en San Lorenzo</Typography>
+                  {/* <Typography style={{fontSize:"12px"}}>2.400 metros cuadrados</Typography> */}
+                  <Typography style={{fontSize:"12px"}}>Monto Presupuestado Us$ 3.300.000</Typography>
                   <Box sx={{height:"5px"}}/>
                 </Box>
                 <Box sx={{height:"5px"}}/>

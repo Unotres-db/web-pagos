@@ -77,9 +77,9 @@ export default function Home (){
     projectName:"Villa del Bosque",
     projectStatus:"En Ejecución",
     projectBudget:1340556,
-    projectRevenue:1069506,
-    projectCost:1126649,
-    projectMargin:-57143,
+    projectRevenue:0,
+    projectCost:0,
+    projectMargin:0,
   },
   {
     ProjectDate:"2022-03-25 18:13:34",
