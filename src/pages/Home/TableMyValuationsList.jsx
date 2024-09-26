@@ -94,7 +94,8 @@ export default function TableMyValuationsList ({valuationsList, setValuationsLis
   };
 
   const handleButton = (id) => {
-    if (id==="VDB"){
+    if (id==="3KD"){
+    // if (id==="VDB"){
       history.push(`/project/${id}`)
       // history.push(`/products/${productId}`)
     } else {
