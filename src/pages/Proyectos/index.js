@@ -355,6 +355,8 @@ export default function Proyectos (){
                 <Box style={{display:"flex", justifyContent:"start"}}>
                  {/* "#E4D00A" "#FFBF00" */}
                   <Button variant="contained" size="small" disableRipple onClick={handleAddTransaction} style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Incluir</Button> 
+                  <Button variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Proveedor</Button>
+                  <Button variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Rubro</Button>  
                   {/* <Button variant="contained" size="small"  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Editar</Button>              */}
                   {/* <Button variant="contained" size="small" style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}}  >Excluir</Button> */}
                   <Button variant="contained" size="small" disabled style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Imprimir</Button>
