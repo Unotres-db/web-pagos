@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';   
 // import { esES } from '@mui/x-date-pickers/locales';   
 
+import { LoginContext } from '../../helpers/Context';
 import api from '../../services/api';
 import useAxios from '../../hooks/useAxios'
 import useForm from '../../hooks/useForm';
@@ -21,6 +22,7 @@ import DialogModal from '../../components/DialogModal';
 import RubrosAutoComplete from '../../components/RubrosAutoComplete';
 import RubrosComboBox from '../../components/RubrosComboBox';
 import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
+import SuppliersListByProject from '../../components/SuppliersListByProject';
 import PaymentAutocomplete from '../../components/PaymentAutocomplete';
 
 const useStyles = makeStyles((mainTheme) => ({
@@ -59,10 +61,11 @@ const useStyles = makeStyles((mainTheme) => ({
 
 export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdit }){
   const classes = useStyles();
-  const [ rubros, setRubros] = useState([]);
+  // const [ rubros, setRubros] = useState([]);
+  // const [ proveedores, setProveedores ] = useState([]);
+  const { suppliers, setSuppliers, categories, setCategories } = useContext(LoginContext)
   const [ isSnackbarOpen, setIsSnackbarOpen]= useState(false);
   const [ snackbarMessage, setSnackbarMessage] = useState("");
-  const [ proveedores, setProveedores ] = useState([]);
   const [ isEditField, setIsEditField] = useState(true)// eliminar?
   const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
   const [ isDialogOpen, setIsDialogOpen] = useState(false);
@@ -87,8 +90,8 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     const supplierObject = {id: "0", label: ""}
     const paymentObject = {id: "0", label: ""}
 
-  const { axiosFetch: getRubros, isLoading: isLoadingRubros, error: isErrorRubros } = useAxios();
-  const { axiosFetch: getProveedores, isLoading: isLoadingProveedores, error: isErrorProveedores } = useAxios();
+  // const { axiosFetch: getRubros, isLoading: isLoadingRubros, error: isErrorRubros } = useAxios();
+  // const { axiosFetch: getProveedores, isLoading: isLoadingProveedores, error: isErrorProveedores } = useAxios();
   const { axiosFetch: getFactura, isLoading: isLoadingFactura, error: isErrorFactura } = useAxios();
   const muiMontoFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Monto Factura", name: "montoFactura",InputProps: {startAdornment: <InputAdornment position="start">Gs.</InputAdornment> }};
   const muiNumeroFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Numero Factura", name: "numeroFactura" };
@@ -402,35 +405,37 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     }
   };
 
-  const getProveedoresSuccessCb=(apiData)=>{
-    if (apiData){
-      setProveedores(apiData)
-    }
-  }
+  // const getProveedoresSuccessCb=(apiData)=>{
+  //   if (apiData){
+  //     setProveedores(apiData)
+  //   }
+  // }
 
-  const getProveedoresErrorCb=()=>{
-    alert ("Error leyendo Proveedores desde la base de datos")
-  }
+  // const getProveedoresErrorCb=()=>{
+  //   alert ("Error leyendo Proveedores desde la base de datos")
+  // }
 
-  const getRubrosSuccessCb=(apiData)=>{
-    if (apiData){
-      setRubros(apiData)
-      getProveedores({ axiosInstance: api, method: 'GET', url: `/proveedores`, requestConfig: { headers: {'Authorization': "id",},}},getProveedoresSuccessCb, getProveedoresErrorCb);
-    }
-  }
+  // const getRubrosSuccessCb=(apiData)=>{
+  //   if (apiData){
+  //     setRubros(apiData)
+  //     getProveedores({ axiosInstance: api, method: 'GET', url: `/proveedores`, requestConfig: { headers: {'Authorization': "id",},}},getProveedoresSuccessCb, getProveedoresErrorCb);
+  //   }
+  // }
 
-  const getRubrosErrorCb=()=>{
-    alert ("Error leyendo Rubros desde la base de datos")
-  }
+  // const getRubrosErrorCb=()=>{
+  //   alert ("Error leyendo Rubros desde la base de datos")
+  // }
 
   useEffect(() => {
     setTransaccion(prevState => ({...prevState, idProyecto: id, idTipoFlujo:"1"}))
-    getRubros({ axiosInstance: api, method: 'GET', url: `/rubros`, requestConfig: { headers: {'Authorization': "id",},}},getRubrosSuccessCb, getRubrosErrorCb);
+    // getRubros({ axiosInstance: api, method: 'GET', url: `/rubros`, requestConfig: { headers: {'Authorization': "id",},}},getRubrosSuccessCb, getRubrosErrorCb);
   }, [ open ]);
 
   return (
     <>
-    { proveedores ? <>
+    { suppliers ? <>
+      {console.log("suppliers:")}
+      {console.log(suppliers)}
    
       <Paper className={classes.paperStyle}>
         <Dialog 
@@ -444,17 +449,22 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
           >
             <DialogContent style={{color:'white'}}>
               <DialogContentText id="alert-dialog-description">
-                <Typography align='center'>{`Incluir Factura`}</Typography>
+                <Typography align='center'>{`Incluir Factura o Pago`}</Typography>
 
                 <Box sx={{height:"10px"}}/>
                 <Grid container spacing={1}>
                 <Grid item xs={12} >
-                  <SuppliersAutocomplete 
+                  {/* <SuppliersAutocomplete 
                     supplierObject={supplierObject}
                     setterFunction={setTransaccion}
                     isEditField={isEditField}
                     setIsEditField={setIsEditField}
                     variant="filled"
+                  /> */}
+                  <SuppliersListByProject
+                    supplierObject={supplierObject} 
+                    setterFunction={setTransaccion} 
+                    suppliersList={suppliers}
                   />
                 </Grid> 
 
@@ -468,19 +478,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                     variant="filled"
                   />
                 </Grid>
-                {/* <Grid item xs={12} >
-                  <LocalizationProvider locale={esES}>
-                    <DatePicker
-                      label="Fecha Factura"
-                      value={fechaFactura}
-                      onChange={ (e) => {
-                        handleChange (e,setTransaccion,[noBlanks]);
-                      }}
-                      format="dd/MM/yyyy"
-                    />
-                  </LocalizationProvider>
-                </Grid> */}
-                
+
                 <Grid item xs={6} sm={6}>
                     <PatternFormat
                       format="##/##/####"
@@ -506,18 +504,18 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
-                    <NumericFormat
-                        value={montoFactura}
-                        customInput={TextField}
-                        allowNegative={false}
-                        onValueChange={(e) => {handleAmount (e)}}
-                        // onValueChange={ (e) => {
-                        //   handleChange (e,setTransaccion,[noBlanks]);
-                        // }}
-                        thousandSeparator="."
-                        decimalSeparator=","
-                        {...muiMontoFacturaProps}
-                      />
+                  <NumericFormat
+                    value={montoFactura}
+                    customInput={TextField}
+                    allowNegative={false}
+                    onValueChange={(e) => {handleAmount (e)}}
+                    // onValueChange={ (e) => {
+                    //   handleChange (e,setTransaccion,[noBlanks]);
+                    // }}
+                    thousandSeparator="."
+                    decimalSeparator=","
+                    {...muiMontoFacturaProps}
+                    />
                   </Grid>
                   {/* <Grid item xs={6} sm={6}>
                     <TextField variant ="outlined" margin="dense" size="small" fullWidth
@@ -568,22 +566,9 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                       onValueChange={(e) => { handlePaymentDate (e)}}
                       {...muiFechaPagoProps}
                     />
-                    {formErrors.fechaFactura ? <div className="error-helper-text">{formErrors.fechaFactura}</div> : null}
-                    {/* <TextField variant ="outlined" margin="dense" size="small" fullWidth
-                      label="Fecha Pago"
-                      name="fechaPago"
-                      value={fechaPago}
-                      autoComplete="fecha-pago"
-                      onChange={ (e) => {
-                        handleChange (e,setTransaccion,[noBlanks]);
-                     // handleChange (e,setRegisterData,[isValidName]);
-                      }}
-                      error={formErrors.fechaPago}
-                    />
-                    {formErrors.fechaPago ? <div className="error-helper-text">{formErrors.fechaPago}</div> : null} */}
+                    {formErrors.fechaPago ? <div className="error-helper-text">{formErrors.fechaPago}</div> : null}
                   </Grid>
-
-
+                  
                   <Grid item xs={6} sm={6}>
                     <TextField variant ="outlined" margin="dense" size="small" fullWidth
                       label="Comprobante de Pago"

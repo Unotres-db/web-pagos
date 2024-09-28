@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom';
 
 import { Stack, Grid, Paper, Box, Button, TableContainer, Table, TableHead, TableBody, TableRow, TableCell,Snackbar, SnackbarContent, useTheme, useMediaQuery, Typography, CircularProgress } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+
 
 import api from '../../services/api';
 import { LoginContext } from '../../helpers/Context';
@@ -84,7 +86,7 @@ const useStyles = makeStyles( () => ({
 export default function Proyectos (){
   const classes = useStyles();
   const { id } = useParams();  
-  const { transactions, setTransactions } = useContext(LoginContext);
+  const { transactions, setTransactions, suppliers, setSuppliers } = useContext(LoginContext);
   const { allTransactions, setAllTransactions } = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -354,12 +356,13 @@ export default function Proyectos (){
                 <Box sx={{height:"5px"}}/>
                 <Box style={{display:"flex", justifyContent:"start"}}>
                  {/* "#E4D00A" "#FFBF00" */}
-                  <Button variant="contained" size="small" disableRipple onClick={handleAddTransaction} style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Incluir</Button> 
-                  <Button variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Proveedor</Button>
-                  <Button variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Rubro</Button>  
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple onClick={handleAddTransaction} style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Factura/Pago</Button> 
+                  {/* <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disabled style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Pago</Button> */}
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Proveedor</Button>
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Rubro</Button>  
                   {/* <Button variant="contained" size="small"  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Editar</Button>              */}
                   {/* <Button variant="contained" size="small" style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}}  >Excluir</Button> */}
-                  <Button variant="contained" size="small" disabled style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Imprimir</Button>
+                  {/* <Button variant="contained" size="small" disabled style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Imprimir</Button> */}
 
                 </Box>
                 <Box sx={{height:"15px"}}/>
@@ -374,7 +377,7 @@ export default function Proyectos (){
                         <SuppliersListByProject
                           supplierObject={supplierObject} 
                           setterFunction={setSuppliersSearchId} 
-                          projectSuppliersList={projectSuppliersList}
+                          suppliersList={suppliers}
                         />
                       </Grid>
                       <Grid item xs={12} >
@@ -403,55 +406,8 @@ export default function Proyectos (){
                   <Box style={{height:"15px"}}/>
 
                 </Paper>
-                {/* <Box style={{marginTop:"10px",marginLeft:"10px",marginBottom:"10px"}}> 
-                  <Typography style={{fontSize:"12px"}}>Cuotas de inversion pendientes:</Typography> */}
-                  {/* <TableContainer component={Paper} >
-
-<Table className = {classes.table} size="small" aria-label="stycky header">
-
-  <TableHead className = {classes.TableHeader}>
-    <TableRow>
-      <TableCell className = {classes.TableTitle} style={{fontSize:"11px",width: "34%", padding:"4px",color:"whitesmoke" }} align="left">Inversionista</TableCell>
-      <TableCell className = {classes.TableTitle} style={{fontSize:"11px",width: "34%", padding:"4px",color:"whitesmoke" }} align="right">Vencimiento</TableCell>
-      <TableCell className = {classes.TableTitle} style={{fontSize:"11px",width: "34%", padding:"4px",color:"whitesmoke" }} align="right">Monto</TableCell>
-    </TableRow>
-  </TableHead>
-  <TableBody>
-    <TableRow>
-      <TableCell className = {classes.TableRows}  style={{fontSize:"11px", width: "34%", padding:"4px" }} align="left" >Analia Toranzo</TableCell>
-      <TableCell className = {classes.TableRows} style={{ fontSize:"11px",width: "33%", paddingRight:"5px", padding:"2px" }}  align="right" >05/Jun/2024</TableCell>
-      <TableCell className = {classes.TableRows} style={{ fontSize:"11px",width: "33%", paddingRight:"5px", padding:"2px" }}  align="right" >162.500.000</TableCell>
-      </TableRow>  
-      <TableRow>
-      <TableCell className = {classes.TableRows}  style={{fontSize:"11px", width: "34%", padding:"4px" }} align="left" >Lisandro Quaranta</TableCell>
-      <TableCell className = {classes.TableRows} style={{ fontSize:"11px",width: "33%", paddingRight:"5px", padding:"2px" }}  align="right" >05/Jun/2024</TableCell>
-      <TableCell className = {classes.TableRows} style={{ fontSize:"11px",width: "33%", paddingRight:"5px", padding:"2px" }}  align="right" >162.500.000</TableCell>
-    </TableRow>  
-    <TableRow>
-      <TableCell className = {classes.TableRows} style={{fontSize:"11px",width: "34%", padding:"4px" }} align="left">Total</TableCell>
-      <TableCell className = {classes.TableRows} style={{fontSize:"11px",width: "34%", padding:"4px" }} align="right"></TableCell>
-      <TableCell className = {classes.TableRows} style={{fontSize:"11px",width: "34%", padding:"4px" }} align="right">325.000.000</TableCell>
-    </TableRow>
-  </TableBody>
-</Table>
-</TableContainer> */}
-                  
-
-                {/* </Box> */}
-
-                {/* <ChartFreeCashFlow
-                  assumptions={assumptions} 
-                  combinedFinancialData={combinedFinancialData} 
-                  isCheckedShowPreviousYears={isCheckedShowPreviousYears} 
-                  isCheckedDescOrder={isCheckedDescOrder} isEstimateFcffOnly={isEstimateFcffOnly}
-                /> */}
+ 
               </Paper>
-              
-              {/* <Paper>
-                <ShowComments
-                  valuationId={valuationId} 
-                />
-              </Paper> */}
               <Box sx={{height:"5px"}}/>
               {/* <Paper elevation={3}>
                 <ChartRevenue
