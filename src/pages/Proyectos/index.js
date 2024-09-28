@@ -374,7 +374,7 @@ export default function Proyectos (){
                   <Box style={{display:"flex", justifyContent:"center",margin:"5px"}}>
                     <Grid container>
                       <Grid item xs={12} spacing={3}>
-                        <SuppliersListByProject
+                        <SuppliersAutocomplete
                           supplierObject={supplierObject} 
                           setterFunction={setSuppliersSearchId} 
                           suppliersList={suppliers}

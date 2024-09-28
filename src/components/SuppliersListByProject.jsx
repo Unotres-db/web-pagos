@@ -8,7 +8,6 @@ export default function SuppliersListByProject ({supplierObject, setterFunction,
   const label = supplierObject.label? supplierObject.label: "Proveedor"
  
   const updateState=(newValue)=>{
-    // alert("id:" + newValue.id + " label:" + newValue.label )
     setterFunction(prevState => ({...prevState, idProveedor: newValue.id}))
   }
 
