@@ -461,7 +461,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                     setIsEditField={setIsEditField}
                     variant="filled"
                   /> */}
-                  <SuppliersListByProject
+                  <SuppliersAutocomplete
                     supplierObject={supplierObject} 
                     setterFunction={setTransaccion} 
                     suppliersList={suppliers}
