@@ -178,18 +178,19 @@ export default function Proyectos (){
   }
 
   const filterFunction=(supplierId)=>{
-    if (supplierId !==""){
+    if (supplierId !=="" && supplierId!==undefined && supplierId!==null){
 
       if (supplierId==="0"){
         return transactions
       }
       const filtered = transactions.filter((list) => (list.idProveedor === supplierId ))  
       console.log(filtered)
-      alert("filtered.length"+filtered.length)
+      // alert("filtered.length"+filtered.length)
       if (filtered.length > 0){
         return filtered
       }
     }
+    // alert("retorna transactions en filterFunction")
     return transactions
   }
 
@@ -218,8 +219,8 @@ export default function Proyectos (){
   // }, [isDelete]);
 
   useEffect(() => {
-    alert("useEffect [supplierSearchId]")
-    alert(supplierSearchId.idProveedor)
+    // alert("useEffect [supplierSearchId]")
+    // alert(supplierSearchId.idProveedor)
     // if (supplierSearchId.idProveedor!==""){
     //   if (supplierSearchId.idProveedor!=="0"){
     //     alert("!==0")
@@ -258,6 +259,7 @@ export default function Proyectos (){
       <>
       {console.log(" proyectos-index transactions")}
       {console.log(transactions)}
+      {console.log(" proyectos-index filteredTransactions")}
       {console.log(filteredTransactions)}
       <div className={classes.root}>
       {/* <Header />   */}
@@ -319,7 +321,16 @@ export default function Proyectos (){
           <Paper className={classes.paperStyle} elevation={3}  > 
             { ! isMobile && ! isTablet? 
               <>
-              <TableProject  transactions={transactions} isEdit={isEdit}/>
+              <TableProject 
+                id={id}
+                // transactions={transactions} 
+                transactions={filteredTransactions}
+                setTransactions={setTransactions} 
+                isEdit={isEdit}
+                setIsEdit={setIsEdit}
+                isDelete={isDelete} 
+                setIsDelete={setIsDelete}
+              />
 
               <Box sx={{height:"5px"}}/>
               </>

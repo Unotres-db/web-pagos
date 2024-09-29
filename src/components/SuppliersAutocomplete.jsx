@@ -8,7 +8,12 @@ export default function SuppliersListByProject ({supplierObject, setterFunction,
   const label = supplierObject.label? supplierObject.label: "Proveedor"
  
   const updateState=(newValue)=>{
-    setterFunction(prevState => ({...prevState, idProveedor: newValue.id? newValue.id: "0"}))
+    if (newValue!==null && newValue!==undefined){
+      setterFunction(prevState => ({...prevState, idProveedor: newValue.id? newValue.id: "0"}))  
+    } else {
+      setterFunction(prevState => ({...prevState, idProveedor: "0"}))
+    }
+   
   }
 
   return (
@@ -19,6 +24,7 @@ export default function SuppliersListByProject ({supplierObject, setterFunction,
             disablePortal
             fullWidth
             size="small"
+            clearIcon={false}
             options={suppliersList}
             sx={{ width: "100%"}}
             onChange={(event, newValue) => updateState(newValue) }
