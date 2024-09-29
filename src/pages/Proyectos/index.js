@@ -88,6 +88,7 @@ export default function Proyectos (){
   const { id } = useParams();  
   const { transactions, setTransactions, suppliers, setSuppliers } = useContext(LoginContext);
   const { allTransactions, setAllTransactions } = useState(null);
+  const [ filteredTransactions, setFilteredTransactions]=useState([])
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));//md
@@ -105,6 +106,7 @@ export default function Proyectos (){
   const objetoRubro = {idRubro: "0", nombreRubro: ""}
   const supplierObject = {id: "0", label: ""}
   const paymentObject = {id: "0", label: ""}
+  // let filteredTransactions=null
   let projectSuppliersList = transactions ? [
     { id: "0", label: "Todos" },
     ...
@@ -158,7 +160,6 @@ export default function Proyectos (){
     if(apiData){
       // alert("setTransactions(apiData)")
       setTransactions(apiData);
-      setAllTransactions(apiData)
     }
   }
 
@@ -177,19 +178,19 @@ export default function Proyectos (){
   }
 
   const filterFunction=(supplierId)=>{
-    console.log("allTransactions")
-    console.log(allTransactions)
-    // alert("filterFunction, supplierId:"+supplierId)
     if (supplierId !==""){
-      const filteredTransactions = transactions.filter((list) => (list.idProveedor === supplierId ))  
-      console.log(filteredTransactions)
-      // return transactions.filter((list) => (list.idProveedor === supplierId ))  
-      alert("filteredTransactions.length"+filteredTransactions.length)
-      if (filteredTransactions.length > 0){
-        return filteredTransactions
+
+      if (supplierId==="0"){
+        return transactions
       }
-      return allTransactions
+      const filtered = transactions.filter((list) => (list.idProveedor === supplierId ))  
+      console.log(filtered)
+      alert("filtered.length"+filtered.length)
+      if (filtered.length > 0){
+        return filtered
+      }
     }
+    return transactions
   }
 
   // const deleteTransactionSuccessCb=(apiData)=>{
@@ -217,11 +218,21 @@ export default function Proyectos (){
   // }, [isDelete]);
 
   useEffect(() => {
-    // alert("ueEffect supplierSearchId: "+supplierSearchId.idProveedor)
-    console.log(supplierSearchId.idProveedor)
-    if (supplierSearchId.idProveedor){
-      setTransactions(filterFunction(supplierSearchId.idProveedor));
-    }
+    alert("useEffect [supplierSearchId]")
+    alert(supplierSearchId.idProveedor)
+    // if (supplierSearchId.idProveedor!==""){
+    //   if (supplierSearchId.idProveedor!=="0"){
+    //     alert("!==0")
+    //     setFilteredTransactions(transactions.filter((list) => (list.idProveedor === supplierSearchId.idProveedor )))
+    //   } else {
+    //     alert("===0, todos")
+    //     setFilteredTransactions (transactions)
+    //   }
+    // } else {
+    //   alert("===''")
+    //   setFilteredTransactions (transactions)
+    // }
+    setFilteredTransactions(filterFunction(supplierSearchId.idProveedor))
   }, [supplierSearchId]);
 
 
@@ -243,7 +254,11 @@ export default function Proyectos (){
     <>
     {/* {alert("index id: "+id)} */}
       { ! transactions ? 
+      
       <>
+      {console.log(" proyectos-index transactions")}
+      {console.log(transactions)}
+      {console.log(filteredTransactions)}
       <div className={classes.root}>
       {/* <Header />   */}
       <Grid container> 
@@ -264,10 +279,7 @@ export default function Proyectos (){
 
     { transactions.length > 0? 
     <>
-    {console.count}
-    {console.log("projectSuppliersList")}
-    {console.log(projectSuppliersList)}
-    
+   
     <Grid container item direction="column" alignItems="center" style = {{minHeight: '80vh'}}  >
       
       {/* Grid para ocupar el heigth del app bar */}
@@ -284,7 +296,8 @@ export default function Proyectos (){
           <Paper  elevation={3} > 
             <TableProject 
               id={id}
-              transactions={transactions} 
+              // transactions={transactions} 
+              transactions={filteredTransactions}
               setTransactions={setTransactions} 
               isEdit={isEdit}
               setIsEdit={setIsEdit}
@@ -377,7 +390,7 @@ export default function Proyectos (){
                         <SuppliersAutocomplete
                           supplierObject={supplierObject} 
                           setterFunction={setSuppliersSearchId} 
-                          suppliersList={suppliers}
+                          suppliersList={projectSuppliersList}
                         />
                       </Grid>
                       <Grid item xs={12} >
@@ -418,26 +431,7 @@ export default function Proyectos (){
                 />
               </Paper>  */}
               <Box sx={{height:"5px"}}/> 
-              {/* <DisclaimerText /> */}
-              {/* <Box sx={{height:"5px"}}/>
-              <Paper elevation={3}>
-                <ChartRevenue
-                  assumptions={assumptions} 
-                  combinedFinancialData={combinedFinancialData} 
-                  isCheckedShowPreviousYears={isCheckedShowPreviousYears} 
-                  isCheckedDescOrder={isCheckedDescOrder} isEstimateFcffOnly={isEstimateFcffOnly}
-                />
-              </Paper>  */}
-              {/* {isMobile ? 
-              <>
-              <Box sx={{height:"5px"}}/>
-              <DisclaimerText />
-              <Box sx={{height:"5px"}}/>
-              <ShowComments 
-                valuationId={valuationId}
-              /> 
-              </>
-              : null} */}
+ 
               </>
 
                   {/* combinedFinancialData ? */}

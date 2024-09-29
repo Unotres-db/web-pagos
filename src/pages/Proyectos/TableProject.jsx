@@ -244,10 +244,11 @@ const handleSnackbarClose=()=>{
 
     {/* <Header/> */}
     { transactions? <>
-      {/* {alert("table project id :" +transactions[0].idProyecto)} */}
+      {/* {alert("renderizacion de tableProject")} */}
       {transaccionEditar? console.log("transaccionEditar: "+ transaccionEditar.idTransaccion + " " + transaccionEditar.numeroFactura + " " + transaccionEditar.montoFactura): null}
-      {/* {console.log(transactions)}
-      {console.log(transaccionEditar)} */}
+      {console.log("tableProject: transactions")}
+      {console.log(transactions)}
+      {/* {console.log(transaccionEditar)} */}
     
      
     <TableContainer component={Paper} >
