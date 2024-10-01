@@ -13,15 +13,20 @@ import { makeStyles } from '@material-ui/core/styles';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';   
 // import { esES } from '@mui/x-date-pickers/locales';   
 
+import { LoginContext } from '../../helpers/Context';
 import api from '../../services/api';
 import useAxios from '../../hooks/useAxios'
 import useForm from '../../hooks/useForm';
 
+import CashFlowTypeAutocomplete from '../../components/CashFlowTypeAutocomplete';
+import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
 import DialogModal from '../../components/DialogModal';
 import RubrosAutoComplete from '../../components/RubrosAutoComplete';
 import RubrosComboBox from '../../components/RubrosComboBox';
 import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
+import SuppliersListByProject from '../../components/SuppliersListByProject';
 import PaymentAutocomplete from '../../components/PaymentAutocomplete';
+import TypesAutocomplete from '../../components/TypesAutocomplete';
 
 const useStyles = makeStyles((mainTheme) => ({
 
@@ -55,14 +60,18 @@ const useStyles = makeStyles((mainTheme) => ({
       color: '#344955', 
     },
   },
+  greenSnackbarContent: {
+    backgroundColor: "#228B22"
+  },
 }));
 
 export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdit }){
   const classes = useStyles();
-  const [ rubros, setRubros] = useState([]);
+  const { suppliers, setSuppliers, categories, setCategories, cashFlowType, setCashFlowType } = useContext(LoginContext)
+  const [ supplierSearchId, setSuppliersSearchId]= useState("");
+  const [ categorySearchId, setCategorySearchId]= useState("");
   const [ isSnackbarOpen, setIsSnackbarOpen]= useState(false);
   const [ snackbarMessage, setSnackbarMessage] = useState("");
-  const [ proveedores, setProveedores ] = useState([]);
   const [ isEditField, setIsEditField] = useState(true)// eliminar?
   const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
   const [ isDialogOpen, setIsDialogOpen] = useState(false);
@@ -83,12 +92,13 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     fechaPago,
     idTipoPago,
     idTipoFlujo } = transaccion
-    const objetoRubro = {idRubro: "0", nombreRubro: ""}
-    const supplierObject = {id: "0", label: ""}
-    const paymentObject = {id: "0", label: ""}
+    const objetoRubro = {idRubro: "0", nombreRubro: ""};
+    const cashFlowObject={id:"0", label:""};
+    const categoryObject = {id: "0", label: ""};
+    const supplierObject = {id: "0", label: ""};
+    const paymentObject = {id: "0", label: ""};
+    const typeObject = {id: "0", label: ""};
 
-  const { axiosFetch: getRubros, isLoading: isLoadingRubros, error: isErrorRubros } = useAxios();
-  const { axiosFetch: getProveedores, isLoading: isLoadingProveedores, error: isErrorProveedores } = useAxios();
   const { axiosFetch: getFactura, isLoading: isLoadingFactura, error: isErrorFactura } = useAxios();
   const muiMontoFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Monto Factura", name: "montoFactura",InputProps: {startAdornment: <InputAdornment position="start">Gs.</InputAdornment> }};
   const muiNumeroFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Numero Factura", name: "numeroFactura" };
@@ -251,7 +261,6 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     const parsedDateMonth = format(parsedDate, 'MM');
     const currentUTCMonth = format(currentUTCDate, 'MM');
     if (parsedDateYear < currentUTCYear || (parsedDateYear === currentUTCYear && parsedDateMonth < currentUTCMonth - 1)) {
-      // alert("Confirma fecha de factura inferior al mes anterior?")
       setDialogOptions({severity:"warning", title:"Atención", message:"La fecha incluida no es reciente. Favor verificar, gracias!",buttons:{button1:"Ok"}})
       setIsDialogOpen(true)
       return false;
@@ -286,12 +295,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
 
   function handleInvoiceNumber (newValue){
     if(newValue){
-      // alert(newValue.value);
-      // console.log("newValue")
-      // console.log(newValue.value)
-      //tetear si ya esta grabada
       if (newValue.value.length===13){
-        // const dataToProcess = { id_proveedor:"2", numero_factura: "001-001-0000565" }
         getFactura({ axiosInstance: api, method: 'GET', url: `/factura?id_proveedor=${transaccion.idProveedor}&numero_factura=${newValue.formattedValue}`, requestConfig: { headers: {'Authorization': "id",},}},getInvoiceSuccessCb, getInvoiceErrorCb);
       }
       setTransaccion(prevState => ({...prevState, numeroFactura: newValue.formattedValue}))
@@ -363,7 +367,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
   }
 
   function checkRequiredFields(){
-    if (idProveedor !=="" && idRubro !=="" && montoFactura !=="" && fechaFactura !=="" && descripcion !==""){
+    if (idProveedor !=="" && idRubro !=="" && montoFactura !=="" && descripcion !==""){
       return true
     } 
     return false
@@ -371,11 +375,6 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
 
   const handleSaveChanges = async () => {
     if (! checkFormErrors() ) {
-      // const fechaFacturaMilliseconds=convertToMilliseconds(fechaFactura)
-      // const fechaPagoMilliseconds= fechaPago? convertToMilliseconds(fechaPagoMilliseconds): ""
-      // setTransaccion(prevState => ({...prevState, fechaFactura:fechaFacturaMilliseconds, fechaPago:fechaPagoMilliseconds }))
-      // console.log("transaccion")
-      // console.log(transaccion)
       saveTransaction(transaccion)
       setTransaccion (prevState => ({...prevState, 
         idProyecto:"", 
@@ -402,35 +401,13 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     }
   };
 
-  const getProveedoresSuccessCb=(apiData)=>{
-    if (apiData){
-      setProveedores(apiData)
-    }
-  }
-
-  const getProveedoresErrorCb=()=>{
-    alert ("Error leyendo Proveedores desde la base de datos")
-  }
-
-  const getRubrosSuccessCb=(apiData)=>{
-    if (apiData){
-      setRubros(apiData)
-      getProveedores({ axiosInstance: api, method: 'GET', url: `/proveedores`, requestConfig: { headers: {'Authorization': "id",},}},getProveedoresSuccessCb, getProveedoresErrorCb);
-    }
-  }
-
-  const getRubrosErrorCb=()=>{
-    alert ("Error leyendo Rubros desde la base de datos")
-  }
-
   useEffect(() => {
     setTransaccion(prevState => ({...prevState, idProyecto: id, idTipoFlujo:"1"}))
-    getRubros({ axiosInstance: api, method: 'GET', url: `/rubros`, requestConfig: { headers: {'Authorization': "id",},}},getRubrosSuccessCb, getRubrosErrorCb);
   }, [ open ]);
 
   return (
     <>
-    { proveedores ? <>
+    { suppliers ? <>
    
       <Paper className={classes.paperStyle}>
         <Dialog 
@@ -444,43 +421,31 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
           >
             <DialogContent style={{color:'white'}}>
               <DialogContentText id="alert-dialog-description">
-                <Typography align='center'>{`Incluir Factura`}</Typography>
+                <Typography align='center'>{`Incluir Factura o Pago`}</Typography>
 
                 <Box sx={{height:"10px"}}/>
                 <Grid container spacing={1}>
                 <Grid item xs={12} >
-                  <SuppliersAutocomplete 
-                    supplierObject={supplierObject}
-                    setterFunction={setTransaccion}
-                    isEditField={isEditField}
-                    setIsEditField={setIsEditField}
-                    variant="filled"
+                  <SuppliersAutocomplete
+                    supplierObject={supplierObject} 
+                    setterFunction={setTransaccion} 
+                    suppliersList={suppliers}
                   />
                 </Grid> 
 
-                <Grid item xs={12} >
-                  <RubrosComboBox 
-                    objetoRubro={objetoRubro}
-                    transaccion={transaccion}
-                    setTransaccion={setTransaccion}
-                    isEditField={isEditField}
-                    setIsEditField={setIsEditField}
-                    variant="filled"
+                <Grid item xs={12} sm={6} >
+                  <CategoriesAutocomplete
+                      categoryObject={categoryObject} 
+                      setterFunction={setTransaccion} 
+                      categoriesList={categories}
                   />
                 </Grid>
-                {/* <Grid item xs={12} >
-                  <LocalizationProvider locale={esES}>
-                    <DatePicker
-                      label="Fecha Factura"
-                      value={fechaFactura}
-                      onChange={ (e) => {
-                        handleChange (e,setTransaccion,[noBlanks]);
-                      }}
-                      format="dd/MM/yyyy"
-                    />
-                  </LocalizationProvider>
-                </Grid> */}
-                
+                <Grid item xs={12} sm={6} >
+                  <TypesAutocomplete 
+                    typeObject={typeObject}
+                    setterFunction={setTransaccion} 
+                  />
+                 </Grid> 
                 <Grid item xs={6} sm={6}>
                     <PatternFormat
                       format="##/##/####"
@@ -504,20 +469,26 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                   />
                   {formErrors.numeroFactura ? <div className="error-helper-text">{formErrors.numeroFactura}</div> : null}
                 </Grid>
-
                 <Grid item xs={12} sm={6}>
-                    <NumericFormat
-                        value={montoFactura}
-                        customInput={TextField}
-                        allowNegative={false}
-                        onValueChange={(e) => {handleAmount (e)}}
-                        // onValueChange={ (e) => {
-                        //   handleChange (e,setTransaccion,[noBlanks]);
-                        // }}
-                        thousandSeparator="."
-                        decimalSeparator=","
-                        {...muiMontoFacturaProps}
-                      />
+                  <Box style={{height:"8px"}}/>
+                  <CashFlowTypeAutocomplete
+                    cashFlowObject={cashFlowObject} 
+                    setterFunction={setTransaccion}
+                  />
+                </Grid> 
+                <Grid item xs={12} sm={6}>
+                  <NumericFormat
+                    value={montoFactura}
+                    customInput={TextField}
+                    allowNegative={false}
+                    onValueChange={(e) => {handleAmount (e)}}
+                    // onValueChange={ (e) => {
+                    //   handleChange (e,setTransaccion,[noBlanks]);
+                    // }}
+                    thousandSeparator="."
+                    decimalSeparator=","
+                    {...muiMontoFacturaProps}
+                    />
                   </Grid>
                   {/* <Grid item xs={6} sm={6}>
                     <TextField variant ="outlined" margin="dense" size="small" fullWidth
@@ -568,22 +539,9 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                       onValueChange={(e) => { handlePaymentDate (e)}}
                       {...muiFechaPagoProps}
                     />
-                    {formErrors.fechaFactura ? <div className="error-helper-text">{formErrors.fechaFactura}</div> : null}
-                    {/* <TextField variant ="outlined" margin="dense" size="small" fullWidth
-                      label="Fecha Pago"
-                      name="fechaPago"
-                      value={fechaPago}
-                      autoComplete="fecha-pago"
-                      onChange={ (e) => {
-                        handleChange (e,setTransaccion,[noBlanks]);
-                     // handleChange (e,setRegisterData,[isValidName]);
-                      }}
-                      error={formErrors.fechaPago}
-                    />
-                    {formErrors.fechaPago ? <div className="error-helper-text">{formErrors.fechaPago}</div> : null} */}
+                    {formErrors.fechaPago ? <div className="error-helper-text">{formErrors.fechaPago}</div> : null}
                   </Grid>
-
-
+                  
                   <Grid item xs={6} sm={6}>
                     <TextField variant ="outlined" margin="dense" size="small" fullWidth
                       label="Comprobante de Pago"

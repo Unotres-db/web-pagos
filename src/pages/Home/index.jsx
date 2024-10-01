@@ -66,7 +66,7 @@ const useStyles = makeStyles( () => ({
 
 export default function Home (){
   const classes = useStyles();
-  const { userData } = useContext(LoginContext)
+  const { userData, suppliers, setSuppliers, categories, setCategories } = useContext(LoginContext)
   const { userId }= userData
   const [ isAddProject, setIsAddProject] = useState(false); 
   const [ isEdit, setIsEdit]=useState(false);
@@ -163,12 +163,13 @@ export default function Home (){
     projectCost:0,
     projectMargin:0,
   }
-  
   ]);
 
   const [ isEditProfile, setIsEditProfile ] = useState(false);
   const [ projectTransactions, setProjectTransactions]= useState([]);
   const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
+  const { axiosFetch: getSuppliers, isLoading: isLoadingSuppliers, error: isErrorSuppliers } = useAxios();
+  const { axiosFetch: getCategories, isLoading: isLoadingCategories, error: isErrorCategories } = useAxios();
   const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
   const [ snackbarMessage, setSnackbarMessage]=useState("");
   // const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
@@ -203,23 +204,31 @@ export default function Home (){
       const ingresos = projectTransactions.filter(transaction => transaction.idTipoFlujo === "0").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
       const egresos = projectTransactions.filter(transaction => transaction.idTipoFlujo === "1").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
       const saldo = ingresos - egresos
-      // alert("saldo: " + saldo)
-      // setValuationsList(valuationsList.map(valuation => {
-      //   if (valuation.projectId === '3KD') {
-      //     return {
-      //       ...valuation,
-      //       projectRevenue:ingresos,
-      //       projectCost:egresos,
-      //       projectMargin:saldo,
-      //     };
-      //   }
-      //   return valuation;
-      // }));
     }
   }
 
   const getProjectErrorCb=()=>{
 
+  }
+
+  const getCategoriesSuccessCb=(apiData)=>{
+    if (apiData){
+      setCategories(apiData)
+    }
+  }
+
+  const getCategoriesErrorCb=()=>{
+    alert("No fue posible cargar el listado de proveedores")
+  }
+
+  const getSuppliersSuccessCb=(apiData)=>{
+    if (apiData){
+      setSuppliers(apiData)
+    }
+  }
+
+  const getSuppliersErrorCb=()=>{
+    alert("No fue posible cargar el listado de proveedores")
   }
 
   // function userValuationsSuccessCallback(apiData){
@@ -242,6 +251,8 @@ export default function Home (){
     if (! userId){
       history.push("/login")
     } 
+    getCategories({ axiosInstance: api, method: 'GET', url: `/rubros`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getCategoriesSuccessCb, getCategoriesErrorCb);
+    getSuppliers({ axiosInstance: api, method: 'GET', url: `/proveedores`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getSuppliersSuccessCb, getSuppliersErrorCb);
     getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/3KD`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
     // else { 
     //   getProject({ axiosInstance: api, method: 'GET', url: `/proyectos`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
@@ -264,7 +275,7 @@ export default function Home (){
       {/* <Box style={{height:"5px"}}/>
       <ExchangeRate /> */}
       <Box style={{height:"5px"}}/>
-      <BankAccounts />
+      {/* <BankAccounts /> */}
 
       <Box style={{height:"2px"}}/>
       {/* <Paper style={{height:"110px"}} elevation={6}> */}

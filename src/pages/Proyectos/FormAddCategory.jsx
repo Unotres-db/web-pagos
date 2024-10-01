@@ -29,26 +29,22 @@ const useStyles = makeStyles((mainTheme) => ({
   },
 }));
 
-export default function FormAddSupplier({ open, onClose}){
+export default function FormAddCategory({ open, onClose}){
   const classes = useStyles();
-  const { suppliers, setSuppliers}= useContext(LoginContext);
+  const { categories, setCategories}= useContext(LoginContext);
   const [ isSnackbarOpen, setIsSnackbarOpen]= useState(false);
   const [ snackbarMessage, setSnackbarMessage] = useState("");
   const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
   const [ isDialogOpen, setIsDialogOpen] = useState(false);
-  const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin, chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, proyecto, setProyecto, formErrors, setFormErrors, proveedor, setProveedor } = useForm ();
-  const { nombre, ruc, direccion } = proveedor 
-  // const muiRucProps = { required: false, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Numero de RUC", name: "ruc" };
+  const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin, chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, proyecto, setProyecto, formErrors, setFormErrors, proveedor, setProveedor, rubro, setRubro } = useForm ();
+  const { idRubro, nombre } = rubro 
   const [ isEdit, setIsEdit] = useState(true)// eliminar?
-  const { axiosFetch: postSupplier} = useAxios(); 
+  const { axiosFetch: postCategory} = useAxios(); 
 
   const handleSnackbarClose=()=>{
     setProveedor (prevState => ({...prevState, 
-      idProveedor: "",
-      nombre: "",
-      razonSocial: "",
-      ruc: "",
-      direccion: "",
+      idRubro: "",
+      nombre: ""
     }))
     setIsSnackbarOpen(false);
     }
@@ -58,38 +54,35 @@ export default function FormAddSupplier({ open, onClose}){
     }
 
     // UseAxios catch error useAxios:Cannot read properties of undefined (reading 'localeCompare')
-    const handleAddSuplier = (newSupplier) => {
-      const newRegister={id:newSupplier.idProveedor, label:newSupplier.nombre, ruc:newSupplier.ruc}
-      const updatedSuppliers = [...suppliers, newRegister];
-      updatedSuppliers.sort((a, b) => a.label.localeCompare(b.label));
-      setSuppliers(updatedSuppliers);
+    const handleAddCategory = (newCategory) => {
+      const newRegister={id:newCategory.idRubro, label:newCategory.nombrec}
+      const updatedCategories = [...categories, newRegister];
+      updatedCategories.sort((a, b) => a.label.localeCompare(b.label));
+      setCategories(updatedCategories);
     };
 
 
-  const supplierSuccessCb=(apiData)=>{
+  const categorySuccessCb=(apiData)=>{
     const { id } = apiData
-    setProveedor (prevState => ( {...prevState, idProveedor: id}));
-    handleAddSuplier(proveedor)
+    setRubro (prevState => ( {...prevState, idRubro: id}));
+    handleAddCategory(rubro)
     setIsEdit(true);
-    setSnackbarMessage("Proveedor grabado exitosamente en la base de datos")
+    setSnackbarMessage("Rubro grabado exitosamente en la base de datos")
     setIsSnackbarOpen(true);
   }  
 
-  const supplierErrorCb=()=>{
+  const categoryErrorCb=()=>{
     alert("Hubo un error en el acceso a la base de datos. Por favor, inténtalo más tarde, gracias!");
   }
 
-  function saveSupplier(proveedor)  {
-    postSupplier({ axiosInstance: api, method: 'POST', url: '/proveedores', data: proveedor, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},supplierSuccessCb, supplierErrorCb);
+  function saveCategory(rubro)  {
+    postCategory({ axiosInstance: api, method: 'POST', url: '/rubros', data: rubro, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},categorySuccessCb, categoryErrorCb);
   }
 
   const handleCancel=()=>{
-    setProveedor(prevState => ({...prevState, 
-      idProveedor: "",
-      nombre: "",
-      razonSocial: "",
-      ruc: "",
-      direccion: "",
+    setRubro(prevState => ({...prevState, 
+      idRubro: "",
+      nombre: ""
     }))
     onClose()
   }
@@ -115,27 +108,20 @@ export default function FormAddSupplier({ open, onClose}){
   }
 
   const handleSaveChanges = async () => {
-    // alert("entrou em handleSaveChanges")
-    // alert(proveedor.nombre + " " + proveedor.ruc+ " "+proveedor.idProveedor)
-    // console.log("proveedor")
-    // console.log(proveedor);
     if (! checkFormErrors()) {   //&& checkRequiredFields()
-      saveSupplier(proveedor)
+      saveCategory(rubro)
     } else {
-      alert("! checkFormErrors() &&  checkRequiredFields()")
+    //   alert("! checkFormErrors() &&  checkRequiredFields()")
       console.log("Not saved in database")
     }
     onClose();
   };
 
   useEffect(() => {
-    setProveedor({idProveedor: "", nombre: "", razonSocial: "", ruc: "", direccion: ""})
+    setRubro({idRubro: "", nombre: ""})
     setFormErrors(prevState => ({...prevState, 
-      idProveedor: "",
-      nombre: "",
-      razonSocial: "",
-      ruc: "",
-      direccion: "",
+      idRubro: "",
+      nombre: ""
     }))
   }, [ open ]);
 
@@ -160,29 +146,16 @@ export default function FormAddSupplier({ open, onClose}){
 
                 <Grid item xs={12} >
                   <TextField variant ="outlined" margin="dense" size="small" fullWidth
-                    label="Nombre del Proveedor *"
+                    label="Nombre del Rubro *"
                     name="nombre"
                     value={nombre}
-                    autoComplete="nombre-proveedor"
+                    autoComplete="nombre-rubro"
                     onChange={ (e) => {
-                      handleChange (e,setProveedor,[]);
+                      handleChange (e,setRubro,[]);
                     }}
                     error={formErrors.nombre}
                   />
                   {formErrors.nombre ? <div className="error-helper-text">{formErrors.nombre}</div> : null}
-                </Grid>
-                <Grid item xs={6} >
-                  <TextField variant ="outlined" margin="dense" size="small" fullWidth
-                    label="RUC"
-                    name="ruc"
-                    value={ruc}
-                    autoComplete="ruc-proveedor"
-                    onChange={ (e) => {
-                      handleChange (e,setProveedor,[]);
-                    }}
-                    error={formErrors.ruc}
-                  />
-                  {formErrors.ruc ? <div className="error-helper-text">{formErrors.ruc}</div> : null}
                 </Grid>
 
                 </Grid>

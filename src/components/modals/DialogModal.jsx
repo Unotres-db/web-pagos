@@ -103,7 +103,6 @@ export default function DialogModal ({open, onClose, severity, title, buttons, c
               <Button type="submit" className={classes.buttonStyle} style={{color:bkColor}} onClick={() => onClose (buttons[key], action)} variant="outlined" disableRipple>{buttons[key]}</Button>
             </Grid>
             )
-            
           })}
           { numberOfButtons = 2 ? <>
             <Grid item direction="row" xs={gridSpace} />

@@ -4,19 +4,25 @@ import { useHistory } from 'react-router-dom';
 
 import { Stack, Grid, Paper, Box, Button, TableContainer, Table, TableHead, TableBody, TableRow, TableCell,Snackbar, SnackbarContent, useTheme, useMediaQuery, Typography, CircularProgress } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+
 
 import api from '../../services/api';
 import { LoginContext } from '../../helpers/Context';
 import useAxios from '../../hooks/useAxios';
 
 import Header from '../../components/Header';
+// CategoriesAutocomplete\
+import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
+import FormAddCategory from './FormAddCategory';
+import FormAddSupplier from './FormAddSupplier';
 import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
-import SuppliersListByProject from '../../components/SuppliersListByProject';
-import TypesListByProjecy from '../../components/TypesListByProject';
+// import SuppliersListByProject from '../../components/SuppliersListByProject';
+// import TypesListByProjecy from '../../components/TypesListByProject';
 import TableProject from './TableProject';
-import FormInc from './FormInc';
+// import FormInc from './FormInc';
 import FormAddTransaction from './FormAddTransaction';
-import FormEditTransaction from './FormEditTransaction';
+// import FormEditTransaction from './FormEditTransaction';
 import Subtotal from './Subtotal';
 
 const useStyles = makeStyles( () => ({
@@ -84,15 +90,19 @@ const useStyles = makeStyles( () => ({
 export default function Proyectos (){
   const classes = useStyles();
   const { id } = useParams();  
-  const { transactions, setTransactions } = useContext(LoginContext);
+  const { transactions, setTransactions, suppliers, setSuppliers,cashFlowType, setCashFlowType } = useContext(LoginContext);
   const { allTransactions, setAllTransactions } = useState(null);
+  const [ filteredTransactions, setFilteredTransactions]=useState([])
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));//md
   const [ supplierSearchId, setSuppliersSearchId]= useState("");
+  const [ categorySearchId, setCategorySearchId]= useState("");
   const [ isEditField, setIsEditField] = useState(true)// eliminar?
   const [ isEdit, setIsEdit] = useState(false); 
   const [ isDelete, setIsDelete] = useState(false); 
+  const [ isAddCategory, setIsAddCategory] = useState(false); 
+  const [ isAddSupplier, setIsAddSupplier] = useState(false); 
   const [ isAddTransaction, setIsAddTransaction] = useState(false); 
   const [ isEditTransaction, setIsEditTransaction] = useState(false); 
   const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
@@ -100,40 +110,84 @@ export default function Proyectos (){
   // const [ transactions, setTransactions] = useState(null);
   const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
   const { axiosFetch: delTransaction, isLoading: isLoadingDeletion, error: isErrorDeletion } = useAxios();
-  const objetoRubro = {idRubro: "0", nombreRubro: ""}
-  const supplierObject = {id: "0", label: ""}
-  const paymentObject = {id: "0", label: ""}
-  let projectSuppliersList = transactions ? [
-    { id: "0", label: "Todos" },
-    ...
-    transactions
-    .map(transaction => ({
-        id: transaction.idProveedor,
-        label: transaction.proveedor
-    }))
-    .reduce((acc, cur) => {
-        const existing = acc.find(item => item.id === cur.id);
-        if (!existing) {
-            acc.push(cur);
-        }
-        return acc;
-    }, [].sort((a, b) => a.label.localeCompare(b.label)))]:[];
+  const categoryObject = {id: "0", label: "Todos"}
+  const supplierObject = {id: "0", label: "Todos"}
+  // const paymentObject = {id: "0", label: ""};
 
-    let projectTypesList = transactions ? [
+  const projectSuppliersList = transactions
+  ? [
       { id: "0", label: "Todos" },
-      ...
-      transactions
-      .map(transaction => ({
-          id: transaction.idRubro,
-          label: transaction.rubro
-      }))
-      .reduce((acc, cur) => {
+      ...transactions
+        .map(transaction => ({
+          id: transaction.idProveedor,
+          label: transaction.proveedor
+        }))
+        .reduce((acc, cur) => {
           const existing = acc.find(item => item.id === cur.id);
           if (!existing) {
-              acc.push(cur);
+            acc.push(cur);
           }
           return acc;
-      }, [].sort((a, b) => a.label.localeCompare(b.label)))]:[];
+        }, [])
+        .sort((a, b) => a.label.localeCompare(b.label))
+    ]
+  : [];
+
+  // const projectCategoriesList = transactions
+  // ? [
+  //     { id: "0", label: "Todos" },
+  //     ...transactions
+  //       .map(transaction => ({
+  //         id: transaction.idRubro,
+  //         label: transaction.rubro
+  //       }))
+  //       .reduce((acc, cur) => {
+  //         const existing = acc.find(item => item.id === cur.id);
+  //         if (!existing) {
+  //           acc.push(cur);
+  //         }
+  //         return acc;
+  //       }, [])
+  //       .sort((a, b) => a.label.localeCompare(b.label))
+  //   ]
+  // : [];
+
+  const projectCategoriesList = transactions
+  ? [
+    { id: "0", label: "Todos" },
+    ...transactions
+      .filter(transaction => supplierSearchId.idProveedor === "0" || transaction.idProveedor === supplierSearchId.idProveedor)  // Filter by idProveedor
+      .map(transaction => ({
+        id: transaction.idRubro,
+        label: transaction.rubro,
+      }))
+      .reduce((acc, cur) => {
+        const existing = acc.find(item => item.id === cur.id);
+        if (!existing) {
+          acc.push(cur);
+        }
+        return acc;
+      }, [])
+      .sort((a, b) => a.label.localeCompare(b.label)),
+  ]
+  : [];
+
+
+  const handleAddCategory=()=>{
+    setIsAddCategory(true);
+  }
+
+  const handleAddCategoryClose=()=>{
+    setIsAddCategory(false);
+  }
+
+  const handleAddSupplier=()=>{
+    setIsAddSupplier(true);
+  }
+
+  const handleAddSupplierClose=()=>{
+    setIsAddSupplier(false);
+  }
 
 
   const handleAddTransaction=()=>{
@@ -156,7 +210,6 @@ export default function Proyectos (){
     if(apiData){
       // alert("setTransactions(apiData)")
       setTransactions(apiData);
-      setAllTransactions(apiData)
     }
   }
 
@@ -174,20 +227,32 @@ export default function Proyectos (){
     setIsSnackbarOpen(false);
   }
 
-  const filterFunction=(supplierId)=>{
-    console.log("allTransactions")
-    console.log(allTransactions)
-    // alert("filterFunction, supplierId:"+supplierId)
-    if (supplierId !==""){
-      const filteredTransactions = transactions.filter((list) => (list.idProveedor === supplierId ))  
-      console.log(filteredTransactions)
-      // return transactions.filter((list) => (list.idProveedor === supplierId ))  
-      alert("filteredTransactions.length"+filteredTransactions.length)
-      if (filteredTransactions.length > 0){
-        return filteredTransactions
+  // Si supplierId fue seleccionado (tiene un id)
+  //   si categoryid tb fue seleccionado (tiene un id) entonces
+//        filtra las trnsacciobes con 
+  const filterFunction=(supplierId, categoryId)=>{
+
+    // si hay un proveedor seleccionado....
+    if (supplierId !=="" && supplierId!==undefined && supplierId!==null && supplierId!=="0" ){
+
+      if (categoryId !=="" && categoryId!==undefined && categoryId!==null && categoryId!=="0"){
+        const filteredByBoth = transactions.filter((list) => (list.idProveedor === supplierId && list.idRubro === categoryId));
+        return filteredByBoth
       }
-      return allTransactions
-    }
+
+      const filteredBySupplier = transactions.filter((list) => (list.idProveedor === supplierId ))  
+      if (filteredBySupplier.length > 0){
+        return filteredBySupplier
+      }
+    } else {
+      if (categoryId !=="" && categoryId!==undefined && categoryId!==null && categoryId!=="0"){
+        const filteredByCategory = transactions.filter((list) => (list.idRubro === categoryId ))  
+        return filteredByCategory
+      } else{
+        return transactions    
+      }
+     }
+  return transactions
   }
 
   // const deleteTransactionSuccessCb=(apiData)=>{
@@ -215,12 +280,9 @@ export default function Proyectos (){
   // }, [isDelete]);
 
   useEffect(() => {
-    // alert("ueEffect supplierSearchId: "+supplierSearchId.idProveedor)
-    console.log(supplierSearchId.idProveedor)
-    if (supplierSearchId.idProveedor){
-      setTransactions(filterFunction(supplierSearchId.idProveedor));
-    }
-  }, [supplierSearchId]);
+    
+    setFilteredTransactions(filterFunction(supplierSearchId.idProveedor, categorySearchId.idRubro))
+  }, [supplierSearchId, categorySearchId]);
 
 
   useEffect(() => {
@@ -241,7 +303,12 @@ export default function Proyectos (){
     <>
     {/* {alert("index id: "+id)} */}
       { ! transactions ? 
+      
       <>
+      {/* {console.log(" proyectos-index transactions")}
+      {console.log(transactions)}
+      {console.log(" proyectos-index filteredTransactions")}
+      {console.log(filteredTransactions)} */}
       <div className={classes.root}>
       {/* <Header />   */}
       <Grid container> 
@@ -262,10 +329,7 @@ export default function Proyectos (){
 
     { transactions.length > 0? 
     <>
-    {console.count}
-    {console.log("projectSuppliersList")}
-    {console.log(projectSuppliersList)}
-    
+   
     <Grid container item direction="column" alignItems="center" style = {{minHeight: '80vh'}}  >
       
       {/* Grid para ocupar el heigth del app bar */}
@@ -282,7 +346,8 @@ export default function Proyectos (){
           <Paper  elevation={3} > 
             <TableProject 
               id={id}
-              transactions={transactions} 
+              // transactions={transactions} 
+              transactions={filteredTransactions.length > 0 ? filteredTransactions: transactions}
               setTransactions={setTransactions} 
               isEdit={isEdit}
               setIsEdit={setIsEdit}
@@ -304,7 +369,16 @@ export default function Proyectos (){
           <Paper className={classes.paperStyle} elevation={3}  > 
             { ! isMobile && ! isTablet? 
               <>
-              <TableProject  transactions={transactions} isEdit={isEdit}/>
+              <TableProject 
+                id={id}
+                // transactions={transactions} 
+                transactions={filteredTransactions.length > 0 ? filteredTransactions: transactions}
+                setTransactions={setTransactions} 
+                isEdit={isEdit}
+                setIsEdit={setIsEdit}
+                isDelete={isDelete} 
+                setIsDelete={setIsDelete}
+              />
 
               <Box sx={{height:"5px"}}/>
               </>
@@ -350,40 +424,44 @@ export default function Proyectos (){
                   <Box sx={{height:"5px"}}/>
                 </Box>
                 <Box sx={{height:"5px"}}/>
-                <Subtotal transactions={transactions}/>
+                <Subtotal transactions={filteredTransactions.length>0?filteredTransactions:transactions}/>
                 <Box sx={{height:"5px"}}/>
                 <Box style={{display:"flex", justifyContent:"start"}}>
                  {/* "#E4D00A" "#FFBF00" */}
-                  <Button variant="contained" size="small" disableRipple onClick={handleAddTransaction} style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Incluir</Button> 
-                  <Button variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Proveedor</Button>
-                  <Button variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Rubro</Button>  
-                  {/* <Button variant="contained" size="small"  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Editar</Button>              */}
-                  {/* <Button variant="contained" size="small" style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}}  >Excluir</Button> */}
-                  <Button variant="contained" size="small" disabled style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Imprimir</Button>
-
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple onClick={handleAddTransaction} style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Factura/Pago</Button> 
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple  onClick={handleAddSupplier} style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Proveedor</Button>
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple  onClick={handleAddCategory} style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Rubro</Button>  
                 </Box>
                 <Box sx={{height:"15px"}}/>
 
-
+                {/* style={{backgroundColor:"#E1C16E"}} */}
                 <Paper elevation={6} >
-                  <Typography style={{fontSize:"13px", marginLeft:"5px"}}>Filtrar datos</Typography>
+                  <Box style={{height:"10px"}}/> 
+                  <Typography align="center" style={{fontSize:"14px", marginLeft:"0px",color:"#344955"}}>Filtrar datos</Typography>
                   <Box style={{height:"5px"}}/>
                   <Box style={{display:"flex", justifyContent:"center",margin:"5px"}}>
                     <Grid container>
                       <Grid item xs={12} spacing={3}>
-                        <SuppliersListByProject
+                        <SuppliersAutocomplete
                           supplierObject={supplierObject} 
                           setterFunction={setSuppliersSearchId} 
-                          projectSuppliersList={projectSuppliersList}
+                          suppliersList={projectSuppliersList}
+                          isShowAllOption={true}
                         />
                       </Grid>
                       <Grid item xs={12} >
-                      <Box style={{height:"5px"}}/>  
-                      <TypesListByProjecy
+                      <Box style={{height:"10px"}}/>  
+                      <CategoriesAutocomplete
+                          categoryObject={categoryObject} 
+                          setterFunction={setCategorySearchId} 
+                          categoriesList={projectCategoriesList}
+                          isShowAllOption={true}
+                        />
+                      {/* <TypesListByProjecy
                         supplierObject={supplierObject} 
                         setterFunction={setSuppliersSearchId} 
                         projectSuppliersList={projectTypesList}
-                      />
+                      /> */}
                         
                       </Grid>
 
@@ -403,55 +481,8 @@ export default function Proyectos (){
                   <Box style={{height:"15px"}}/>
 
                 </Paper>
-                {/* <Box style={{marginTop:"10px",marginLeft:"10px",marginBottom:"10px"}}> 
-                  <Typography style={{fontSize:"12px"}}>Cuotas de inversion pendientes:</Typography> */}
-                  {/* <TableContainer component={Paper} >
-
-<Table className = {classes.table} size="small" aria-label="stycky header">
-
-  <TableHead className = {classes.TableHeader}>
-    <TableRow>
-      <TableCell className = {classes.TableTitle} style={{fontSize:"11px",width: "34%", padding:"4px",color:"whitesmoke" }} align="left">Inversionista</TableCell>
-      <TableCell className = {classes.TableTitle} style={{fontSize:"11px",width: "34%", padding:"4px",color:"whitesmoke" }} align="right">Vencimiento</TableCell>
-      <TableCell className = {classes.TableTitle} style={{fontSize:"11px",width: "34%", padding:"4px",color:"whitesmoke" }} align="right">Monto</TableCell>
-    </TableRow>
-  </TableHead>
-  <TableBody>
-    <TableRow>
-      <TableCell className = {classes.TableRows}  style={{fontSize:"11px", width: "34%", padding:"4px" }} align="left" >Analia Toranzo</TableCell>
-      <TableCell className = {classes.TableRows} style={{ fontSize:"11px",width: "33%", paddingRight:"5px", padding:"2px" }}  align="right" >05/Jun/2024</TableCell>
-      <TableCell className = {classes.TableRows} style={{ fontSize:"11px",width: "33%", paddingRight:"5px", padding:"2px" }}  align="right" >162.500.000</TableCell>
-      </TableRow>  
-      <TableRow>
-      <TableCell className = {classes.TableRows}  style={{fontSize:"11px", width: "34%", padding:"4px" }} align="left" >Lisandro Quaranta</TableCell>
-      <TableCell className = {classes.TableRows} style={{ fontSize:"11px",width: "33%", paddingRight:"5px", padding:"2px" }}  align="right" >05/Jun/2024</TableCell>
-      <TableCell className = {classes.TableRows} style={{ fontSize:"11px",width: "33%", paddingRight:"5px", padding:"2px" }}  align="right" >162.500.000</TableCell>
-    </TableRow>  
-    <TableRow>
-      <TableCell className = {classes.TableRows} style={{fontSize:"11px",width: "34%", padding:"4px" }} align="left">Total</TableCell>
-      <TableCell className = {classes.TableRows} style={{fontSize:"11px",width: "34%", padding:"4px" }} align="right"></TableCell>
-      <TableCell className = {classes.TableRows} style={{fontSize:"11px",width: "34%", padding:"4px" }} align="right">325.000.000</TableCell>
-    </TableRow>
-  </TableBody>
-</Table>
-</TableContainer> */}
-                  
-
-                {/* </Box> */}
-
-                {/* <ChartFreeCashFlow
-                  assumptions={assumptions} 
-                  combinedFinancialData={combinedFinancialData} 
-                  isCheckedShowPreviousYears={isCheckedShowPreviousYears} 
-                  isCheckedDescOrder={isCheckedDescOrder} isEstimateFcffOnly={isEstimateFcffOnly}
-                /> */}
+ 
               </Paper>
-              
-              {/* <Paper>
-                <ShowComments
-                  valuationId={valuationId} 
-                />
-              </Paper> */}
               <Box sx={{height:"5px"}}/>
               {/* <Paper elevation={3}>
                 <ChartRevenue
@@ -462,26 +493,7 @@ export default function Proyectos (){
                 />
               </Paper>  */}
               <Box sx={{height:"5px"}}/> 
-              {/* <DisclaimerText /> */}
-              {/* <Box sx={{height:"5px"}}/>
-              <Paper elevation={3}>
-                <ChartRevenue
-                  assumptions={assumptions} 
-                  combinedFinancialData={combinedFinancialData} 
-                  isCheckedShowPreviousYears={isCheckedShowPreviousYears} 
-                  isCheckedDescOrder={isCheckedDescOrder} isEstimateFcffOnly={isEstimateFcffOnly}
-                />
-              </Paper>  */}
-              {/* {isMobile ? 
-              <>
-              <Box sx={{height:"5px"}}/>
-              <DisclaimerText />
-              <Box sx={{height:"5px"}}/>
-              <ShowComments 
-                valuationId={valuationId}
-              /> 
-              </>
-              : null} */}
+ 
               </>
 
                   {/* combinedFinancialData ? */}
@@ -508,13 +520,14 @@ export default function Proyectos (){
     isEdit={isEdit}
     setIsEdit={setIsEdit}
   />
-  {/* <FormEditTransaction 
-      open={isEditTransaction}
-      onClose={handleEditTransactionClose}
-      id={id}
-      isEdit={isEdit}
-      setIsEdit={setIsEdit}
-  /> */}
+  <FormAddSupplier 
+    open={isAddSupplier}
+    onClose={handleAddSupplierClose}
+  />
+  <FormAddCategory 
+    open={isAddCategory}
+    onClose={handleAddCategoryClose}
+  />
   <Snackbar
     open={isSnackbarOpen}
     autoHideDuration={2000} 
@@ -525,7 +538,6 @@ export default function Proyectos (){
       message={snackbarMessage}
     />
   </Snackbar>  
-
-    </>
+  </>
   )
 }

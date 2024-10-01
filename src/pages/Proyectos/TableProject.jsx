@@ -103,6 +103,8 @@ export default function TableProject({id, transactions,setTransactions, isEdit, 
 
   const handleUpdate=(param)=>{
     // setUpdateId(param)
+    console.log("parametro recibido por handleUpdate: ")
+    console.log(param)
     setTransaccionEditar(param)
     setIsEditTransaction(true)
   }
@@ -118,7 +120,7 @@ export default function TableProject({id, transactions,setTransactions, isEdit, 
 const handleSnackbarClose=()=>{
   // setIsDelete(true);
   setIsSnackbarOpen(false)
-  getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+  getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${id}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
 }
 
  const deleteTransactionSuccessCb=(apiData)=>{
@@ -233,21 +235,22 @@ const handleSnackbarClose=()=>{
     // setIsSnackbarOpen(true);
   }
 
-  // useEffect(() => {
-  //   if (transactions[0].idProyecto) {
-  //     getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${transactions[0].idProyecto}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
-  //   } 
-  // }, [isEditTable]);
+  useEffect(() => {
+    if (transactions[0].idProyecto) {
+      getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${transactions[0].idProyecto}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+    } 
+  }, []);
 
   return (
     <>
 
     {/* <Header/> */}
-    { transactions? <>
-      {/* {alert("table project id :" +transactions[0].idProyecto)} */}
+    { transactions ? <>
+      {/* {alert("renderizacion de tableProject")} */}
       {transaccionEditar? console.log("transaccionEditar: "+ transaccionEditar.idTransaccion + " " + transaccionEditar.numeroFactura + " " + transaccionEditar.montoFactura): null}
-      {/* {console.log(transactions)}
-      {console.log(transaccionEditar)} */}
+      {console.log("tableProject: transactions")}
+      {console.log(transactions)}
+      {/* {console.log(transaccionEditar)} */}
     
      
     <TableContainer component={Paper} >

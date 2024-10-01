@@ -13,16 +13,20 @@ import { makeStyles } from '@material-ui/core/styles';
 // import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';   
 // import { esES } from '@mui/x-date-pickers/locales';   
-
+import { LoginContext } from '../../helpers/Context';
 import api from '../../services/api';
 import useAxios from '../../hooks/useAxios'
 import useForm from '../../hooks/useForm';
 
+import CashFlowTypeAutocomplete from '../../components/CashFlowTypeAutocomplete';
+import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
 import DialogModal from '../../components/DialogModal';
-import RubrosAutoComplete from '../../components/RubrosAutoComplete';
-import RubrosComboBox from '../../components/RubrosComboBox';
+// import RubrosAutoComplete from '../../components/RubrosAutoComplete';
+// import RubrosComboBox from '../../components/RubrosComboBox';
 import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
 import PaymentAutocomplete from '../../components/PaymentAutocomplete';
+import TypesAutocomplete from '../../components/TypesAutocomplete';
+
 
 const useStyles = makeStyles((mainTheme) => ({
   paperStyle: {
@@ -48,11 +52,15 @@ const useStyles = makeStyles((mainTheme) => ({
       color: '#344955', 
     },
   },
+  greenSnackbarContent: {
+    backgroundColor: "#228B22"
+  },
 }));
 
 export default function FormEditTransaction({ open, onClose, transaccionEditar, id, isEditTable, setIsEditTable }){
   const classes = useStyles();
-  const [ rubros, setRubros] = useState([]);
+  const {  transactions, setTransactions,suppliers, setSuppliers, categories, setCategoriescashFlowType, setCashFlowType } = useContext(LoginContext)
+  // const [ rubros, setRubros] = useState([]);
   const [ isSnackbarOpen, setIsSnackbarOpen]= useState(false);
   const [ snackbarMessage, setSnackbarMessage] = useState("");
   const [ proveedores, setProveedores ] = useState([]);
@@ -64,9 +72,9 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     idTransaccion,
     idProyecto, 
     idProveedor, 
-    nombreProveedor,
+    proveedor,
     idRubro, 
-    nombreRubro,
+    rubro,
     idTipoTransaccion, 
     descripcion, 
     numeroFactura, 
@@ -78,21 +86,38 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     idTipoPago,
     idTipoFlujo } = transaccion
     // const ingresos = transactions.filter(transaction => transaction.idTipoFlujo === "0").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0);
-    const [ objetoRubro, setObjetoRubro] = useState({idRubro: "", nombreRubro: ""});
-    const [ supplierObject, setSupplierObject]  = useState({id: "", label: ""});
-    const [ paymentObject, setPaymentObject] =useState({id: "", label: ""});
-
-  const { axiosFetch: getRubros, isLoading: isLoadingRubros, error: isErrorRubros } = useAxios();
-  const { axiosFetch: getProveedores, isLoading: isLoadingProveedores, error: isErrorProveedores } = useAxios();
+    // const [ objetoRubro, setObjetoRubro] = useState({idRubro: "", nombreRubro: ""});
+    // const categoryObject = {id: "0", label: ""}
+    // const [ supplierObject, setSupplierObject]  = useState({id: "", label: ""});
+    // const [ paymentObject, setPaymentObject] =useState({id: "", label: ""});
+    const cashFlowObject={id:"0", label:""}
+    const [ categoryObject, setCategoryObject] = useState({id: "0", label: ""});
+    const [ supplierObject, setSupplierObject] = useState({id: "0", label: ""});
+    const [ paymentObject, setPaymentObject ] = useState({id: "0", label: ""});
+    const typeObject = {id: "0", label: ""};
+    // const [ categoryObject, setCategoryObject] = useState(transaccionEditar? {id: transaccionEditar.idRubro, label:transaccionEditar.rubro}: {id: "0", label: ""});
+    // const [ supplierObject, setSupplierObject] = useState(transaccionEditar? {id: transaccionEditar.idProveedor, label:transaccionEditar.idProveedor}: {id: "0", label: ""});
+    // const [ paymentObject, setPaymentObject ] = useState(transaccionEditar?  {id: transaccionEditar.idTipoPago, label: transaccionEditar.idTipoPago}:{id: "0", label: ""});
+    // {idRubro: transaccionEditar.idRubro, nombreRubro: transaccionEditar.rubro}
+  // const { axiosFetch: getRubros, isLoading: isLoadingRubros, error: isErrorRubros } = useAxios();
+  // const { axiosFetch: getProveedores, isLoading: isLoadingProveedores, error: isErrorProveedores } = useAxios();
   const muiMontoFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Monto Factura", name: "montoFactura",InputProps: {startAdornment: <InputAdornment position="start">Gs.</InputAdornment> }};
   const muiNumeroFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Numero Factura", name: "numeroFactura" };
   const muiFechaFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Fecha Factura", name: "fechaFactura" };
   const muiFechaPagoProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Fecha de pago", name: "fechaPago" };
 
   const handleSnackbarClose=()=>{
+    // handleAddTransaction(transaccion)
    setIsSnackbarOpen(false);
-  //  setIsEditTable(true);
+   setIsEditTable(true);
   }
+
+
+  // const handleAddTransaction = (transaccion) => {
+  //   const updatedTransaction = [...transactions, transaccion];
+  //   updatedTransaction.sort((a, b) => a.fechaFactura.localeCompare(b.fechaFactura));
+  //   setTransactions(updatedTransaction);
+  // };
 
   function convertDateToUTC(dateString) {
     // Split the date string into day, month, and year parts
@@ -286,8 +311,7 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     return api.put('/transacciones', transaccion)
       .then(response => {
         const { idTransaccion: id } = response.data;  
-        // setTransaccion (prevState => ( {...prevState, idTransaccion: id }));
-    
+        setTransaccion (prevState => ( {...prevState, idTransaccion: id }));
         setSnackbarMessage("Transaccion alterada exitosamente en la base de datos")
         setIsSnackbarOpen(true);
       })
@@ -376,30 +400,31 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     }
   };
 
-  const getProveedoresSuccessCb=(apiData)=>{
-    if (apiData){
-      setProveedores(apiData)
+  // const getProveedoresSuccessCb=(apiData)=>{
+  //   if (apiData){
+  //     setProveedores(apiData)
 
-    }
-  }
+  //   }
+  // }
 
-  const getProveedoresErrorCb=()=>{
-    alert ("Error leyendo Proveedores desde la base de datos")
-  }
+  // const getProveedoresErrorCb=()=>{
+  //   alert ("Error leyendo Proveedores desde la base de datos")
+  // }
 
-  const getRubrosSuccessCb=(apiData)=>{
-    if (apiData){
-      setRubros(apiData)
-      getProveedores({ axiosInstance: api, method: 'GET', url: `/proveedores`, requestConfig: { headers: {'Authorization': "id",},}},getProveedoresSuccessCb, getProveedoresErrorCb);
-    }
-  }
+  // const getRubrosSuccessCb=(apiData)=>{
+  //   if (apiData){
+  //     setRubros(apiData)
+  //     getProveedores({ axiosInstance: api, method: 'GET', url: `/proveedores`, requestConfig: { headers: {'Authorization': "id",},}},getProveedoresSuccessCb, getProveedoresErrorCb);
+  //   }
+  // }
 
-  const getRubrosErrorCb=()=>{
-    alert ("Error leyendo Rubros desde la base de datos")
-  }
+  // const getRubrosErrorCb=()=>{
+  //   alert ("Error leyendo Rubros desde la base de datos")
+  // }
 
   useEffect(() => {
     if (transaccionEditar){
+      // alert("idTipoFlujo "+transaccionEditar.idTipoFlujo)
       setTransaccion (prevState => ({...prevState, 
         idTransaccion:transaccionEditar.idTransaccion,
         idProyecto:transaccionEditar.idProyecto, 
@@ -419,18 +444,18 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
         nombreTipoPago:transaccionEditar.nombreTipoPago,
         idTipoFlujo:transaccionEditar.idTipoFlujo
       }));
-      setObjetoRubro({idRubro: transaccionEditar.idRubro, nombreRubro: transaccionEditar.rubro});
+      setCategoryObject({id: transaccionEditar.idRubro, label: transaccionEditar.rubro});
       setSupplierObject({id: transaccionEditar.idProveedor, label: transaccionEditar.proveedor});
       setPaymentObject({id: transaccionEditar.idTipoPago, label: transaccionEditar.idTipoPago});
-
     }
-    getRubros({ axiosInstance: api, method: 'GET', url: `/rubros`, requestConfig: { headers: {'Authorization': "id",},}},getRubrosSuccessCb, getRubrosErrorCb);
   }, [ open ]);
 
   return (
     <>
     { transaccionEditar ? <>
+      { console.log("transaccionEditar, en formEdit")}
       { console.log(transaccionEditar)}
+      {/* {alert( transaccionEditar.proveedor+" " + transaccionEditar.idProveedor)} */}
       <Paper className={classes.paperStyle}>
         <Dialog 
           open={open}
@@ -443,30 +468,35 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
           >
             <DialogContent style={{color:'white'}}>
               <DialogContentText id="alert-dialog-description">
-                <Typography align='center'>{`Corregir Factura`}</Typography>
+                <Typography align='center'>{`Actualizar Factura o Pago`}</Typography>
 
                 <Box sx={{height:"10px"}}/>
                 <Grid container spacing={1}>
                 <Grid item xs={12} >
-                  <SuppliersAutocomplete 
-                    supplierObject={supplierObject}
-                    setterFunction={setTransaccion}
-                    isEditField={isEditField}
-                    setIsEditField={setIsEditField}
-                    variant="filled"
+                  <SuppliersAutocomplete
+                    // supplierObject={supplierObject} 
+                    supplierObject={{id: transaccionEditar.idProveedor, label: transaccionEditar.proveedor}}
+                    setterFunction={setTransaccion} 
+                    suppliersList={suppliers}
+                    isShowAllOption={false}
                   />
                 </Grid> 
 
-                <Grid item xs={12} >
-                  <RubrosComboBox 
-                    objetoRubro={objetoRubro}
-                    transaccion={transaccion}
-                    setTransaccion={setTransaccion}
-                    isEditField={isEditField}
-                    setIsEditField={setIsEditField}
-                    variant="filled"
+                <Grid item xs={12} sm={6} >
+
+                  <CategoriesAutocomplete
+                      categoryObject={{id: transaccionEditar.idRubro, label: transaccionEditar.rubro}} 
+                      setterFunction={setTransaccion} 
+                      categoriesList={categories}
+                      isShowAllOption={false}
                   />
                 </Grid>
+                <Grid item xs={12} sm={6} >
+                  <TypesAutocomplete 
+                    typeObject={{id: transaccionEditar.idTipoTransaccion, label: transaccionEditar.idTipoTransaccion}}
+                    setterFunction={setTransaccion} 
+                  />
+                 </Grid> 
                 {/* <Grid item xs={12} >
                   <LocalizationProvider locale={esES}>
                     <DatePicker
@@ -503,6 +533,13 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
                   />
                   {formErrors.numeroFactura ? <div className="error-helper-text">{formErrors.numeroFactura}</div> : null}
                 </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box style={{height:"8px"}}/>
+                  <CashFlowTypeAutocomplete
+                    cashFlowObject={{id:transaccionEditar.idTipoFlujo, label:transaccionEditar.idTipoFlujo==="0"?"Ingresos":"Egresos"}} 
+                    setterFunction={setTransaccion}
+                  />
+                </Grid> 
 
                 <Grid item xs={6} sm={6}>
                     <NumericFormat
