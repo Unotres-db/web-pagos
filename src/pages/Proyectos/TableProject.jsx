@@ -120,7 +120,7 @@ export default function TableProject({id, transactions,setTransactions, isEdit, 
 const handleSnackbarClose=()=>{
   // setIsDelete(true);
   setIsSnackbarOpen(false)
-  getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/VDB`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+  getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${id}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
 }
 
  const deleteTransactionSuccessCb=(apiData)=>{

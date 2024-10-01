@@ -54,7 +54,7 @@ const useStyles = makeStyles((mainTheme) => ({
 
 export default function FormEditTransaction({ open, onClose, transaccionEditar, id, isEditTable, setIsEditTable }){
   const classes = useStyles();
-  const { suppliers, setSuppliers, categories, setCategoriescashFlowType, setCashFlowType } = useContext(LoginContext)
+  const {  transactions, setTransactions,suppliers, setSuppliers, categories, setCategoriescashFlowType, setCashFlowType } = useContext(LoginContext)
   // const [ rubros, setRubros] = useState([]);
   const [ isSnackbarOpen, setIsSnackbarOpen]= useState(false);
   const [ snackbarMessage, setSnackbarMessage] = useState("");
@@ -101,9 +101,17 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
   const muiFechaPagoProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Fecha de pago", name: "fechaPago" };
 
   const handleSnackbarClose=()=>{
+    handleAddTransaction(transaccion)
    setIsSnackbarOpen(false);
   //  setIsEditTable(true);
   }
+
+
+  const handleAddTransaction = (transaccion) => {
+    const updatedTransaction = [...transactions, transaccion];
+    updatedTransaction.sort((a, b) => a.fechaFactura.localeCompare(b.fechaFactura));
+    setTransactions(updatedTransaction);
+  };
 
   function convertDateToUTC(dateString) {
     // Split the date string into day, month, and year parts
@@ -297,8 +305,7 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     return api.put('/transacciones', transaccion)
       .then(response => {
         const { idTransaccion: id } = response.data;  
-        // setTransaccion (prevState => ( {...prevState, idTransaccion: id }));
-    
+        setTransaccion (prevState => ( {...prevState, idTransaccion: id }));
         setSnackbarMessage("Transaccion alterada exitosamente en la base de datos")
         setIsSnackbarOpen(true);
       })
