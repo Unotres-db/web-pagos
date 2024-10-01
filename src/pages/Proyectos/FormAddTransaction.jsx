@@ -18,6 +18,7 @@ import api from '../../services/api';
 import useAxios from '../../hooks/useAxios'
 import useForm from '../../hooks/useForm';
 
+import CashFlowTypeAutocomplete from '../../components/CashFlowTypeAutocomplete';
 import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
 import DialogModal from '../../components/DialogModal';
 import RubrosAutoComplete from '../../components/RubrosAutoComplete';
@@ -62,8 +63,6 @@ const useStyles = makeStyles((mainTheme) => ({
 
 export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdit }){
   const classes = useStyles();
-  // const [ rubros, setRubros] = useState([]);
-  // const [ proveedores, setProveedores ] = useState([]);
   const { suppliers, setSuppliers, categories, setCategories, cashFlowType, setCashFlowType } = useContext(LoginContext)
   const [ supplierSearchId, setSuppliersSearchId]= useState("");
   const [ categorySearchId, setCategorySearchId]= useState("");
@@ -90,13 +89,11 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     idTipoPago,
     idTipoFlujo } = transaccion
     const objetoRubro = {idRubro: "0", nombreRubro: ""}
-    const cashFlowObject={id:"1", label:""}
+    const cashFlowObject={id:"0", label:""}
     const categoryObject = {id: "0", label: ""}
     const supplierObject = {id: "0", label: ""}
     const paymentObject = {id: "0", label: ""}
 
-  // const { axiosFetch: getRubros, isLoading: isLoadingRubros, error: isErrorRubros } = useAxios();
-  // const { axiosFetch: getProveedores, isLoading: isLoadingProveedores, error: isErrorProveedores } = useAxios();
   const { axiosFetch: getFactura, isLoading: isLoadingFactura, error: isErrorFactura } = useAxios();
   const muiMontoFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Monto Factura", name: "montoFactura",InputProps: {startAdornment: <InputAdornment position="start">Gs.</InputAdornment> }};
   const muiNumeroFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Numero Factura", name: "numeroFactura" };
@@ -259,7 +256,6 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     const parsedDateMonth = format(parsedDate, 'MM');
     const currentUTCMonth = format(currentUTCDate, 'MM');
     if (parsedDateYear < currentUTCYear || (parsedDateYear === currentUTCYear && parsedDateMonth < currentUTCMonth - 1)) {
-      // alert("Confirma fecha de factura inferior al mes anterior?")
       setDialogOptions({severity:"warning", title:"Atención", message:"La fecha incluida no es reciente. Favor verificar, gracias!",buttons:{button1:"Ok"}})
       setIsDialogOpen(true)
       return false;
@@ -294,12 +290,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
 
   function handleInvoiceNumber (newValue){
     if(newValue){
-      // alert(newValue.value);
-      // console.log("newValue")
-      // console.log(newValue.value)
-      //tetear si ya esta grabada
       if (newValue.value.length===13){
-        // const dataToProcess = { id_proveedor:"2", numero_factura: "001-001-0000565" }
         getFactura({ axiosInstance: api, method: 'GET', url: `/factura?id_proveedor=${transaccion.idProveedor}&numero_factura=${newValue.formattedValue}`, requestConfig: { headers: {'Authorization': "id",},}},getInvoiceSuccessCb, getInvoiceErrorCb);
       }
       setTransaccion(prevState => ({...prevState, numeroFactura: newValue.formattedValue}))
@@ -379,11 +370,6 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
 
   const handleSaveChanges = async () => {
     if (! checkFormErrors() ) {
-      // const fechaFacturaMilliseconds=convertToMilliseconds(fechaFactura)
-      // const fechaPagoMilliseconds= fechaPago? convertToMilliseconds(fechaPagoMilliseconds): ""
-      // setTransaccion(prevState => ({...prevState, fechaFactura:fechaFacturaMilliseconds, fechaPago:fechaPagoMilliseconds }))
-      // console.log("transaccion")
-      // console.log(transaccion)
       saveTransaction(transaccion)
       setTransaccion (prevState => ({...prevState, 
         idProyecto:"", 
@@ -410,37 +396,13 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     }
   };
 
-  // const getProveedoresSuccessCb=(apiData)=>{
-  //   if (apiData){
-  //     setProveedores(apiData)
-  //   }
-  // }
-
-  // const getProveedoresErrorCb=()=>{
-  //   alert ("Error leyendo Proveedores desde la base de datos")
-  // }
-
-  // const getRubrosSuccessCb=(apiData)=>{
-  //   if (apiData){
-  //     setRubros(apiData)
-  //     getProveedores({ axiosInstance: api, method: 'GET', url: `/proveedores`, requestConfig: { headers: {'Authorization': "id",},}},getProveedoresSuccessCb, getProveedoresErrorCb);
-  //   }
-  // }
-
-  // const getRubrosErrorCb=()=>{
-  //   alert ("Error leyendo Rubros desde la base de datos")
-  // }
-
   useEffect(() => {
     setTransaccion(prevState => ({...prevState, idProyecto: id, idTipoFlujo:"1"}))
-    // getRubros({ axiosInstance: api, method: 'GET', url: `/rubros`, requestConfig: { headers: {'Authorization': "id",},}},getRubrosSuccessCb, getRubrosErrorCb);
   }, [ open ]);
 
   return (
     <>
     { suppliers ? <>
-      {console.log("suppliers:")}
-      {console.log(suppliers)}
    
       <Paper className={classes.paperStyle}>
         <Dialog 
@@ -459,13 +421,6 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                 <Box sx={{height:"10px"}}/>
                 <Grid container spacing={1}>
                 <Grid item xs={12} >
-                  {/* <SuppliersAutocomplete 
-                    supplierObject={supplierObject}
-                    setterFunction={setTransaccion}
-                    isEditField={isEditField}
-                    setIsEditField={setIsEditField}
-                    variant="filled"
-                  /> */}
                   <SuppliersAutocomplete
                     supplierObject={supplierObject} 
                     setterFunction={setTransaccion} 
@@ -473,22 +428,15 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                   />
                 </Grid> 
 
-                <Grid item xs={12} >
+                <Grid item xs={12} sm={12} >
                   <CategoriesAutocomplete
                       categoryObject={categoryObject} 
                       setterFunction={setTransaccion} 
                       categoriesList={categories}
                   />
-                  {/* <RubrosComboBox 
-                    objetoRubro={objetoRubro}
-                    transaccion={transaccion}
-                    setTransaccion={setTransaccion}
-                    isEditField={isEditField}
-                    setIsEditField={setIsEditField}
-                    variant="filled"
-                  /> */}
                 </Grid>
 
+                
                 <Grid item xs={6} sm={6}>
                     <PatternFormat
                       format="##/##/####"
@@ -512,7 +460,13 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                   />
                   {formErrors.numeroFactura ? <div className="error-helper-text">{formErrors.numeroFactura}</div> : null}
                 </Grid>
-
+                <Grid item xs={12} sm={6}>
+                  <Box style={{height:"8px"}}/>
+                  <CashFlowTypeAutocomplete
+                    cashFlowObject={cashFlowObject} 
+                    setterFunction={setTransaccion}
+                  />
+                </Grid> 
                 <Grid item xs={12} sm={6}>
                   <NumericFormat
                     value={montoFactura}

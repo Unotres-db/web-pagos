@@ -27,7 +27,7 @@ export default function CashFlowTypeAutocomplete ({cashFlowObject, setterFunctio
       fullWidth
       size="small"
       clearIcon={false}
-      options={[{id:"0", label:"Ingreso"},{id:"0", label:"Egreso"}]}
+      options={[{id:"0", label:"Ingreso"},{id:"1", label:"Egreso"}]}
       sx={{ width: "100%"}}
       onChange={(event, newValue) => updateState(newValue) }
       renderInput={(params) => <TextField {...params} label={checkLabel()} />}

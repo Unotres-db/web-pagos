@@ -18,6 +18,7 @@ import api from '../../services/api';
 import useAxios from '../../hooks/useAxios'
 import useForm from '../../hooks/useForm';
 
+import CashFlowTypeAutocomplete from '../../components/CashFlowTypeAutocomplete';
 import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
 import DialogModal from '../../components/DialogModal';
 // import RubrosAutoComplete from '../../components/RubrosAutoComplete';
@@ -84,6 +85,7 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     // const categoryObject = {id: "0", label: ""}
     // const [ supplierObject, setSupplierObject]  = useState({id: "", label: ""});
     // const [ paymentObject, setPaymentObject] =useState({id: "", label: ""});
+    const cashFlowObject={id:"0", label:""}
     const [ categoryObject, setCategoryObject] = useState({id: "0", label: ""});
     const [ supplierObject, setSupplierObject] = useState({id: "0", label: ""});
     const [ paymentObject, setPaymentObject ] = useState({id: "0", label: ""});
@@ -409,6 +411,7 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
 
   useEffect(() => {
     if (transaccionEditar){
+      // alert("idTipoFlujo "+transaccionEditar.idTipoFlujo)
       setTransaccion (prevState => ({...prevState, 
         idTransaccion:transaccionEditar.idTransaccion,
         idProyecto:transaccionEditar.idProyecto, 
@@ -466,7 +469,7 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
                   />
                 </Grid> 
 
-                <Grid item xs={12} >
+                <Grid item xs={12} sm={7} >
 
                   <CategoriesAutocomplete
                       categoryObject={{id: transaccionEditar.idRubro, label: transaccionEditar.rubro}} 
@@ -475,6 +478,12 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
                       isShowAllOption={false}
                   />
                 </Grid>
+                <Grid item xs={12} sm={5}>
+                  <CashFlowTypeAutocomplete
+                    cashFlowObject={{id:transaccionEditar.idTipoFlujo}} 
+                    setterFunction={setTransaccion}
+                  />
+                </Grid> 
                 {/* <Grid item xs={12} >
                   <LocalizationProvider locale={esES}>
                     <DatePicker
