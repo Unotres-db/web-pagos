@@ -490,7 +490,7 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
                 </Grid>
                 <Grid item xs={12} sm={5}>
                   <CashFlowTypeAutocomplete
-                    cashFlowObject={{id:transaccionEditar.idTipoFlujo}} 
+                    cashFlowObject={{id:transaccionEditar.idTipoFlujo, label:transaccionEditar.idTipoFlujo==="0"?"Ingresos":"Egresos"}} 
                     setterFunction={setTransaccion}
                   />
                 </Grid> 

@@ -224,7 +224,7 @@ const handleSnackbarClose=()=>{
 
   const getProjectSuccessCb=(apiData)=>{
     if(apiData){
-      alert("getProjectSuccessCb-setTransactions(apiData)")
+      // alert("getProjectSuccessCb-setTransactions(apiData)")
       setTransactions(apiData);
     }
   }
@@ -404,13 +404,13 @@ const handleSnackbarClose=()=>{
         </TableFooter>
       </Table>
     </TableContainer>
-    {/* <FormEditTransaction 
+    <FormEditTransaction 
       open={isEditTransaction}
       onClose={handleEditTransactionClose}
       transaccionEditar={transaccionEditar}
       isEditTable={isEditTable}
       setIsEditTable={setIsEditTable}
-    /> */}
+    />
     <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
       {dialogOptions.message}
     </DialogModal> 
