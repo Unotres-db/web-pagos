@@ -455,7 +455,7 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
           >
             <DialogContent style={{color:'white'}}>
               <DialogContentText id="alert-dialog-description">
-                <Typography align='center'>{`Corregir Factura`}</Typography>
+                <Typography align='center'>{`Actualizar Factura o Pago`}</Typography>
 
                 <Box sx={{height:"10px"}}/>
                 <Grid container spacing={1}>

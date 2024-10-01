@@ -14,6 +14,7 @@ import useAxios from '../../hooks/useAxios';
 import Header from '../../components/Header';
 // CategoriesAutocomplete\
 import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
+import FormAddCategory from './FormAddCategory';
 import FormAddSupplier from './FormAddSupplier';
 import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
 // import SuppliersListByProject from '../../components/SuppliersListByProject';
@@ -100,6 +101,7 @@ export default function Proyectos (){
   const [ isEditField, setIsEditField] = useState(true)// eliminar?
   const [ isEdit, setIsEdit] = useState(false); 
   const [ isDelete, setIsDelete] = useState(false); 
+  const [ isAddCategory, setIsAddCategory] = useState(false); 
   const [ isAddSupplier, setIsAddSupplier] = useState(false); 
   const [ isAddTransaction, setIsAddTransaction] = useState(false); 
   const [ isEditTransaction, setIsEditTransaction] = useState(false); 
@@ -169,6 +171,15 @@ export default function Proyectos (){
       .sort((a, b) => a.label.localeCompare(b.label)),
   ]
   : [];
+
+
+  const handleAddCategory=()=>{
+    setIsAddCategory(true);
+  }
+
+  const handleAddCategoryClose=()=>{
+    setIsAddCategory(false);
+  }
 
   const handleAddSupplier=()=>{
     setIsAddSupplier(true);
@@ -419,7 +430,7 @@ export default function Proyectos (){
                  {/* "#E4D00A" "#FFBF00" */}
                   <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple onClick={handleAddTransaction} style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Factura/Pago</Button> 
                   <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple  onClick={handleAddSupplier} style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Proveedor</Button>
-                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Rubro</Button>  
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple  onClick={handleAddCategory} style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Rubro</Button>  
                 </Box>
                 <Box sx={{height:"15px"}}/>
 
@@ -510,8 +521,12 @@ export default function Proyectos (){
     setIsEdit={setIsEdit}
   />
   <FormAddSupplier 
-      open={isAddSupplier}
-      onClose={handleAddSupplierClose}
+    open={isAddSupplier}
+    onClose={handleAddSupplierClose}
+  />
+  <FormAddCategory 
+    open={isAddCategory}
+    onClose={handleAddCategoryClose}
   />
   <Snackbar
     open={isSnackbarOpen}
@@ -523,7 +538,6 @@ export default function Proyectos (){
       message={snackbarMessage}
     />
   </Snackbar>  
-
   </>
   )
 }

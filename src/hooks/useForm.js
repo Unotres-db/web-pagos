@@ -19,6 +19,10 @@ export default function useForm (callback) {
     ruc: "",
     direccion: "",
   })
+  const [ rubro, setRubro] = useState({
+    idRubro: "",
+    nombre: ""
+  })
   const [ transaccion, setTransaccion] = useState({ 
     idTransaccion:"",
     idProyecto:"", 
@@ -256,5 +260,5 @@ export default function useForm (callback) {
     })
   }
 
-  return { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, proyecto, setProyecto, formErrors, setFormErrors,inputData, setInputData, userId, setUserId, userName, setUserName, proveedor, setProveedor }
+  return { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, proyecto, setProyecto, formErrors, setFormErrors,inputData, setInputData, userId, setUserId, userName, setUserName, proveedor, setProveedor,rubro, setRubro }
 }
