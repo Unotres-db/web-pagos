@@ -26,6 +26,7 @@ import RubrosComboBox from '../../components/RubrosComboBox';
 import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
 import SuppliersListByProject from '../../components/SuppliersListByProject';
 import PaymentAutocomplete from '../../components/PaymentAutocomplete';
+import TypesAutocomplete from '../../components/TypesAutocomplete';
 
 const useStyles = makeStyles((mainTheme) => ({
 
@@ -91,11 +92,12 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     fechaPago,
     idTipoPago,
     idTipoFlujo } = transaccion
-    const objetoRubro = {idRubro: "0", nombreRubro: ""}
-    const cashFlowObject={id:"0", label:""}
-    const categoryObject = {id: "0", label: ""}
-    const supplierObject = {id: "0", label: ""}
-    const paymentObject = {id: "0", label: ""}
+    const objetoRubro = {idRubro: "0", nombreRubro: ""};
+    const cashFlowObject={id:"0", label:""};
+    const categoryObject = {id: "0", label: ""};
+    const supplierObject = {id: "0", label: ""};
+    const paymentObject = {id: "0", label: ""};
+    const typeObject = {id: "0", label: ""};
 
   const { axiosFetch: getFactura, isLoading: isLoadingFactura, error: isErrorFactura } = useAxios();
   const muiMontoFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Monto Factura", name: "montoFactura",InputProps: {startAdornment: <InputAdornment position="start">Gs.</InputAdornment> }};
@@ -431,15 +433,19 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                   />
                 </Grid> 
 
-                <Grid item xs={12} sm={12} >
+                <Grid item xs={12} sm={6} >
                   <CategoriesAutocomplete
                       categoryObject={categoryObject} 
                       setterFunction={setTransaccion} 
                       categoriesList={categories}
                   />
                 </Grid>
-
-                
+                <Grid item xs={12} sm={6} >
+                  <TypesAutocomplete 
+                    typeObject={typeObject}
+                    setterFunction={setTransaccion} 
+                  />
+                 </Grid> 
                 <Grid item xs={6} sm={6}>
                     <PatternFormat
                       format="##/##/####"

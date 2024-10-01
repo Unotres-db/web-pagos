@@ -25,6 +25,8 @@ import DialogModal from '../../components/DialogModal';
 // import RubrosComboBox from '../../components/RubrosComboBox';
 import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
 import PaymentAutocomplete from '../../components/PaymentAutocomplete';
+import TypesAutocomplete from '../../components/TypesAutocomplete';
+
 
 const useStyles = makeStyles((mainTheme) => ({
   paperStyle: {
@@ -92,6 +94,7 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     const [ categoryObject, setCategoryObject] = useState({id: "0", label: ""});
     const [ supplierObject, setSupplierObject] = useState({id: "0", label: ""});
     const [ paymentObject, setPaymentObject ] = useState({id: "0", label: ""});
+    const typeObject = {id: "0", label: ""};
     // const [ categoryObject, setCategoryObject] = useState(transaccionEditar? {id: transaccionEditar.idRubro, label:transaccionEditar.rubro}: {id: "0", label: ""});
     // const [ supplierObject, setSupplierObject] = useState(transaccionEditar? {id: transaccionEditar.idProveedor, label:transaccionEditar.idProveedor}: {id: "0", label: ""});
     // const [ paymentObject, setPaymentObject ] = useState(transaccionEditar?  {id: transaccionEditar.idTipoPago, label: transaccionEditar.idTipoPago}:{id: "0", label: ""});
@@ -479,7 +482,7 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
                   />
                 </Grid> 
 
-                <Grid item xs={12} sm={7} >
+                <Grid item xs={12} sm={6} >
 
                   <CategoriesAutocomplete
                       categoryObject={{id: transaccionEditar.idRubro, label: transaccionEditar.rubro}} 
@@ -488,12 +491,12 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
                       isShowAllOption={false}
                   />
                 </Grid>
-                <Grid item xs={12} sm={5}>
-                  <CashFlowTypeAutocomplete
-                    cashFlowObject={{id:transaccionEditar.idTipoFlujo, label:transaccionEditar.idTipoFlujo==="0"?"Ingresos":"Egresos"}} 
-                    setterFunction={setTransaccion}
+                <Grid item xs={12} sm={6} >
+                  <TypesAutocomplete 
+                    typeObject={{id: transaccionEditar.idTipoTransaccion, label: transaccionEditar.idTipoTransaccion}}
+                    setterFunction={setTransaccion} 
                   />
-                </Grid> 
+                 </Grid> 
                 {/* <Grid item xs={12} >
                   <LocalizationProvider locale={esES}>
                     <DatePicker
@@ -530,6 +533,13 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
                   />
                   {formErrors.numeroFactura ? <div className="error-helper-text">{formErrors.numeroFactura}</div> : null}
                 </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box style={{height:"8px"}}/>
+                  <CashFlowTypeAutocomplete
+                    cashFlowObject={{id:transaccionEditar.idTipoFlujo, label:transaccionEditar.idTipoFlujo==="0"?"Ingresos":"Egresos"}} 
+                    setterFunction={setTransaccion}
+                  />
+                </Grid> 
 
                 <Grid item xs={6} sm={6}>
                     <NumericFormat

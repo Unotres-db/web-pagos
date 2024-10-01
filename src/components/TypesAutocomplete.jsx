@@ -3,20 +3,20 @@ import React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-export default function CashFlowTypeAutocomplete ({cashFlowObject, setterFunction}){
+export default function TypeAutocomplete ({typeObject, setterFunction}){
 
   const checkLabel=()=>{
-    if (cashFlowObject.id==="0"){
-      return "Tipo de Flujo"
+    if (typeObject.id==="0"){
+      return "Tipo de Transaccion"
     }
-    return cashFlowObject.label
+    return typeObject.label
   }
 
   const updateState=(newValue)=>{
     if (newValue!==null && newValue!==undefined){
-      setterFunction(prevState => ({...prevState, idTipoFlujo: newValue.id? newValue.id: "1"}))  
+      setterFunction(prevState => ({...prevState, idTipoTransaccion: newValue.id? newValue.id: "0"}))  
     } else {
-      setterFunction(prevState => ({...prevState, idTipoFlujo: "0"}))
+      setterFunction(prevState => ({...prevState, idTipoTransaccion: "0"}))
     }
   }
 
@@ -27,7 +27,7 @@ export default function CashFlowTypeAutocomplete ({cashFlowObject, setterFunctio
       fullWidth
       size="small"
       clearIcon={false}
-      options={[{id:"0", label:"Ingreso"},{id:"1", label:"Egreso"}]}
+      options={[{id:"0", label:"HONORARIO"},{id:"1", label:"MAT + MO"},{id:"2", label:"MATERIAL"},{id:"2", label:"MO"}]}
       sx={{ width: "100%"}}
       onChange={(event, newValue) => updateState(newValue) }
       renderInput={(params) => <TextField {...params} label={checkLabel()} />}
