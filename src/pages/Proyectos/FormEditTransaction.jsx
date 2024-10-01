@@ -50,6 +50,9 @@ const useStyles = makeStyles((mainTheme) => ({
       color: '#344955', 
     },
   },
+  greenSnackbarContent: {
+    backgroundColor: "#228B22"
+  },
 }));
 
 export default function FormEditTransaction({ open, onClose, transaccionEditar, id, isEditTable, setIsEditTable }){
@@ -101,17 +104,17 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
   const muiFechaPagoProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Fecha de pago", name: "fechaPago" };
 
   const handleSnackbarClose=()=>{
-    handleAddTransaction(transaccion)
+    // handleAddTransaction(transaccion)
    setIsSnackbarOpen(false);
-  //  setIsEditTable(true);
+   setIsEditTable(true);
   }
 
 
-  const handleAddTransaction = (transaccion) => {
-    const updatedTransaction = [...transactions, transaccion];
-    updatedTransaction.sort((a, b) => a.fechaFactura.localeCompare(b.fechaFactura));
-    setTransactions(updatedTransaction);
-  };
+  // const handleAddTransaction = (transaccion) => {
+  //   const updatedTransaction = [...transactions, transaccion];
+  //   updatedTransaction.sort((a, b) => a.fechaFactura.localeCompare(b.fechaFactura));
+  //   setTransactions(updatedTransaction);
+  // };
 
   function convertDateToUTC(dateString) {
     // Split the date string into day, month, and year parts

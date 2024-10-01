@@ -224,7 +224,7 @@ const handleSnackbarClose=()=>{
 
   const getProjectSuccessCb=(apiData)=>{
     if(apiData){
-      // alert("getProjectSuccessCb-setTransactions(apiData)")
+      alert("getProjectSuccessCb-setTransactions(apiData)")
       setTransactions(apiData);
     }
   }
@@ -235,11 +235,11 @@ const handleSnackbarClose=()=>{
     // setIsSnackbarOpen(true);
   }
 
-  // useEffect(() => {
-  //   if (transactions[0].idProyecto) {
-  //     getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${transactions[0].idProyecto}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
-  //   } 
-  // }, [isEditTable]);
+  useEffect(() => {
+    if (transactions[0].idProyecto) {
+      getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${transactions[0].idProyecto}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+    } 
+  }, []);
 
   return (
     <>
@@ -404,13 +404,13 @@ const handleSnackbarClose=()=>{
         </TableFooter>
       </Table>
     </TableContainer>
-    <FormEditTransaction 
+    {/* <FormEditTransaction 
       open={isEditTransaction}
       onClose={handleEditTransactionClose}
       transaccionEditar={transaccionEditar}
       isEditTable={isEditTable}
       setIsEditTable={setIsEditTable}
-    />
+    /> */}
     <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
       {dialogOptions.message}
     </DialogModal> 

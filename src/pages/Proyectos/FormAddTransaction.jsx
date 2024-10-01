@@ -59,6 +59,9 @@ const useStyles = makeStyles((mainTheme) => ({
       color: '#344955', 
     },
   },
+  greenSnackbarContent: {
+    backgroundColor: "#228B22"
+  },
 }));
 
 export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdit }){
