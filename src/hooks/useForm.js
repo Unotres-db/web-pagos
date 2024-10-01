@@ -4,6 +4,7 @@ import { LoginContext } from '../helpers/Context.js';
 export default function useForm (callback) {
   
   const { userId, setUserId, userName, setUserName } = useContext (LoginContext);
+
   const [ proyecto, setProyecto]= useState({ 
     idProyecto: "",
     nombre: "",
@@ -11,6 +12,13 @@ export default function useForm (callback) {
     metrosCuadrados:"",
     margenEstimado: ""
   });
+  const [ proveedor, setProveedor] = useState({
+    idProveedor: "",
+    nombre: "",
+    razonSocial: "",
+    ruc: "",
+    direccion: "",
+  })
   const [ transaccion, setTransaccion] = useState({ 
     idTransaccion:"",
     idProyecto:"", 
@@ -34,7 +42,6 @@ export default function useForm (callback) {
   const [ inputData, setInputData] = useState ({inputId:"", inputPassword:""})
   const [ formErrors, setFormErrors ] = useState({ 
     // idTransaccion:"",
-
     idProveedor:"", 
     // nombreProveedor:"",
     idRubro:"", 
@@ -53,16 +60,20 @@ export default function useForm (callback) {
     inputId:"",
     inputPassword:"",
     idProyecto:"", 
-    nombre:"",
+    // nombre:"",
     metrosCuadrados:"",
     margenEstimado:"",
+    nombre: "",
+    razonSocial: "",
+    ruc: "",
+    direccion: "",
   })
   const { contactName, contactMobile, contactEmail, contactMsg,userPassword } = {values};
   const {inputId, inputPassword}=inputData
 
 
   function noBlanks (value) {
-    // alert("noBlanks")
+    // alert("noBlanks, value"+value)
     if (value === "") {
         return {
           valid: false,
@@ -201,7 +212,7 @@ export default function useForm (callback) {
   // }
 
   const handleChange = (e, setterFunction, validators ) =>{
-    // alert("handleChange, target.name" + e.target.name)
+    // alert("handleChange, target.name" + e.target.name + " " + e.target.value)
     const target = e.target;
     // alert("e.target.value em handleChange"+ e.target.value)
     // console.log("handleChage: " + target.name)
@@ -209,6 +220,7 @@ export default function useForm (callback) {
     if (validators) {
       handleValidators(target, validators);
     }
+    // alert()
     if (formErrors[target.name] !== ""){
       e.preventDefault()
     }
@@ -244,5 +256,5 @@ export default function useForm (callback) {
     })
   }
 
-  return { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, proyecto, setProyecto, formErrors, setFormErrors,inputData, setInputData, userId, setUserId, userName, setUserName }
+  return { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin,chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, proyecto, setProyecto, formErrors, setFormErrors,inputData, setInputData, userId, setUserId, userName, setUserName, proveedor, setProveedor }
 }

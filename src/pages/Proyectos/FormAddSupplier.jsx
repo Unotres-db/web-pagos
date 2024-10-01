@@ -1,23 +1,20 @@
 import React, { useContext, useState, useEffect} from 'react';
 
+// import { PatternFormat } from 'react-number-format';
+import { NumericFormat } from 'react-number-format';
+
 import { Paper, Grid, Dialog, DialogActions, DialogContent, DialogContentText, Box, Tooltip, Button, Typography, TextField, Avatar, useTheme, useMediaQuery, InputAdornment, Snackbar, SnackbarContent } from '@mui/material'
 import { makeStyles } from '@material-ui/core/styles';
 
 import api from '../../services/api';
 import useAxios from '../../hooks/useAxios'
 import useForm from '../../hooks/useForm';
+import { LoginContext } from '../../helpers/Context';
 
 import DialogModal from '../../components/DialogModal';
 
-const useStyles = makeStyles((mainTheme) => ({
 
-  // root: {
-  //   display: 'flex',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  //   height: '100vh', 
-  //   flexGrow: 1,
-  // },
+const useStyles = makeStyles((mainTheme) => ({
   paperStyle: {
     width: "100%",   
     marginLeft: "2px",
@@ -27,70 +24,72 @@ const useStyles = makeStyles((mainTheme) => ({
     backgroundColor:"cyan",
     padding: "5px",
   },
-  buttonStyle: {
-    textTransform:"none",
-    fontSize:"12px",
-    backgroundColor: "#E1C16E", 
-    color: '#344955', 
-    '&:hover': {
-      backgroundColor: '#bda25c', 
-      color: '#34495', 
-    },
-    '&:disabled': {
-      backgroundColor: "gray", //"#F49506ed",
-      color: '#344955', 
-    },
+  greenSnackbarContent: {
+    backgroundColor: "#228B22"
   },
 }));
 
 export default function FormAddSupplier({ open, onClose}){
   const classes = useStyles();
+  const { suppliers, setSuppliers}= useContext(LoginContext);
   const [ isSnackbarOpen, setIsSnackbarOpen]= useState(false);
   const [ snackbarMessage, setSnackbarMessage] = useState("");
   const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
   const [ isDialogOpen, setIsDialogOpen] = useState(false);
-  const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin, chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, proyecto, setProyecto, formErrors, setFormErrors } = useForm ();
-  const { 
-    nombre,
-    ruc,
-    direccion,
-  } = proyecto //proveedor 
+  const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin, chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, proyecto, setProyecto, formErrors, setFormErrors, proveedor, setProveedor } = useForm ();
+  const { nombre, ruc, direccion } = proveedor 
+  // const muiRucProps = { required: false, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Numero de RUC", name: "ruc" };
+  const [ isEdit, setIsEdit] = useState(true)// eliminar?
+  const { axiosFetch: postSupplier} = useAxios(); 
 
- const handleSnackbarClose=()=>{
-   setIsSnackbarOpen(false);
+  const handleSnackbarClose=()=>{
+    setProveedor (prevState => ({...prevState, 
+      idProveedor: "",
+      nombre: "",
+      razonSocial: "",
+      ruc: "",
+      direccion: "",
+    }))
+    setIsSnackbarOpen(false);
+    }
+
+    function handleDialogClose(){
+      setIsDialogOpen(false)
+    }
+
+    // UseAxios catch error useAxios:Cannot read properties of undefined (reading 'localeCompare')
+    const handleAddSuplier = (newSupplier) => {
+      const newRegister={id:newSupplier.idProveedor, label:newSupplier.nombre, ruc:newSupplier.ruc}
+      const updatedSuppliers = [...suppliers, newRegister];
+      updatedSuppliers.sort((a, b) => a.label.localeCompare(b.label));
+      setSuppliers(updatedSuppliers);
+    };
+
+
+  const supplierSuccessCb=(apiData)=>{
+    const { id } = apiData
+    setProveedor (prevState => ( {...prevState, idProveedor: id}));
+    handleAddSuplier(proveedor)
+    setIsEdit(true);
+    setSnackbarMessage("Proveedor grabado exitosamente en la base de datos")
+    setIsSnackbarOpen(true);
+  }  
+
+  const supplierErrorCb=()=>{
+    alert("Hubo un error en el acceso a la base de datos. Por favor, inténtalo más tarde, gracias!");
   }
 
-  function handleDialogClose(){
-    setIsDialogOpen(false)
-  }
-
-  async function saveSupplier(proveedor)  {
-   // revisar =ruta
-    return api.post('/proveedores', proveedor)
-      .then(response => {
-        const { idTransaccion: id } = response.data;  
-        setIsEdit(true);
-        setSnackbarMessage("Proveedor grabado exitosamente en la base de datos")
-        setIsSnackbarOpen(true);
-      })
-      .catch(function (err) {
-        if (err.response) {
-          const errorMsg = Object.values(err.response.data);
-          alert("Hubo un error en el acceso a la base de datos. Por favor, inténtalo más tarde, gracias!");
-        } else if (err.request) {
-          alert("Hubo un error en el acceso a la base de datos. Por favor, inténtalo más tarde, gracias!");
-        } else {
-          alert("Hubo un error en el acceso a la base de datos. Por favor, inténtalo más tarde, gracias!");
-        }
-      });
+  function saveSupplier(proveedor)  {
+    postSupplier({ axiosInstance: api, method: 'POST', url: '/proveedores', data: proveedor, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},supplierSuccessCb, supplierErrorCb);
   }
 
   const handleCancel=()=>{
-    setProyecto(prevState => ({...prevState, 
+    setProveedor(prevState => ({...prevState, 
       idProveedor: "",
       nombre: "",
-      ruc:"",
-      direccion:""
+      razonSocial: "",
+      ruc: "",
+      direccion: "",
     }))
     onClose()
   }
@@ -116,20 +115,29 @@ export default function FormAddSupplier({ open, onClose}){
   }
 
   const handleSaveChanges = async () => {
-    if (! checkFormErrors() ) {
-      saveProject(proyecto)
-      setProyecto (prevState => ({...prevState, 
-        idProyecto: "",
-        nombre: "",
-        descripcion:"",
-        metrosCuadrados:"",
-        margenEstimado: "",
-      }))
-      onClose();
+    // alert("entrou em handleSaveChanges")
+    // alert(proveedor.nombre + " " + proveedor.ruc+ " "+proveedor.idProveedor)
+    // console.log("proveedor")
+    // console.log(proveedor);
+    if (! checkFormErrors()) {   //&& checkRequiredFields()
+      saveSupplier(proveedor)
     } else {
+      alert("! checkFormErrors() &&  checkRequiredFields()")
       console.log("Not saved in database")
     }
+    onClose();
   };
+
+  useEffect(() => {
+    setProveedor({idProveedor: "", nombre: "", razonSocial: "", ruc: "", direccion: ""})
+    setFormErrors(prevState => ({...prevState, 
+      idProveedor: "",
+      nombre: "",
+      razonSocial: "",
+      ruc: "",
+      direccion: "",
+    }))
+  }, [ open ]);
 
   return (
     <>
@@ -152,61 +160,31 @@ export default function FormAddSupplier({ open, onClose}){
 
                 <Grid item xs={12} >
                   <TextField variant ="outlined" margin="dense" size="small" fullWidth
-                    label="Nombre del Proveedor"
+                    label="Nombre del Proveedor *"
                     name="nombre"
                     value={nombre}
-                    autoComplete="nombre-proyecto"
+                    autoComplete="nombre-proveedor"
                     onChange={ (e) => {
-                      handleChange (e,setProyecto,[noBlanks]);
+                      handleChange (e,setProveedor,[]);
                     }}
                     error={formErrors.nombre}
                   />
                   {formErrors.nombre ? <div className="error-helper-text">{formErrors.nombre}</div> : null}
                 </Grid>
-               
-                <Grid item xs={12} sm={12}>
-                  <TextField variant ="outlined" margin="dense" size="small" fullWidth
-                    label="Descripción del Proyecto"
-                    name="descripcion"
-                    value={descripcion}
-                    autoComplete="descripcion"
-                    multiline
-                    rows={3}
-                    onChange={ (e) => {
-                      handleChange (e,setTransaccion,[noBlanks]);
-                    }}
-                    error={formErrors.descripcion}
-                  />
-                  {formErrors.descripcion ? <div className="error-helper-text">{formErrors.descripcion}</div> : null}
-                </Grid>
-
-                <Grid item xs={6} sm={6}>
+                <Grid item xs={6} >
                   <TextField variant ="outlined" margin="dense" size="small" fullWidth
                     label="RUC"
                     name="ruc"
                     value={ruc}
-                    autoComplete="ruc"
+                    autoComplete="ruc-proveedor"
                     onChange={ (e) => {
-                      handleChange (e,setProyecto,[noBlanks]);
+                      handleChange (e,setProveedor,[]);
                     }}
                     error={formErrors.ruc}
                   />
                   {formErrors.ruc ? <div className="error-helper-text">{formErrors.ruc}</div> : null}
                 </Grid>
 
-                <Grid item xs={6} sm={6}>
-                  <TextField variant ="outlined" margin="dense" size="small" fullWidth
-                    label="Direccion"
-                    name="direccion"
-                    value={direccion}
-                    autoComplete="compromargen-estimado"
-                    onChange={ (e) => {
-                      handleChange (e,setProyecto,[noBlanks]);
-                    }}
-                    error={formErrors.direccion}
-                  />
-                  {formErrors.direccion ? <div className="error-helper-text">{formErrors.direccion}</div> : null}
-                </Grid>
                 </Grid>
               </DialogContentText>
             </DialogContent>
@@ -233,8 +211,8 @@ export default function FormAddSupplier({ open, onClose}){
                       cursor: 'not-allowed', // Disable cursor interaction
                       opacity: 0.5, // Make the button appear disabled
                     },}} 
-                    // disabled={checkFormErrors() || ! checkRequiredFields()} 
-                    disabled
+                    // disabled={checkFormErrors()} 
+                    disabled={checkFormErrors() || ! checkRequiredFields()}
                     onClick={handleSaveChanges} 
                     variant="contained" size="small" >
                     Grabar</Button>
@@ -254,7 +232,7 @@ export default function FormAddSupplier({ open, onClose}){
       className={classes.greenSnackbarContent}
       message={snackbarMessage}
     />
-  </Snackbar>
+  </Snackbar>   
   <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
     {dialogOptions.message}
   </DialogModal>
