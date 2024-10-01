@@ -18,6 +18,7 @@ import api from '../../services/api';
 import useAxios from '../../hooks/useAxios'
 import useForm from '../../hooks/useForm';
 
+import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
 import DialogModal from '../../components/DialogModal';
 import RubrosAutoComplete from '../../components/RubrosAutoComplete';
 import RubrosComboBox from '../../components/RubrosComboBox';
@@ -63,7 +64,9 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
   const classes = useStyles();
   // const [ rubros, setRubros] = useState([]);
   // const [ proveedores, setProveedores ] = useState([]);
-  const { suppliers, setSuppliers, categories, setCategories } = useContext(LoginContext)
+  const { suppliers, setSuppliers, categories, setCategories, cashFlowType, setCashFlowType } = useContext(LoginContext)
+  const [ supplierSearchId, setSuppliersSearchId]= useState("");
+  const [ categorySearchId, setCategorySearchId]= useState("");
   const [ isSnackbarOpen, setIsSnackbarOpen]= useState(false);
   const [ snackbarMessage, setSnackbarMessage] = useState("");
   const [ isEditField, setIsEditField] = useState(true)// eliminar?
@@ -87,6 +90,8 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     idTipoPago,
     idTipoFlujo } = transaccion
     const objetoRubro = {idRubro: "0", nombreRubro: ""}
+    const cashFlowObject={id:"1", label:""}
+    const categoryObject = {id: "0", label: ""}
     const supplierObject = {id: "0", label: ""}
     const paymentObject = {id: "0", label: ""}
 
@@ -469,14 +474,19 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                 </Grid> 
 
                 <Grid item xs={12} >
-                  <RubrosComboBox 
+                  <CategoriesAutocomplete
+                      categoryObject={categoryObject} 
+                      setterFunction={setTransaccion} 
+                      categoriesList={categories}
+                  />
+                  {/* <RubrosComboBox 
                     objetoRubro={objetoRubro}
                     transaccion={transaccion}
                     setTransaccion={setTransaccion}
                     isEditField={isEditField}
                     setIsEditField={setIsEditField}
                     variant="filled"
-                  />
+                  /> */}
                 </Grid>
 
                 <Grid item xs={6} sm={6}>

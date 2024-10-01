@@ -13,14 +13,15 @@ import { makeStyles } from '@material-ui/core/styles';
 // import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';   
 // import { esES } from '@mui/x-date-pickers/locales';   
-
+import { LoginContext } from '../../helpers/Context';
 import api from '../../services/api';
 import useAxios from '../../hooks/useAxios'
 import useForm from '../../hooks/useForm';
 
+import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
 import DialogModal from '../../components/DialogModal';
-import RubrosAutoComplete from '../../components/RubrosAutoComplete';
-import RubrosComboBox from '../../components/RubrosComboBox';
+// import RubrosAutoComplete from '../../components/RubrosAutoComplete';
+// import RubrosComboBox from '../../components/RubrosComboBox';
 import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
 import PaymentAutocomplete from '../../components/PaymentAutocomplete';
 
@@ -52,7 +53,8 @@ const useStyles = makeStyles((mainTheme) => ({
 
 export default function FormEditTransaction({ open, onClose, transaccionEditar, id, isEditTable, setIsEditTable }){
   const classes = useStyles();
-  const [ rubros, setRubros] = useState([]);
+  const { suppliers, setSuppliers, categories, setCategoriescashFlowType, setCashFlowType } = useContext(LoginContext)
+  // const [ rubros, setRubros] = useState([]);
   const [ isSnackbarOpen, setIsSnackbarOpen]= useState(false);
   const [ snackbarMessage, setSnackbarMessage] = useState("");
   const [ proveedores, setProveedores ] = useState([]);
@@ -64,9 +66,9 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     idTransaccion,
     idProyecto, 
     idProveedor, 
-    nombreProveedor,
+    proveedor,
     idRubro, 
-    nombreRubro,
+    rubro,
     idTipoTransaccion, 
     descripcion, 
     numeroFactura, 
@@ -78,12 +80,19 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     idTipoPago,
     idTipoFlujo } = transaccion
     // const ingresos = transactions.filter(transaction => transaction.idTipoFlujo === "0").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0);
-    const [ objetoRubro, setObjetoRubro] = useState({idRubro: "", nombreRubro: ""});
-    const [ supplierObject, setSupplierObject]  = useState({id: "", label: ""});
-    const [ paymentObject, setPaymentObject] =useState({id: "", label: ""});
-
-  const { axiosFetch: getRubros, isLoading: isLoadingRubros, error: isErrorRubros } = useAxios();
-  const { axiosFetch: getProveedores, isLoading: isLoadingProveedores, error: isErrorProveedores } = useAxios();
+    // const [ objetoRubro, setObjetoRubro] = useState({idRubro: "", nombreRubro: ""});
+    // const categoryObject = {id: "0", label: ""}
+    // const [ supplierObject, setSupplierObject]  = useState({id: "", label: ""});
+    // const [ paymentObject, setPaymentObject] =useState({id: "", label: ""});
+    const [ categoryObject, setCategoryObject] = useState({id: "0", label: ""});
+    const [ supplierObject, setSupplierObject] = useState({id: "0", label: ""});
+    const [ paymentObject, setPaymentObject ] = useState({id: "0", label: ""});
+    // const [ categoryObject, setCategoryObject] = useState(transaccionEditar? {id: transaccionEditar.idRubro, label:transaccionEditar.rubro}: {id: "0", label: ""});
+    // const [ supplierObject, setSupplierObject] = useState(transaccionEditar? {id: transaccionEditar.idProveedor, label:transaccionEditar.idProveedor}: {id: "0", label: ""});
+    // const [ paymentObject, setPaymentObject ] = useState(transaccionEditar?  {id: transaccionEditar.idTipoPago, label: transaccionEditar.idTipoPago}:{id: "0", label: ""});
+    // {idRubro: transaccionEditar.idRubro, nombreRubro: transaccionEditar.rubro}
+  // const { axiosFetch: getRubros, isLoading: isLoadingRubros, error: isErrorRubros } = useAxios();
+  // const { axiosFetch: getProveedores, isLoading: isLoadingProveedores, error: isErrorProveedores } = useAxios();
   const muiMontoFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Monto Factura", name: "montoFactura",InputProps: {startAdornment: <InputAdornment position="start">Gs.</InputAdornment> }};
   const muiNumeroFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Numero Factura", name: "numeroFactura" };
   const muiFechaFacturaProps = { required: true, fullWidth: true, variant :"outlined", margin:"dense", size:"small", label: "Fecha Factura", name: "fechaFactura" };
@@ -376,27 +385,27 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     }
   };
 
-  const getProveedoresSuccessCb=(apiData)=>{
-    if (apiData){
-      setProveedores(apiData)
+  // const getProveedoresSuccessCb=(apiData)=>{
+  //   if (apiData){
+  //     setProveedores(apiData)
 
-    }
-  }
+  //   }
+  // }
 
-  const getProveedoresErrorCb=()=>{
-    alert ("Error leyendo Proveedores desde la base de datos")
-  }
+  // const getProveedoresErrorCb=()=>{
+  //   alert ("Error leyendo Proveedores desde la base de datos")
+  // }
 
-  const getRubrosSuccessCb=(apiData)=>{
-    if (apiData){
-      setRubros(apiData)
-      getProveedores({ axiosInstance: api, method: 'GET', url: `/proveedores`, requestConfig: { headers: {'Authorization': "id",},}},getProveedoresSuccessCb, getProveedoresErrorCb);
-    }
-  }
+  // const getRubrosSuccessCb=(apiData)=>{
+  //   if (apiData){
+  //     setRubros(apiData)
+  //     getProveedores({ axiosInstance: api, method: 'GET', url: `/proveedores`, requestConfig: { headers: {'Authorization': "id",},}},getProveedoresSuccessCb, getProveedoresErrorCb);
+  //   }
+  // }
 
-  const getRubrosErrorCb=()=>{
-    alert ("Error leyendo Rubros desde la base de datos")
-  }
+  // const getRubrosErrorCb=()=>{
+  //   alert ("Error leyendo Rubros desde la base de datos")
+  // }
 
   useEffect(() => {
     if (transaccionEditar){
@@ -419,18 +428,18 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
         nombreTipoPago:transaccionEditar.nombreTipoPago,
         idTipoFlujo:transaccionEditar.idTipoFlujo
       }));
-      setObjetoRubro({idRubro: transaccionEditar.idRubro, nombreRubro: transaccionEditar.rubro});
+      setCategoryObject({id: transaccionEditar.idRubro, label: transaccionEditar.rubro});
       setSupplierObject({id: transaccionEditar.idProveedor, label: transaccionEditar.proveedor});
       setPaymentObject({id: transaccionEditar.idTipoPago, label: transaccionEditar.idTipoPago});
-
     }
-    getRubros({ axiosInstance: api, method: 'GET', url: `/rubros`, requestConfig: { headers: {'Authorization': "id",},}},getRubrosSuccessCb, getRubrosErrorCb);
   }, [ open ]);
 
   return (
     <>
     { transaccionEditar ? <>
+      { console.log("transaccionEditar, en formEdit")}
       { console.log(transaccionEditar)}
+      {/* {alert( transaccionEditar.proveedor+" " + transaccionEditar.idProveedor)} */}
       <Paper className={classes.paperStyle}>
         <Dialog 
           open={open}
@@ -448,23 +457,22 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
                 <Box sx={{height:"10px"}}/>
                 <Grid container spacing={1}>
                 <Grid item xs={12} >
-                  <SuppliersAutocomplete 
-                    supplierObject={supplierObject}
-                    setterFunction={setTransaccion}
-                    isEditField={isEditField}
-                    setIsEditField={setIsEditField}
-                    variant="filled"
+                  <SuppliersAutocomplete
+                    // supplierObject={supplierObject} 
+                    supplierObject={{id: transaccionEditar.idProveedor, label: transaccionEditar.proveedor}}
+                    setterFunction={setTransaccion} 
+                    suppliersList={suppliers}
+                    isShowAllOption={false}
                   />
                 </Grid> 
 
                 <Grid item xs={12} >
-                  <RubrosComboBox 
-                    objetoRubro={objetoRubro}
-                    transaccion={transaccion}
-                    setTransaccion={setTransaccion}
-                    isEditField={isEditField}
-                    setIsEditField={setIsEditField}
-                    variant="filled"
+
+                  <CategoriesAutocomplete
+                      categoryObject={{id: transaccionEditar.idRubro, label: transaccionEditar.rubro}} 
+                      setterFunction={setTransaccion} 
+                      categoriesList={categories}
+                      isShowAllOption={false}
                   />
                 </Grid>
                 {/* <Grid item xs={12} >

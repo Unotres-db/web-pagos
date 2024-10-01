@@ -12,13 +12,15 @@ import { LoginContext } from '../../helpers/Context';
 import useAxios from '../../hooks/useAxios';
 
 import Header from '../../components/Header';
+// CategoriesAutocomplete\
+import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
 import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
-import SuppliersListByProject from '../../components/SuppliersListByProject';
-import TypesListByProjecy from '../../components/TypesListByProject';
+// import SuppliersListByProject from '../../components/SuppliersListByProject';
+// import TypesListByProjecy from '../../components/TypesListByProject';
 import TableProject from './TableProject';
-import FormInc from './FormInc';
+// import FormInc from './FormInc';
 import FormAddTransaction from './FormAddTransaction';
-import FormEditTransaction from './FormEditTransaction';
+// import FormEditTransaction from './FormEditTransaction';
 import Subtotal from './Subtotal';
 
 const useStyles = makeStyles( () => ({
@@ -86,13 +88,14 @@ const useStyles = makeStyles( () => ({
 export default function Proyectos (){
   const classes = useStyles();
   const { id } = useParams();  
-  const { transactions, setTransactions, suppliers, setSuppliers } = useContext(LoginContext);
+  const { transactions, setTransactions, suppliers, setSuppliers,cashFlowType, setCashFlowType } = useContext(LoginContext);
   const { allTransactions, setAllTransactions } = useState(null);
   const [ filteredTransactions, setFilteredTransactions]=useState([])
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));//md
   const [ supplierSearchId, setSuppliersSearchId]= useState("");
+  const [ categorySearchId, setCategorySearchId]= useState("");
   const [ isEditField, setIsEditField] = useState(true)// eliminar?
   const [ isEdit, setIsEdit] = useState(false); 
   const [ isDelete, setIsDelete] = useState(false); 
@@ -103,41 +106,68 @@ export default function Proyectos (){
   // const [ transactions, setTransactions] = useState(null);
   const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
   const { axiosFetch: delTransaction, isLoading: isLoadingDeletion, error: isErrorDeletion } = useAxios();
-  const objetoRubro = {idRubro: "0", nombreRubro: ""}
-  const supplierObject = {id: "0", label: ""}
-  const paymentObject = {id: "0", label: ""}
-  // let filteredTransactions=null
-  let projectSuppliersList = transactions ? [
-    { id: "0", label: "Todos" },
-    ...
-    transactions
-    .map(transaction => ({
-        id: transaction.idProveedor,
-        label: transaction.proveedor
-    }))
-    .reduce((acc, cur) => {
-        const existing = acc.find(item => item.id === cur.id);
-        if (!existing) {
-            acc.push(cur);
-        }
-        return acc;
-    }, [].sort((a, b) => a.label.localeCompare(b.label)))]:[];
+  const categoryObject = {id: "0", label: "Todos"}
+  const supplierObject = {id: "0", label: "Todos"}
+  // const paymentObject = {id: "0", label: ""};
 
-    let projectTypesList = transactions ? [
+  const projectSuppliersList = transactions
+  ? [
       { id: "0", label: "Todos" },
-      ...
-      transactions
-      .map(transaction => ({
-          id: transaction.idRubro,
-          label: transaction.rubro
-      }))
-      .reduce((acc, cur) => {
+      ...transactions
+        .map(transaction => ({
+          id: transaction.idProveedor,
+          label: transaction.proveedor
+        }))
+        .reduce((acc, cur) => {
           const existing = acc.find(item => item.id === cur.id);
           if (!existing) {
-              acc.push(cur);
+            acc.push(cur);
           }
           return acc;
-      }, [].sort((a, b) => a.label.localeCompare(b.label)))]:[];
+        }, [])
+        .sort((a, b) => a.label.localeCompare(b.label))
+    ]
+  : [];
+
+  // const projectCategoriesList = transactions
+  // ? [
+  //     { id: "0", label: "Todos" },
+  //     ...transactions
+  //       .map(transaction => ({
+  //         id: transaction.idRubro,
+  //         label: transaction.rubro
+  //       }))
+  //       .reduce((acc, cur) => {
+  //         const existing = acc.find(item => item.id === cur.id);
+  //         if (!existing) {
+  //           acc.push(cur);
+  //         }
+  //         return acc;
+  //       }, [])
+  //       .sort((a, b) => a.label.localeCompare(b.label))
+  //   ]
+  // : [];
+
+  const projectCategoriesList = transactions
+  ? [
+    { id: "0", label: "Todos" },
+    ...transactions
+      .filter(transaction => supplierSearchId.idProveedor === "0" || transaction.idProveedor === supplierSearchId.idProveedor)  // Filter by idProveedor
+      .map(transaction => ({
+        id: transaction.idRubro,
+        label: transaction.rubro,
+      }))
+      .reduce((acc, cur) => {
+        const existing = acc.find(item => item.id === cur.id);
+        if (!existing) {
+          acc.push(cur);
+        }
+        return acc;
+      }, [])
+      .sort((a, b) => a.label.localeCompare(b.label)),
+  ]
+  : [];
+
 
 
   const handleAddTransaction=()=>{
@@ -177,21 +207,32 @@ export default function Proyectos (){
     setIsSnackbarOpen(false);
   }
 
-  const filterFunction=(supplierId)=>{
-    if (supplierId !=="" && supplierId!==undefined && supplierId!==null){
+  // Si supplierId fue seleccionado (tiene un id)
+  //   si categoryid tb fue seleccionado (tiene un id) entonces
+//        filtra las trnsacciobes con 
+  const filterFunction=(supplierId, categoryId)=>{
 
-      if (supplierId==="0"){
-        return transactions
+    // si hay un proveedor seleccionado....
+    if (supplierId !=="" && supplierId!==undefined && supplierId!==null && supplierId!=="0" ){
+
+      if (categoryId !=="" && categoryId!==undefined && categoryId!==null && categoryId!=="0"){
+        const filteredByBoth = transactions.filter((list) => (list.idProveedor === supplierId && list.idRubro === categoryId));
+        return filteredByBoth
       }
-      const filtered = transactions.filter((list) => (list.idProveedor === supplierId ))  
-      console.log(filtered)
-      // alert("filtered.length"+filtered.length)
-      if (filtered.length > 0){
-        return filtered
+
+      const filteredBySupplier = transactions.filter((list) => (list.idProveedor === supplierId ))  
+      if (filteredBySupplier.length > 0){
+        return filteredBySupplier
       }
-    }
-    // alert("retorna transactions en filterFunction")
-    return transactions
+    } else {
+      if (categoryId !=="" && categoryId!==undefined && categoryId!==null && categoryId!=="0"){
+        const filteredByCategory = transactions.filter((list) => (list.idRubro === categoryId ))  
+        return filteredByCategory
+      } else{
+        return transactions    
+      }
+     }
+  return transactions
   }
 
   // const deleteTransactionSuccessCb=(apiData)=>{
@@ -219,22 +260,9 @@ export default function Proyectos (){
   // }, [isDelete]);
 
   useEffect(() => {
-    // alert("useEffect [supplierSearchId]")
-    // alert(supplierSearchId.idProveedor)
-    // if (supplierSearchId.idProveedor!==""){
-    //   if (supplierSearchId.idProveedor!=="0"){
-    //     alert("!==0")
-    //     setFilteredTransactions(transactions.filter((list) => (list.idProveedor === supplierSearchId.idProveedor )))
-    //   } else {
-    //     alert("===0, todos")
-    //     setFilteredTransactions (transactions)
-    //   }
-    // } else {
-    //   alert("===''")
-    //   setFilteredTransactions (transactions)
-    // }
-    setFilteredTransactions(filterFunction(supplierSearchId.idProveedor))
-  }, [supplierSearchId]);
+    
+    setFilteredTransactions(filterFunction(supplierSearchId.idProveedor, categorySearchId.idRubro))
+  }, [supplierSearchId, categorySearchId]);
 
 
   useEffect(() => {
@@ -257,10 +285,10 @@ export default function Proyectos (){
       { ! transactions ? 
       
       <>
-      {console.log(" proyectos-index transactions")}
+      {/* {console.log(" proyectos-index transactions")}
       {console.log(transactions)}
       {console.log(" proyectos-index filteredTransactions")}
-      {console.log(filteredTransactions)}
+      {console.log(filteredTransactions)} */}
       <div className={classes.root}>
       {/* <Header />   */}
       <Grid container> 
@@ -299,7 +327,7 @@ export default function Proyectos (){
             <TableProject 
               id={id}
               // transactions={transactions} 
-              transactions={filteredTransactions}
+              transactions={filteredTransactions.length > 0 ? filteredTransactions: transactions}
               setTransactions={setTransactions} 
               isEdit={isEdit}
               setIsEdit={setIsEdit}
@@ -324,7 +352,7 @@ export default function Proyectos (){
               <TableProject 
                 id={id}
                 // transactions={transactions} 
-                transactions={filteredTransactions}
+                transactions={filteredTransactions.length > 0 ? filteredTransactions: transactions}
                 setTransactions={setTransactions} 
                 isEdit={isEdit}
                 setIsEdit={setIsEdit}
@@ -376,24 +404,20 @@ export default function Proyectos (){
                   <Box sx={{height:"5px"}}/>
                 </Box>
                 <Box sx={{height:"5px"}}/>
-                <Subtotal transactions={transactions}/>
+                <Subtotal transactions={filteredTransactions.length>0?filteredTransactions:transactions}/>
                 <Box sx={{height:"5px"}}/>
                 <Box style={{display:"flex", justifyContent:"start"}}>
                  {/* "#E4D00A" "#FFBF00" */}
-                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple onClick={handleAddTransaction} style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Factura/Pago</Button> 
-                  {/* <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disabled style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Pago</Button> */}
-                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Proveedor</Button>
-                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Rubro</Button>  
-                  {/* <Button variant="contained" size="small"  style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Editar</Button>              */}
-                  {/* <Button variant="contained" size="small" style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}}  >Excluir</Button> */}
-                  {/* <Button variant="contained" size="small" disabled style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} >Imprimir</Button> */}
-
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple onClick={handleAddTransaction} style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Factura/Pago</Button> 
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Proveedor</Button>
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Rubro</Button>  
                 </Box>
                 <Box sx={{height:"15px"}}/>
 
-
+                {/* style={{backgroundColor:"#E1C16E"}} */}
                 <Paper elevation={6} >
-                  <Typography style={{fontSize:"13px", marginLeft:"5px"}}>Filtrar datos</Typography>
+                  <Box style={{height:"10px"}}/> 
+                  <Typography align="center" style={{fontSize:"14px", marginLeft:"0px",color:"#344955"}}>Filtrar datos</Typography>
                   <Box style={{height:"5px"}}/>
                   <Box style={{display:"flex", justifyContent:"center",margin:"5px"}}>
                     <Grid container>
@@ -402,15 +426,22 @@ export default function Proyectos (){
                           supplierObject={supplierObject} 
                           setterFunction={setSuppliersSearchId} 
                           suppliersList={projectSuppliersList}
+                          isShowAllOption={true}
                         />
                       </Grid>
                       <Grid item xs={12} >
-                      <Box style={{height:"5px"}}/>  
-                      <TypesListByProjecy
+                      <Box style={{height:"10px"}}/>  
+                      <CategoriesAutocomplete
+                          categoryObject={categoryObject} 
+                          setterFunction={setCategorySearchId} 
+                          categoriesList={projectCategoriesList}
+                          isShowAllOption={true}
+                        />
+                      {/* <TypesListByProjecy
                         supplierObject={supplierObject} 
                         setterFunction={setSuppliersSearchId} 
                         projectSuppliersList={projectTypesList}
-                      />
+                      /> */}
                         
                       </Grid>
 
@@ -469,13 +500,7 @@ export default function Proyectos (){
     isEdit={isEdit}
     setIsEdit={setIsEdit}
   />
-  {/* <FormEditTransaction 
-      open={isEditTransaction}
-      onClose={handleEditTransactionClose}
-      id={id}
-      isEdit={isEdit}
-      setIsEdit={setIsEdit}
-  /> */}
+
   <Snackbar
     open={isSnackbarOpen}
     autoHideDuration={2000} 
@@ -487,6 +512,6 @@ export default function Proyectos (){
     />
   </Snackbar>  
 
-    </>
+  </>
   )
 }

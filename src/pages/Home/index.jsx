@@ -204,18 +204,6 @@ export default function Home (){
       const ingresos = projectTransactions.filter(transaction => transaction.idTipoFlujo === "0").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
       const egresos = projectTransactions.filter(transaction => transaction.idTipoFlujo === "1").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
       const saldo = ingresos - egresos
-      // alert("saldo: " + saldo)
-      // setValuationsList(valuationsList.map(valuation => {
-      //   if (valuation.projectId === '3KD') {
-      //     return {
-      //       ...valuation,
-      //       projectRevenue:ingresos,
-      //       projectCost:egresos,
-      //       projectMargin:saldo,
-      //     };
-      //   }
-      //   return valuation;
-      // }));
     }
   }
 
@@ -287,7 +275,7 @@ export default function Home (){
       {/* <Box style={{height:"5px"}}/>
       <ExchangeRate /> */}
       <Box style={{height:"5px"}}/>
-      <BankAccounts />
+      {/* <BankAccounts /> */}
 
       <Box style={{height:"2px"}}/>
       {/* <Paper style={{height:"110px"}} elevation={6}> */}

@@ -103,6 +103,8 @@ export default function TableProject({id, transactions,setTransactions, isEdit, 
 
   const handleUpdate=(param)=>{
     // setUpdateId(param)
+    console.log("parametro recibido por handleUpdate: ")
+    console.log(param)
     setTransaccionEditar(param)
     setIsEditTransaction(true)
   }
@@ -243,7 +245,7 @@ const handleSnackbarClose=()=>{
     <>
 
     {/* <Header/> */}
-    { transactions? <>
+    { transactions ? <>
       {/* {alert("renderizacion de tableProject")} */}
       {transaccionEditar? console.log("transaccionEditar: "+ transaccionEditar.idTransaccion + " " + transaccionEditar.numeroFactura + " " + transaccionEditar.montoFactura): null}
       {console.log("tableProject: transactions")}

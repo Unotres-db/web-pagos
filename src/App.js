@@ -16,11 +16,12 @@ function App() {
   const [ userData, setUserData ] = useState({userId:"", userPassword:"", userProduct:"", userFirstName:"", userLastName:"", userCountry:"", userCountryName:"", userPhone:"", userBirthday:""})
   const [ suppliers, setSuppliers] = useState([]); // fetch de la base de datos en home
   const [ categories, setCategories] = useState([]); // fetch de la base de datos en home
+  const [ cashFlowType, setCashFlowType] = useState([{idTipoFlujo:"0", label:"Ingreso"},{idTipoFlujo:"0", label:"Egreso"}]);
   // const [ deletionId, setDeletionId ] = useState("");
   // const [ updateId, setUpdateId ]= useState("")
-  const [ transactions, setTransactions]= useState([])
+  const [ transactions, setTransactions]= useState([]);
   return (
-    <LoginContext.Provider value = {{ userData, setUserData,suppliers, setSuppliers,categories, setCategories, transactions, setTransactions }} >
+    <LoginContext.Provider value = {{ userData, setUserData,suppliers, setSuppliers,categories, setCategories, transactions, setTransactions, cashFlowType, setCashFlowType }} >
       {/* <ThemeProvider theme = { mainTheme } > */}
         <Routes />
       {/* </ThemeProvider> */}
