@@ -362,7 +362,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
   }
 
   function checkRequiredFields(){
-    if (idProveedor !=="" && idRubro !=="" && montoFactura !=="" && fechaFactura !=="" && descripcion !==""){
+    if (idProveedor !=="" && idRubro !=="" && montoFactura !=="" && descripcion !==""){
       return true
     } 
     return false
