@@ -125,6 +125,11 @@ const handleSnackbarClose=()=>{
 
  const deleteTransactionSuccessCb=(apiData)=>{
   if (apiData){
+    const updatedTransactions = transactions.filter(
+      (transaction) => transaction.idTransaccion !== deletionId
+    );
+    setTransactions(updatedTransactions);
+    // actulizar es state the transactions con deletionId
     setSnackbarMessage("Transaccion eliminada con exito")
     setIsSnackbarOpen(true)
   }
