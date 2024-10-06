@@ -303,6 +303,38 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     }
   }
 
+
+  const updateState = (transaccion) => {
+    setTransactions((prevTransactions) => {
+      const updatedTransactions = prevTransactions.map((transaction) => {
+        if (transaction.idTransaccion === transaccion.idTransaccion) {
+          return {
+            ...transaction,
+            idTransaccion:idTransaccion,
+            idProyecto:idProyecto, 
+            idProveedor:idProveedor, 
+            proveedor:proveedor,
+            idRubro:idRubro, 
+            rubro:rubro,
+            idTipoTransaccion:idTipoTransaccion, 
+            descripcion:descripcion, 
+            numeroFactura:numeroFactura, 
+            fechaFactura:fechaFactura, 
+            timbradoFactura:timbradoFactura, 
+            montoFactura:montoFactura,
+            comprobantePago:comprobantePago,
+            fechaPago:fechaPago,
+            idTipoPago:idTipoPago,
+            // nombreTipoPago:nombreTipoPago,
+            idTipoFlujo:idTipoFlujo
+          };
+        }
+        return transaction;
+      });
+      return updatedTransactions;
+    });
+  }
+
   async function updateTransaction(transaccion)  {
     // convertDateToUTC
     // alert("updateTransaction");
@@ -310,8 +342,9 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     // console.log(transaccion)
     return api.put('/transacciones', transaccion)
       .then(response => {
-        const { idTransaccion: id } = response.data;  
-        setTransaccion (prevState => ( {...prevState, idTransaccion: id }));
+        // const { idTransaccion: id } = response.data;  
+        // updateState(transaccion)
+        // setTransaccion (prevState => ( {...prevState, idTransaccion: id }));
         setSnackbarMessage("Transaccion alterada exitosamente en la base de datos")
         setIsSnackbarOpen(true);
       })

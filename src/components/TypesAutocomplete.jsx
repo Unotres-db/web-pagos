@@ -14,9 +14,9 @@ export default function TypeAutocomplete ({typeObject, setterFunction}){
 
   const updateState=(newValue)=>{
     if (newValue!==null && newValue!==undefined){
-      setterFunction(prevState => ({...prevState, idTipoTransaccion: newValue.id? newValue.id: "0"}))  
+      setterFunction(prevState => ({...prevState, idTipoTransaccion: newValue.id? newValue.label: ""}))  
     } else {
-      setterFunction(prevState => ({...prevState, idTipoTransaccion: "0"}))
+      setterFunction(prevState => ({...prevState, idTipoTransaccion: ""}))
     }
   }
 
