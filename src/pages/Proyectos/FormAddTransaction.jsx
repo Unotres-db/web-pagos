@@ -21,22 +21,11 @@ import useForm from '../../hooks/useForm';
 import CashFlowTypeAutocomplete from '../../components/CashFlowTypeAutocomplete';
 import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
 import DialogModal from '../../components/DialogModal';
-import RubrosAutoComplete from '../../components/RubrosAutoComplete';
-import RubrosComboBox from '../../components/RubrosComboBox';
-import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
-import SuppliersListByProject from '../../components/SuppliersListByProject';
 import PaymentAutocomplete from '../../components/PaymentAutocomplete';
+import SuppliersAutocomplete from '../../components/SuppliersAutocomplete';
 import TypesAutocomplete from '../../components/TypesAutocomplete';
 
-const useStyles = makeStyles((mainTheme) => ({
-
-  // root: {
-  //   display: 'flex',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  //   height: '100vh', 
-  //   flexGrow: 1,
-  // },
+const useStyles = makeStyles(() => ({
   paperStyle: {
     width: "100%",   
     marginLeft: "2px",
@@ -67,7 +56,7 @@ const useStyles = makeStyles((mainTheme) => ({
 
 export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdit }){
   const classes = useStyles();
-  const { suppliers, setSuppliers, categories, setCategories, cashFlowType, setCashFlowType } = useContext(LoginContext)
+  const { suppliers, setSuppliers, categories, setCategories, cashFlowType, setCashFlowType,transactions, setTransactions } = useContext(LoginContext)
   const [ supplierSearchId, setSuppliersSearchId]= useState("");
   const [ categorySearchId, setCategorySearchId]= useState("");
   const [ isSnackbarOpen, setIsSnackbarOpen]= useState(false);
@@ -125,40 +114,15 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     return utcDate;
   }
 
-
-  function convertToMilliseconds(dateString) {
-    // Split the date string into day, month, and year parts
-    const [day, month, year] = dateString.split('/');
-  
-    // Create a new Date object in local time (adjust month to 0-based index)
-    const localDate = new Date(year, month - 1, day);
-  
-    // Check if the parsed date is valid
-    if (isNaN(localDate.getTime())) {
-      return null; // Invalid date format
-    }
-  
-    // Convert the local date to UTC milliseconds
-    const utcMilliseconds = localDate.getTime() + localDate.getTimezoneOffset() * 60000;
-  
-    return utcMilliseconds;
-  }
-
-
   const validateInvoiceDate = (date) => {
     
-    // Check if date is empty
     if (!date.value) {
       return false;
     }
-  
-    // Check if date is not yet complete (less than 8 characters)
     if (date.value.length < 8) {
       return true; // Incomplete date is considered valid for the purpose of this validation
     }
-  
     const parsedDate = new Date(date.formattedValue.split('/').reverse().join('/'));
-
     if (isNaN(parsedDate)) {
       setFormErrors (prevState => ( {...prevState, fechaFactura: "Fecha Invalida"}));
       setDialogOptions({severity:"error", title:"Error", message:"La fecha incluida es invalida. Favor corregir, gracias!",buttons:{button1:"Ok"}})
@@ -180,11 +144,8 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     const currentUTCTime = currentDate.getTime() + currentDate.getTimezoneOffset() * 60000;
     const currentUTCDate = new Date(currentUTCTime);
   
-    // Format dates for comparison
     const formattedParsedDate = format(parsedDate, 'yyyy-MM-dd');
     const formattedCurrentUTCDate = format(currentUTCDate, 'yyyy-MM-dd');
-
-    // Check if date is equal to or lower than today (UTC)
 
     if (formattedParsedDate > formattedCurrentUTCDate) {
       // alert("Confirma fecha posterior a la fecha de hoy?")
@@ -193,13 +154,12 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
       return false;
     }
   
-    // Check if date is from current or previous month of the current year (UTC)
     const parsedDateYear = format(parsedDate, 'yyyy');
     const currentUTCYear = format(currentUTCDate, 'yyyy');
     const parsedDateMonth = format(parsedDate, 'MM');
     const currentUTCMonth = format(currentUTCDate, 'MM');
+    
     if (parsedDateYear < currentUTCYear || (parsedDateYear === currentUTCYear && parsedDateMonth < currentUTCMonth - 1)) {
-      // alert("Confirma fecha de factura inferior al mes anterior?")
       setDialogOptions({severity:"warning", title:"Atención", message:"La fecha incluida no es reciente. Favor verificar, gracias!",buttons:{button1:"Ok"}})
       setIsDialogOpen(true)
       return false;
@@ -314,7 +274,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
         const { idTransaccion: id } = response.data;  
         setTransaccion (prevState => ( {...prevState, idTransaccion: id }));
         setIsEdit(true);
-        setSnackbarMessage("Transaccion grabada exitosamente en la base de datos")
+        setSnackbarMessage("Transacción grabada exitosamente en la base de datos")
         setIsSnackbarOpen(true);
       })
       .catch(function (err) {
@@ -375,7 +335,13 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
 
   const handleSaveChanges = async () => {
     if (! checkFormErrors() ) {
+      // console.log("transaccion @FormAdd") 
+      // alert("transaccion @FormAdd "+transaccion.fechaFactura +" " + transaccion.numeroFactura+transactions.proveedor)     
+      // console.log(transaccion)
       saveTransaction(transaccion)
+      // update the state
+      // const updatedTransactions = [transaccion,...transactions];
+      // setTransactions(updatedTransactions);
       setTransaccion (prevState => ({...prevState, 
         idProyecto:"", 
         idProveedor:"", 
@@ -435,9 +401,9 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
 
                 <Grid item xs={12} sm={6} >
                   <CategoriesAutocomplete
-                      categoryObject={categoryObject} 
-                      setterFunction={setTransaccion} 
-                      categoriesList={categories}
+                    categoryObject={categoryObject} 
+                    setterFunction={setTransaccion} 
+                    categoriesList={categories}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6} >
@@ -447,15 +413,15 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                   />
                  </Grid> 
                 <Grid item xs={6} sm={6}>
-                    <PatternFormat
-                      format="##/##/####"
-                      allowEmptyFormatting mask="_"
-                      value={fechaFactura}
-                      customInput={TextField}
-                      onValueChange={(e) => {handleInvoiceDate (e)}}
-                      {...muiFechaFacturaProps}
-                    />
-                    {formErrors.fechaFactura ? <div className="error-helper-text">{formErrors.fechaFactura}</div> : null}
+                  <PatternFormat
+                    format="##/##/####"
+                    allowEmptyFormatting mask="_"
+                    value={fechaFactura}
+                    customInput={TextField}
+                    onValueChange={(e) => {handleInvoiceDate (e)}}
+                    {...muiFechaFacturaProps}
+                  />
+                  {formErrors.fechaFactura ? <div className="error-helper-text">{formErrors.fechaFactura}</div> : null}
                 </Grid>
 
                 <Grid item xs={6} sm={6}>
@@ -469,6 +435,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                   />
                   {formErrors.numeroFactura ? <div className="error-helper-text">{formErrors.numeroFactura}</div> : null}
                 </Grid>
+
                 <Grid item xs={12} sm={6}>
                   <Box style={{height:"8px"}}/>
                   <CashFlowTypeAutocomplete
@@ -482,27 +449,11 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                     customInput={TextField}
                     allowNegative={false}
                     onValueChange={(e) => {handleAmount (e)}}
-                    // onValueChange={ (e) => {
-                    //   handleChange (e,setTransaccion,[noBlanks]);
-                    // }}
                     thousandSeparator="."
                     decimalSeparator=","
                     {...muiMontoFacturaProps}
                     />
                   </Grid>
-                  {/* <Grid item xs={6} sm={6}>
-                    <TextField variant ="outlined" margin="dense" size="small" fullWidth
-                      label="Monto Factura"
-                      name="montoFactura"
-                      value={montoFactura}
-                      autoComplete="monto-factura"
-                      onChange={ (e) => {
-                        handleChange (e,setTransaccion,[noBlanks]);
-                      }}
-                      error={formErrors.montoFactura}
-                    />
-                    {formErrors.montoFactura ? <div className="error-helper-text">{formErrors.montoFactura}</div> : null}
-                  </Grid> */}
                   <Grid item xs={12} sm={12}>
                     <TextField variant ="outlined" margin="dense" size="small" fullWidth
                       label="Descripción"
@@ -575,7 +526,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                     textTransform: "none",
                     width: "75px",
                     '&:hover': {
-                      backgroundColor: '#E8C797', // Adjust the hover color as desired
+                      backgroundColor: '#E8C797', 
                     },
                     '&:disabled': {
                       color: "black",
@@ -583,7 +534,8 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
                       cursor: 'not-allowed', // Disable cursor interaction
                       opacity: 0.5, // Make the button appear disabled
                     },
-  }} disabled={checkFormErrors() || ! checkRequiredFields()} onClick={handleSaveChanges} variant="contained" size="small"   >
+                    }} 
+                    disabled={checkFormErrors() || ! checkRequiredFields()} onClick={handleSaveChanges} variant="contained" size="small"   >
                     Grabar</Button>
                 </Grid>
               </Grid> 
@@ -595,15 +547,16 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     open={isSnackbarOpen}
     autoHideDuration={3000} 
     onClose={handleSnackbarClose}
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
     >
     <SnackbarContent
       className={classes.greenSnackbarContent}
       message={snackbarMessage}
     />
-  </Snackbar>
-  <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
-    {dialogOptions.message}
-  </DialogModal>
+    </Snackbar>  
+    <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
+      {dialogOptions.message}
+    </DialogModal>
   </>: null}
   </>
   )

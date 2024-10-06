@@ -348,7 +348,7 @@ export default function Proyectos (){
               id={id}
               // transactions={transactions} 
               transactions={filteredTransactions.length > 0 ? filteredTransactions: transactions}
-              setTransactions={setTransactions} 
+              setterFunction={filteredTransactions.length > 0 ? setFilteredTransactions: setTransactions} 
               isEdit={isEdit}
               setIsEdit={setIsEdit}
               isDelete={isDelete} 
@@ -373,7 +373,7 @@ export default function Proyectos (){
                 id={id}
                 // transactions={transactions} 
                 transactions={filteredTransactions.length > 0 ? filteredTransactions: transactions}
-                setTransactions={setTransactions} 
+                setterFunction={filteredTransactions.length > 0 ? setFilteredTransactions: setTransactions} 
                 isEdit={isEdit}
                 setIsEdit={setIsEdit}
                 isDelete={isDelete} 

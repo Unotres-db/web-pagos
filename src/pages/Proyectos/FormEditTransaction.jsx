@@ -453,8 +453,8 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
   return (
     <>
     { transaccionEditar ? <>
-      { console.log("transaccionEditar, en formEdit")}
-      { console.log(transaccionEditar)}
+      {/* { console.log("transaccionEditar, en formEdit")}
+      { console.log(transaccionEditar)} */}
       {/* {alert( transaccionEditar.proveedor+" " + transaccionEditar.idProveedor)} */}
       <Paper className={classes.paperStyle}>
         <Dialog 

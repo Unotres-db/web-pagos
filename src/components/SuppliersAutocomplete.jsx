@@ -19,9 +19,9 @@ export default function SuppliersAutocomplete ({supplierObject, setterFunction, 
 
   const updateState=(newValue)=>{
     if (newValue!==null && newValue!==undefined){
-      setterFunction(prevState => ({...prevState, idProveedor: newValue.id? newValue.id: "0"}))  
+      setterFunction(prevState => ({...prevState, idProveedor: newValue.id? newValue.id: "0", proveedor:newValue.label}))  
     } else {
-      setterFunction(prevState => ({...prevState, idProveedor: "0"}))
+      setterFunction(prevState => ({...prevState, idProveedor: "0", proveedor:"Todos"}))
     }
   }
 

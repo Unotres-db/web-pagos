@@ -208,7 +208,7 @@ const useStyles = makeStyles((mainTheme) => ({
       className={classes.greenSnackbarContent}
       message={snackbarMessage}
     />
-  </Snackbar>  
+    </Snackbar>  
     </>
   )
 }

@@ -1,24 +1,22 @@
 import React, {useContext, useState, useEffect} from 'react';
 import { useHistory } from 'react-router-dom';
-import format from 'date-fns/format';
-import parseISO from 'date-fns/parseISO';
+// import format from 'date-fns/format';
+// import parseISO from 'date-fns/parseISO';
 
 import { Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell, TableFooter, TablePagination, TableSortLabel, Button, IconButton, Tooltip, Typography, Snackbar, SnackbarContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/Update';
-import PaidIcon from '@mui/icons-material/Paid';
+// import PaidIcon from '@mui/icons-material/Paid';
 
 import api from '../../services/api';
-import { LoginContext } from '../../helpers/Context';
+// import { LoginContext } from '../../helpers/Context';
 import useAxios from '../../hooks/useAxios';
 import useTableSorting from '../../hooks/useTableSorting';
-import useFetch from '../../hooks/useFetch';
+// import useFetch from '../../hooks/useFetch';
 import TablePaginationActions from '../../components/TablePaginationActions';
 
 import DialogModal from '../../components/DialogModal';
-import Header from '../../components/Header'
-
 import FormEditTransaction from './FormEditTransaction';
 
 const useStyles = makeStyles( () => ({
@@ -54,7 +52,6 @@ const useStyles = makeStyles( () => ({
   iconButtonStyle:{
     color: '#344955',
     backgroundColor:"#E1C16E",
-    
     // fontSize: "11px",
     // [mainTheme.breakpoints.down('xs')]: {
     //   fontSize: "10px"
@@ -75,7 +72,7 @@ const useStyles = makeStyles( () => ({
   },
 }));
 
-export default function TableProject({id, transactions,setTransactions, isEdit, setIsEdit,isDelete, setIsDelete}){
+export default function TableProject({id, transactions,setterFunction, isEdit, setIsEdit,isDelete, setIsDelete}){
   const classes = useStyles();
   // const { deletionId, setDeletionId, updateId, setUpdateId}= useContext(LoginContext);
   const [ deletionId, setDeletionId ] = useState("")
@@ -88,59 +85,57 @@ export default function TableProject({id, transactions,setTransactions, isEdit, 
   const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
   const [ isEditTable, setIsEditTable] = useState(false); 
   // const [ isDelete, setIsDelete] = useState(false); 
-  const [ editMode, setEditMode ]=useState("");
+  // const [ editMode, setEditMode ]=useState("");
   const [ isEditTransaction, setIsEditTransaction] = useState(false); 
   const [ transaccionEditar, setTransaccionEditar] = useState(null);
   const [ snackbarMessage, setSnackbarMessage]=useState("");
-  const [ transactionDeleteId,setTransactionDeleteId ] = useState("");
+  // const [ transactionDeleteId,setTransactionDeleteId ] = useState("");
   const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
   const { axiosFetch: delTransaction, isLoading: isLoadingDeletion, error: isErrorDeletion } = useAxios();
   // const { handleDeleteTransaction }  = useFetch({setEditMode});
   const { getComparator, handleRequestSort } = useTableSorting();
   var emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - transactions.length) : 0; // Avoid a layout jump when reaching the last page with empty rows.
-  const history = useHistory();
+  // const history = useHistory();
   
 
   const handleUpdate=(param)=>{
-    // setUpdateId(param)
-    console.log("parametro recibido por handleUpdate: ")
-    console.log(param)
     setTransaccionEditar(param)
     setIsEditTransaction(true)
   }
 
-  const handleEditTransaction=(param)=>{
-    setIsEditTransaction(true);
-  }
+  // const handleEditTransaction=(param)=>{
+  //   setIsEditTransaction(true);
+  // }
 
   const handleEditTransactionClose=()=>{
     setIsEditTransaction(false);
   }
 
-const handleSnackbarClose=()=>{
-  // setIsDelete(true);
-  setIsSnackbarOpen(false)
-  getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${id}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
-}
+  const handleSnackbarClose=()=>{
+    // setIsDelete(true);
+    setIsSnackbarOpen(false)
+    // getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${id}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+  }
 
  const deleteTransactionSuccessCb=(apiData)=>{
   if (apiData){
-    const updatedTransactions = transactions.filter(
-      (transaction) => transaction.idTransaccion !== deletionId
-    );
-    setTransactions(updatedTransactions);
-    // actulizar es state the transactions con deletionId
+    // alert("deleteTransactionSuccessCb, state update deletionId:"+ deletionId)
+    const updatedTransactions = transactions.filter((transaction) => transaction.idTransaccion !== deletionId);
+    setterFunction(updatedTransactions);
+    console.log("transactions en tableProject-deleteTransactionSuccessCb")
+    console.log(transactions)
+    console.log(updatedTransactions)
     setSnackbarMessage("Transaccion eliminada con exito")
     setIsSnackbarOpen(true)
+
   }
  }
 
   const deleteTransactionErrorCb=()=>{
-    alert("Transaccion no pudo ser eliminada, favor intentar mas tarde")
+    // alert("Transaccion no pudo ser eliminada, favor intentar mas tarde")
   }
 
   function deleteTransaction(){
-    // alert("Llama delTransaction")
     delTransaction({ axiosInstance: api, method: 'DELETE', url: `/transacciones/${deletionId}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},deleteTransactionSuccessCb, deleteTransactionErrorCb);
   }
 
@@ -148,9 +143,7 @@ const handleSnackbarClose=()=>{
     setIsDialogOpen(false);
     if (value==="Si"){
       // setIsDelete(true)
-      // handleDeleteTransaction(deletionId)
       deleteTransaction(deletionId)
-      // deleteTransactionTest(transactionDeleteId)
     }
   }
 
@@ -158,57 +151,7 @@ const handleSnackbarClose=()=>{
     setDeletionId(param)
     setDialogOptions({severity:"warning", title:"Alerta", message:"Confirma eliminación de la factura?",buttons:{button1:"No",button2:"Si"}, action:"delete"})
     setIsDialogOpen(true);
-
   }
-
-  function convertTimestampToDate(timestamp) {
-    const seconds = timestamp / 1000; // Convert milliseconds to seconds
-    const date = new Date(seconds * 1000); // Create a Date object from seconds
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-  
-    return `${day}/${month}/${year}`;
-  }
-
-  function formatDateToDDMMYY(numericDate) {
-  // Check for valid timestamp (optional)
-  let parsedDate;
-  try {
-    parsedDate = parseISO(numericDate.toString()); // Ensure it's a string
-  } catch (error) {
-    return <div>Invalid date format</div>;
-  }
-
-  const formattedDate = format(parsedDate, 'dd/MM/yy');
-  return formattedDate
-  }
-
-  function convertToDateString(milliseconds) {
-    const date = new Date(milliseconds*1000);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
-
-  function formatDate(isoDate) {
-    const date = new Date(isoDate);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2,  '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  }  
-
-  function convertDate(numericDate){
-    var date = new Date(numericDate * 1000);
-    // return date.toUTCString()
-    return format(date,"dd/mm/yy")
-  }
-
-  // const formatAmount=(value)={
-  //   const amount = Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(value)
-  // }
 
   const createSorthandler=(property) => (event) => {
     handleRequestSort(event, property, orderDirection, setOrderDirection, orderBy, setOrderBy);
@@ -223,14 +166,10 @@ const handleSnackbarClose=()=>{
     setPage(0);
   };
 
-  const handleButton = (id) => {
-    // alert ("Transaccion "+ id);
-  };
-
   const getProjectSuccessCb=(apiData)=>{
     if(apiData){
-      // alert("getProjectSuccessCb-setTransactions(apiData)")
-      setTransactions(apiData);
+      // alert("getProjectSuccessCb-setterFunction(apiData)")
+      setterFunction(apiData);
     }
   }
 
@@ -242,20 +181,21 @@ const handleSnackbarClose=()=>{
 
   useEffect(() => {
     if (transactions[0].idProyecto) {
+      // alert("llamo getTransaction desde TableProject-useeffect[isEdit]")
       getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${transactions[0].idProyecto}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
     } 
-  }, []);
+  }, [isEdit]);
+
+  // useEffect(() => {
+  //   if (transactions[0].idProyecto) {
+  //     alert("llamo getTransaction desde TableProject-useeffect")
+  //     getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${transactions[0].idProyecto}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
+  //   } 
+  // }, []);
 
   return (
     <>
-
-    {/* <Header/> */}
     { transactions ? <>
-      {/* {alert("renderizacion de tableProject")} */}
-      {transaccionEditar? console.log("transaccionEditar: "+ transaccionEditar.idTransaccion + " " + transaccionEditar.numeroFactura + " " + transaccionEditar.montoFactura): null}
-      {console.log("tableProject: transactions")}
-      {console.log(transactions)}
-      {/* {console.log(transaccionEditar)} */}
     
      
     <TableContainer component={Paper} >
@@ -431,7 +371,6 @@ const handleSnackbarClose=()=>{
       />
     </Snackbar>  
     </>: null}
-    
     </>
   )
 }
