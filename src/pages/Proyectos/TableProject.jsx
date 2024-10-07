@@ -239,8 +239,8 @@ export default function TableProject({id, transactions,setterFunction, isEdit, s
                 Pago</TableCell>
               <TableCell className={classes.TableTitle} style={{width:"7%", paddingLeft:"5px", paddingRight:"5px"}} align="right">
                 Comprob.</TableCell>
-              <TableCell></TableCell>  
-              <TableCell></TableCell>  
+              <TableCell style={{width:"20px", paddingLeft:"2px", paddingRight:"2px"}}></TableCell>  
+              <TableCell style={{width:"20px", paddingLeft:"2px", paddingRight:"2px"}}></TableCell>  
           </TableRow>
         </TableHead>
 
@@ -301,16 +301,16 @@ export default function TableProject({id, transactions,setterFunction, isEdit, s
                   {/* <Button  className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(transactions.fechaPago)}</Button> */}
                   <Typography style={{fontSize:"11px"}}>{transactions.comprobantePago}</Typography>
                 </TableCell>  
-                <TableCell>
-                  <Tooltip title={`Eliminar datos de la factura ${transactions.numeroFactura?transactions.numeroFactura:""}`}    >  
+                <TableCell style={{width:"30px", paddingLeft:"2px", paddingRight:"2px"}}>
+                  <Tooltip title={`Eliminar datos de la transacción ${transactions.numeroFactura ? transactions.numeroFactura:""}`}    >  
                     <IconButton className={classes.iconButtonStyle} onClick={()=> handleDelete(transactions.idTransaccion)} disableRipple size="small" aria-label="delete">
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 </TableCell>  
-                <TableCell>
-                  <Tooltip title={`Corregir datos de la factura ${transactions.numeroFactura?transactions.numeroFactura:""}`}>
-                    <IconButton className={classes.iconButtonStyle} onClick={()=> handleUpdate(transactions)} disableRipple size="small" aria-label="delete">
+                <TableCell style={{width:"30px", paddingLeft:"2px", paddingRight:"2px"}}>
+                  <Tooltip title={`Cambiar datos de la transacción ${transactions.numeroFactura ?transactions.numeroFactura:""}`}>
+                    <IconButton className={classes.iconButtonStyle}  onClick={()=> handleUpdate(transactions)} disableRipple size="small" aria-label="delete">
                       <UpdateIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>

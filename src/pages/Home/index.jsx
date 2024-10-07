@@ -197,13 +197,33 @@ export default function Home (){
     history.push('/project')
   }
 
+  const findProjectIndexById = (projectId) => {
+    return valuationsList.findIndex((transaction) => transaction.projectId === projectId);
+  };
+
   const getProjectSuccessCb=(apiData)=>{
     if (apiData){
+      // setValuationsList
       // alert("getProjectSuccessCb")
       setProjectTransactions(apiData);
       const ingresos = projectTransactions.filter(transaction => transaction.idTipoFlujo === "0").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
       const egresos = projectTransactions.filter(transaction => transaction.idTipoFlujo === "1").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
       const saldo = ingresos - egresos
+      const stateIndex=findProjectIndexById("3KD");
+      // alert("index:"+stateIndex)
+      // setValuationsList (prevState => ( {...prevState, idRubro: newValue===null? "": newValue.id, nombreRubro: newValue===null? "": newValue.name}));
+
+      // setValuationsList((prevState) => {
+      //   const updatedList = [...prevState]; // Create a copy
+      //   updatedList[stateIndex] = {
+      //       ...updatedList[stateIndex],
+      //     //  Spread existing element properties
+      //     projectRevenue: ingresos === null ? 0 : ingresos,
+      //     projectCost: egresos === null ? 0 : egresos,
+      //     projectMargin: saldo === null ? 0 : saldo,
+      //   };
+      //   // return updatedList;
+      // });
     }
   }
 
@@ -243,6 +263,7 @@ export default function Home (){
 
   useEffect(() => {
     setIsEdit(false);
+    getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/3KD`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
     // getProject({ axiosInstance: api, method: 'GET', url: `/proyectos`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
   }, [isEdit]);
 
