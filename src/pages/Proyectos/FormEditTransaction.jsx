@@ -304,35 +304,71 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
   }
 
 
+  const findTransactionIndexById = (idTransacion) => {
+    return transactions.findIndex((transaction) => transaction.idTransacion === idTransacion);
+  };
+
+  //*refactorar
+  // setterFunction(prevState => ({...prevState, idTipoFlujo: "0"}))
   const updateState = (transaccion) => {
-    setTransactions((prevTransactions) => {
-      const updatedTransactions = prevTransactions.map((transaction) => {
-        if (transaction.idTransaccion === transaccion.idTransaccion) {
-          return {
-            ...transaction,
-            idTransaccion:idTransaccion,
-            idProyecto:idProyecto, 
-            idProveedor:idProveedor, 
-            proveedor:proveedor,
-            idRubro:idRubro, 
-            rubro:rubro,
-            idTipoTransaccion:idTipoTransaccion, 
-            descripcion:descripcion, 
-            numeroFactura:numeroFactura, 
-            fechaFactura:fechaFactura, 
-            timbradoFactura:timbradoFactura, 
-            montoFactura:montoFactura,
-            comprobantePago:comprobantePago,
-            fechaPago:fechaPago,
-            idTipoPago:idTipoPago,
-            // nombreTipoPago:nombreTipoPago,
-            idTipoFlujo:idTipoFlujo
-          };
-        }
-        return transaction;
-      });
-      return updatedTransactions;
-    });
+    const index = findTransactionIndexById(transaccion.idTransacion);
+    if (index !== -1) {
+      const updatedTransactions = [...transactions];
+      updatedTransactions[index] = {
+        ...updatedTransactions[index],
+        // Update the relevant properties of the transaction object
+        // For example:
+        // amount: transaccion.amount,
+        // date: transaccion.date,
+        // ...
+          idTransaccion:idTransaccion,
+          idProyecto:idProyecto, 
+          idProveedor:idProveedor, 
+          proveedor:proveedor,
+          idRubro:idRubro, 
+          rubro:rubro,
+          idTipoTransaccion:idTipoTransaccion, 
+          descripcion:descripcion, 
+          numeroFactura:numeroFactura, 
+          fechaFactura:fechaFactura, 
+          timbradoFactura:timbradoFactura, 
+          montoFactura:montoFactura,
+          comprobantePago:comprobantePago,
+          fechaPago:fechaPago,
+          idTipoPago:idTipoPago,
+          // nombreTipoPago:nombreTipoPago,
+          idTipoFlujo:idTipoFlujo
+      };
+      setTransactions(updatedTransactions);
+    }
+
+    //   const updatedTransactions = prevTransactions.map((transactions) => {
+    //     if (transaccion.idTransaccion === transaccion.idTransaccion) {
+    //       return {
+    //         ...transaction,
+    //         idTransaccion:idTransaccion,
+    //         idProyecto:idProyecto, 
+    //         idProveedor:idProveedor, 
+    //         proveedor:proveedor,
+    //         idRubro:idRubro, 
+    //         rubro:rubro,
+    //         idTipoTransaccion:idTipoTransaccion, 
+    //         descripcion:descripcion, 
+    //         numeroFactura:numeroFactura, 
+    //         fechaFactura:fechaFactura, 
+    //         timbradoFactura:timbradoFactura, 
+    //         montoFactura:montoFactura,
+    //         comprobantePago:comprobantePago,
+    //         fechaPago:fechaPago,
+    //         idTipoPago:idTipoPago,
+    //         // nombreTipoPago:nombreTipoPago,
+    //         idTipoFlujo:idTipoFlujo
+    //       };
+    //     }
+    //     return transactions;
+    //   });
+    //   return updatedTransactions;
+    // });
   }
 
   async function updateTransaction(transaccion)  {
@@ -343,7 +379,7 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     return api.put('/transacciones', transaccion)
       .then(response => {
         // const { idTransaccion: id } = response.data;  
-        // updateState(transaccion)
+        updateState(transaccion)
         // setTransaccion (prevState => ( {...prevState, idTransaccion: id }));
         setSnackbarMessage("Transaccion alterada exitosamente en la base de datos")
         setIsSnackbarOpen(true);
@@ -588,19 +624,6 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
                         {...muiMontoFacturaProps}
                       />
                   </Grid>
-                  {/* <Grid item xs={6} sm={6}>
-                    <TextField variant ="outlined" margin="dense" size="small" fullWidth
-                      label="Monto Factura"
-                      name="montoFactura"
-                      value={montoFactura}
-                      autoComplete="monto-factura"
-                      onChange={ (e) => {
-                        handleChange (e,setTransaccion,[noBlanks]);
-                      }}
-                      error={formErrors.montoFactura}
-                    />
-                    {formErrors.montoFactura ? <div className="error-helper-text">{formErrors.montoFactura}</div> : null}
-                  </Grid> */}
                   <Grid item xs={12} sm={12}>
                     <TextField variant ="outlined" margin="dense" size="small" fullWidth
                       label="Descripción"

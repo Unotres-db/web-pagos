@@ -122,10 +122,10 @@ export default function TableProject({id, transactions,setterFunction, isEdit, s
     // alert("deleteTransactionSuccessCb, state update deletionId:"+ deletionId)
     const updatedTransactions = transactions.filter((transaction) => transaction.idTransaccion !== deletionId);
     setterFunction(updatedTransactions);
-    console.log("transactions en tableProject-deleteTransactionSuccessCb")
-    console.log(transactions)
-    console.log(updatedTransactions)
-    setSnackbarMessage("Transaccion eliminada con exito")
+    // console.log("transactions en tableProject-deleteTransactionSuccessCb")
+    // console.log(transactions)
+    // console.log(updatedTransactions)
+    setSnackbarMessage("Transacción eliminada con exito!")
     setIsSnackbarOpen(true)
 
   }
