@@ -428,9 +428,9 @@ export default function Proyectos (){
                 <Box sx={{height:"5px"}}/>
                 <Box style={{display:"flex", justifyContent:"start"}}>
                  {/* "#E4D00A" "#FFBF00" */}
-                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple onClick={handleAddTransaction} style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Factura/Pago</Button> 
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple onClick={handleAddTransaction} style={{width:"112px",margin:'2px',marginLeft:"5px",color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Factura/Pago</Button> 
                   <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple  onClick={handleAddSupplier} style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Proveedor</Button>
-                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple  onClick={handleAddCategory} style={{width:"112px",margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Rubro</Button>  
+                  <Button startIcon = {<AddCircleIcon />} variant="contained" size="small" disableRipple  onClick={handleAddCategory} style={{width:"112px",margin:'2px', marginRight:"5px", color:"#344955",backgroundColor:"#E1C16E",textTransform:"none", fontSize:"11px"}} >Rubro</Button>  
                 </Box>
                 <Box sx={{height:"15px"}}/>
 

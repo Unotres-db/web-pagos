@@ -98,6 +98,13 @@ export default function TableProject({id, transactions,setterFunction, isEdit, s
   // const history = useHistory();
   
 
+  function trimComprobantePago(comprobantePago) {
+    if (comprobantePago && comprobantePago.length > 5) {
+      return comprobantePago.substring(0, 5) + '...';
+    }
+    return comprobantePago;
+  }
+
   const handleUpdate=(param)=>{
     setTransaccionEditar(param)
     setIsEditTransaction(true)
@@ -299,7 +306,7 @@ export default function TableProject({id, transactions,setterFunction, isEdit, s
                 </TableCell>  
                 <TableCell align="right" className={classes.TableRows} style={{width:"16%", paddingLeft:"5px", paddingRight:"5px"}}>
                   {/* <Button  className={classes.ButtonTable} disableRipple>{Intl.NumberFormat('en-US',{style:'decimal', minimumFractionDigits:0,maximumFractionDigits:0}).format(transactions.fechaPago)}</Button> */}
-                  <Typography style={{fontSize:"11px"}}>{transactions.comprobantePago}</Typography>
+                  <Typography style={{fontSize:"11px"}}>{trimComprobantePago(transactions.comprobantePago)}</Typography>
                 </TableCell>  
                 <TableCell style={{width:"30px", paddingLeft:"2px", paddingRight:"2px"}}>
                   <Tooltip title={`Eliminar datos de la transacción ${transactions.numeroFactura ? transactions.numeroFactura:""}`}    >  
