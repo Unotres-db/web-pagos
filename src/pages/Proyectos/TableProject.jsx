@@ -149,7 +149,7 @@ export default function TableProject({id, transactions,setterFunction, isEdit, s
 
   function handleDelete(param){
     setDeletionId(param)
-    setDialogOptions({severity:"warning", title:"Alerta", message:"Confirma eliminación de la factura?",buttons:{button1:"No",button2:"Si"}, action:"delete"})
+    setDialogOptions({severity:"warning", title:"Alerta", message:"Confirma eliminación de la transacción?",buttons:{button1:"No",button2:"Si"}, action:"delete"})
     setIsDialogOpen(true);
   }
 

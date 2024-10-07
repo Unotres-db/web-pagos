@@ -53,7 +53,7 @@ const useStyles = makeStyles((mainTheme) => ({
     },
   },
   greenSnackbarContent: {
-    backgroundColor: "#228B22"
+    backgroundColor: "cyan" //"#228B22"
   },
 }));
 
@@ -731,7 +731,8 @@ export default function FormEditTransaction({ open, onClose, transaccionEditar, 
     onClose={handleSnackbarClose}
     >
     <SnackbarContent
-      className={classes.greenSnackbarContent}
+      // className={classes.greenSnackbarContent}
+      style={{backgroundColor:"#228B22"}}
       message={snackbarMessage}
     />
   </Snackbar>

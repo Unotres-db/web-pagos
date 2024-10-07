@@ -51,20 +51,21 @@ const useStyles = makeStyles(() => ({
   },
   greenSnackbarContent: {
     backgroundColor: "#228B22"
+ // backgroundColor: "#228B22"
   },
 }));
 
 export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdit }){
   const classes = useStyles();
-  const { suppliers, setSuppliers, categories, setCategories, cashFlowType, setCashFlowType,transactions, setTransactions } = useContext(LoginContext)
-  const [ supplierSearchId, setSuppliersSearchId]= useState("");
-  const [ categorySearchId, setCategorySearchId]= useState("");
+  const { suppliers, categories } = useContext(LoginContext)
+  // const [ supplierSearchId, setSuppliersSearchId]= useState("");
+  // const [ categorySearchId, setCategorySearchId]= useState("");
   const [ isSnackbarOpen, setIsSnackbarOpen]= useState(false);
   const [ snackbarMessage, setSnackbarMessage] = useState("");
   const [ isEditField, setIsEditField] = useState(true)// eliminar?
   const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
   const [ isDialogOpen, setIsDialogOpen] = useState(false);
-  const { handleChange, handleChangeUserId, handleSubmit, chkBlankFormContact, chkBlankFormLogin, chkFormErrors, isValidName, isValidPhone, isValidEmail, noBlanks, isValidUser, isValidPassword, userId, values, transaccion, setTransaccion, formErrors, setFormErrors } = useForm ();
+  const { handleChange, noBlanks, transaccion, setTransaccion, formErrors, setFormErrors } = useForm ();
   const { 
     idProyecto, 
     idProveedor, 
@@ -290,7 +291,6 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
   }
 
   const handleCancel=()=>{
-    // setRegisterData (prevState => ({...prevState, id:userId, password: userPassword, firstName:userFirstName, lastName:userLastName, phone:userPhone, birthday: userBirthday, country:userCountry, countryName:userCountryName, description: userDescription}))
     setTransaccion(prevState => ({...prevState, 
       idProyecto:"", 
       idProveedor:"", 
@@ -309,7 +309,6 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
       nombreTipoPago:"",
       idTipoFlujo:""
     }))
-
     onClose()
   }
 
@@ -335,13 +334,7 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
 
   const handleSaveChanges = async () => {
     if (! checkFormErrors() ) {
-      // console.log("transaccion @FormAdd") 
-      // alert("transaccion @FormAdd "+transaccion.fechaFactura +" " + transaccion.numeroFactura+transactions.proveedor)     
-      // console.log(transaccion)
       saveTransaction(transaccion)
-      // update the state
-      // const updatedTransactions = [transaccion,...transactions];
-      // setTransactions(updatedTransactions);
       setTransaccion (prevState => ({...prevState, 
         idProyecto:"", 
         idProveedor:"", 
@@ -550,10 +543,11 @@ export default function FormAddTransaction({ open, onClose, id, isEdit, setIsEdi
     anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
     >
     <SnackbarContent
-      className={classes.greenSnackbarContent}
+      // className={classes.greenSnackbarContent}
+      style={{backgroundColor:"#228B22"}}
       message={snackbarMessage}
     />
-    </Snackbar>  
+  </Snackbar>  
     <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
       {dialogOptions.message}
     </DialogModal>

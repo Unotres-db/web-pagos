@@ -229,7 +229,8 @@ export default function FormAddSupplier({ open, onClose}){
     anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
     >
     <SnackbarContent
-      className={classes.greenSnackbarContent}
+      // className={classes.greenSnackbarContent}
+      style={{backgroundColor:"#228B22"}}
       message={snackbarMessage}
     />
   </Snackbar>   
