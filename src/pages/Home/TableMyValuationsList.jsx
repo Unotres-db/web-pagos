@@ -65,7 +65,7 @@ const useStyles = makeStyles( (mainTheme) => ({
   }
 }));
 
-export default function TableMyValuationsList ({valuationsList, setValuationsList}) {
+export default function TableMyValuationsList ({valuationsList}) {
   const classes = useStyles();
   const [ page, setPage ] = useState(0);
   const [ rowsPerPage, setRowsPerPage ] = useState(10);

@@ -5,26 +5,21 @@ import { Grid, Paper, Box, Button, Typography, Tooltip, Snackbar, SnackbarConten
 import { makeStyles } from '@material-ui/core/styles';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-// import api from '../../services/api';
-// import valuationsWebApi from '../../services/valuationsWebApi';
-import useAxios from '../../hooks/useAxios';
-
 import { LoginContext } from '../../helpers/Context';
+import useAxios from '../../hooks/useAxios';
 import api from '../../services/api';
 
 import Header from '../../components/Header';
 import DialogModal from '../../components/modals/DialogModal';
 
-
-import BankAccounts from './BankAccounts';
-import ExchangeRate from './ExchangeRate';
+// import BankAccounts from './BankAccounts';
+// import ExchangeRate from './ExchangeRate';
 import FormAddProject from './FormAddProject';
 import MyProfile from './MyProfile';
 import TableMyValuationsList from './TableMyValuationsList';
-// import TableRollingForecast from './TableLatestRollForecast';
 import TableRollingForecast from './TableRollingForecast';
-import TableValuationCashFlow from './TableValuationCashFlow';
-import TableValuationResults from './TableValuationResults';
+// import TableValuationCashFlow from './TableValuationCashFlow';
+// import TableValuationResults from './TableValuationResults';
 import CurrencyOptions from './CurrencyOptions';
 import ChartValuation from './ChartValuation';
 
@@ -66,8 +61,8 @@ const useStyles = makeStyles( () => ({
 
 export default function Home (){
   const classes = useStyles();
-  const { userData, suppliers, setSuppliers, categories, setCategories } = useContext(LoginContext)
-  const { userId }= userData
+  const { userData, setSuppliers,setCategories } = useContext(LoginContext)
+  const { userId } = userData
   const [ isAddProject, setIsAddProject] = useState(false); 
   const [ isEdit, setIsEdit]=useState(false);
   const [ dialogOptions, setDialogOptions] = useState({severity:"",title:"",message:"",buttons:{}, action:""});
@@ -166,15 +161,10 @@ export default function Home (){
   ]);
 
   const [ isEditProfile, setIsEditProfile ] = useState(false);
-  const [ projectTransactions, setProjectTransactions]= useState([]);
-  const [ isSnackbarOpen, setIsSnackbarOpen]=useState(false);
   const { axiosFetch: getSuppliers, isLoading: isLoadingSuppliers, error: isErrorSuppliers } = useAxios();
   const { axiosFetch: getCategories, isLoading: isLoadingCategories, error: isErrorCategories } = useAxios();
   const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
-  const [ snackbarMessage, setSnackbarMessage]=useState("");
-  // const { axiosFetch: getProject, isLoading: isLoadingProject, error: isErrorProject } = useAxios();
-  const isLoadingValuations=false;
-  // const { loading: isLoadingValuations, axiosFetch: getUserValuations} = useAxios();
+  const isLoadingValuations=false; ///temporario...hasta buscar proyectos directo de la base de datos
   const history = useHistory();
 
   const handleAddProject=()=>{
@@ -183,9 +173,6 @@ export default function Home (){
 
   const handleAddTransactionClose=()=>{
     setIsAddProject(false);
-  }
-  const handleSnackbarClose=()=>{
-    setIsSnackbarOpen(false);
   }
   
   function handleDialogClose(){
@@ -197,33 +184,30 @@ export default function Home (){
     history.push('/project')
   }
 
-  const findProjectIndexById = (projectId) => {
-    return valuationsList.findIndex((transaction) => transaction.projectId === projectId);
-  };
+  const updateProjectList = (ingresos, egresos, saldo) => {
+    setValuationsList((prevState) => {
+      const updatedList = [...prevState];
+      const targetIndex = updatedList.findIndex((item) => item.projectId === "3KD");
+      if (targetIndex !== -1) {
+        updatedList[targetIndex] = {
+          ...updatedList[targetIndex],
+          projectRevenue: ingresos === null ? 0 : ingresos,
+          projectCost: egresos === null ? 0 : egresos,
+          projectMargin: saldo === null ? 0 : saldo,
+        };
+      } else {
+        console.error('Proyecto no encontrado');
+      }
+      return updatedList;
+    });
+  }  
 
   const getProjectSuccessCb=(apiData)=>{
     if (apiData){
-      // setValuationsList
-      // alert("getProjectSuccessCb")
-      setProjectTransactions(apiData);
-      const ingresos = projectTransactions.filter(transaction => transaction.idTipoFlujo === "0").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
-      const egresos = projectTransactions.filter(transaction => transaction.idTipoFlujo === "1").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
+      const ingresos = apiData.filter(transaction => transaction.idTipoFlujo === "0").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
+      const egresos = apiData.filter(transaction => transaction.idTipoFlujo === "1").reduce((subtotal, transaction) => subtotal + parseInt(transaction.montoFactura), 0)/7700;
       const saldo = ingresos - egresos
-      const stateIndex=findProjectIndexById("3KD");
-      // alert("index:"+stateIndex)
-      // setValuationsList (prevState => ( {...prevState, idRubro: newValue===null? "": newValue.id, nombreRubro: newValue===null? "": newValue.name}));
-
-      // setValuationsList((prevState) => {
-      //   const updatedList = [...prevState]; // Create a copy
-      //   updatedList[stateIndex] = {
-      //       ...updatedList[stateIndex],
-      //     //  Spread existing element properties
-      //     projectRevenue: ingresos === null ? 0 : ingresos,
-      //     projectCost: egresos === null ? 0 : egresos,
-      //     projectMargin: saldo === null ? 0 : saldo,
-      //   };
-      //   // return updatedList;
-      // });
+      updateProjectList(ingresos, egresos,saldo)
     }
   }
 
@@ -251,20 +235,9 @@ export default function Home (){
     alert("No fue posible cargar el listado de proveedores")
   }
 
-  // function userValuationsSuccessCallback(apiData){
-  //   const allValuations = apiData;
-  //   setValuationsList(allValuations);
-  // }
-
-  // function errorCallback(errorMessage){
-  //   setDialogOptions({severity:"error", title:"Oops", message:errorMessage,buttons:{button1:"Ok"}})
-  //   setIsDialogOpen (true);
-  // }
-
   useEffect(() => {
     setIsEdit(false);
     getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/3KD`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
-    // getProject({ axiosInstance: api, method: 'GET', url: `/proyectos`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
   }, [isEdit]);
 
   
@@ -275,9 +248,6 @@ export default function Home (){
     getCategories({ axiosInstance: api, method: 'GET', url: `/rubros`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getCategoriesSuccessCb, getCategoriesErrorCb);
     getSuppliers({ axiosInstance: api, method: 'GET', url: `/proveedores`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getSuppliersSuccessCb, getSuppliersErrorCb);
     getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/3KD`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
-    // else { 
-    //   getProject({ axiosInstance: api, method: 'GET', url: `/proyectos`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
-    // }
   },[]) 
   
   return (
@@ -286,104 +256,100 @@ export default function Home (){
     { userData ? <>
       <Grid container direction="column" alignItems="center" style = {{ minHeight: '95vh'}} >
 
-<Grid item xs={12} style = {{ minHeight: '69px'}} /> 
+        <Grid item xs={12} style = {{ minHeight: '69px'}} /> 
 
-<Grid item container direction="row" spacing={1}  >
+        <Grid item container direction="row" spacing={1}  >
 
-  <Grid item xs={12} md={2} >
-    <Paper className={classes.paperStyle} >
-      <MyProfile isEditProfile={isEditProfile} setIsEditProfile={setIsEditProfile}/>
-      {/* <Box style={{height:"5px"}}/>
-      <ExchangeRate /> */}
-      <Box style={{height:"5px"}}/>
-      {/* <BankAccounts /> */}
+          <Grid item xs={12} md={2} >
+            <Paper className={classes.paperStyle} >
+              <MyProfile isEditProfile={isEditProfile} setIsEditProfile={setIsEditProfile}/>
+              {/* <Box style={{height:"5px"}}/>
+              <ExchangeRate /> */}
+              <Box style={{height:"5px"}}/>
+              {/* <BankAccounts /> */}
 
-      <Box style={{height:"2px"}}/>
-      {/* <Paper style={{height:"110px"}} elevation={6}> */}
-        {/* <ChartValuation /> */}
-      {/* </Paper> */}
-      <Box style={{height:"10px"}}/>
-           {/* <TableValuationResults />  */}
-    </Paper>
-  </Grid>
+              <Box style={{height:"2px"}}/>
+              {/* <Paper style={{height:"110px"}} elevation={6}> */}
+                {/* <ChartValuation /> */}
+              {/* </Paper> */}
+              <Box style={{height:"10px"}}/>
+                  {/* <TableValuationResults />  */}
+            </Paper>
+          </Grid>
 
-  <Grid item xs={12} md={7} > 
-    <Paper className={classes.paperStyle} >
-      <Grid container>
-        <Grid item xs={6} md={2} >
-          <Typography className={classes.sectionTitleStyle}>Proyectos (En USD)</Typography>
+          <Grid item xs={12} md={7} > 
+            <Paper className={classes.paperStyle} >
+              <Grid container>
+                <Grid item xs={6} md={2} >
+                  <Typography className={classes.sectionTitleStyle}>Proyectos (En USD)</Typography>
+                </Grid>
+                <Grid item xs={6} md={3}  >
+                  <Box style={{height:"5px"}}/>
+                  <Tooltip title="Crear un nuevo Proyecto">
+                  {/* variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} */}
+                  <Box style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
+                    <Button 
+                      variant = "contained" 
+                      startIcon = {<AddCircleIcon />} 
+                      disableRipple
+                      onClick = {handleAddProject} 
+                      className = {classes.buttonStyle}
+                      >Nuevo Proyecto
+                    </Button>
+                    </Box>
+                  </Tooltip>
+                </Grid>
+                <Grid item xs={12} md={7}>
+                  {/* <CurrencyOptions /> */}
+                </Grid>
+                
+              </Grid>
+              <Box style={{height:"15px"}}/>
+              { isEditProfile ? 
+                <>
+              
+                </> : 
+                <>
+                { ! isLoadingValuations ? 
+                  <>
+                    { valuationsList ? <>
+                        <TableMyValuationsList valuationsList = {valuationsList}  />
+                      </>: 
+                        <Typography style={{fontSize:14, marginTop:"15px"}}>You don't have any saved valuation</Typography>
+                    }
+                  </>: 
+                  <CircularProgress variant = "indeterminate" /> }  
+                </>
+              }
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={3} > 
+            <Paper className={classes.paperStyle} >
+              <Typography className={classes.sectionTitleStyle} >Ultimo Rolling Forecast: 5&7 2024</Typography>
+              {/* <Box style={{height:"5px"}}/> */}
+              <Paper>
+                <TableRollingForecast/>
+                <Box style={{height:"10px"}}/>
+                <ChartValuation />
+              </Paper>
+            </Paper>
+          </Grid>
+
         </Grid>
-        <Grid item xs={6} md={3}  >
-          <Box style={{height:"5px"}}/>
-          <Tooltip title="Crear un nuevo Proyecto">
-          {/* variant="contained" size="small" disableRipple style={{margin:'2px', color:"#344955",backgroundColor:"#E1C16E",textTransform:"none"}} */}
-          <Box style={{display:"flex", alignItems:"center", justifyContent:"center"}}>
-            <Button 
-              variant = "contained" 
-              startIcon = {<AddCircleIcon />} 
-              disableRipple
-              onClick = {handleAddProject} 
-              className = {classes.buttonStyle}
-              >Nuevo Proyecto
-            </Button>
-            </Box>
-          </Tooltip>
-        </Grid>
-        <Grid item xs={12} md={7}>
-          {/* <CurrencyOptions /> */}
-        </Grid>
-        
-      </Grid>
-      <Box style={{height:"15px"}}/>
-      { isEditProfile ? 
-        <>
-      
-        </> : 
-        <>
-        { ! isLoadingValuations ? 
-          <>
-            { valuationsList ? <>
-                <TableMyValuationsList valuationsList = {valuationsList} setValuationsList={setValuationsList} />
-              </>: 
-                <Typography style={{fontSize:14, marginTop:"15px"}}>You don't have any saved valuation</Typography>
-            }
-          </>: 
-          <CircularProgress variant = "indeterminate" /> }  
-        </>
-      }
-      {/* <Box style={{height:"5px"}}/>
-      <Typography className={classes.sectionTitleStyle} gutterBottom>Valoración Actual de Civilia</Typography>
-      <TableValuationCashFlow /> */}
-      {/* <Typography>Total Flujo de Caja Descontado</Typography> */}
-      
-    </Paper>
-  </Grid>
+      </Grid> 
+    <FormAddProject 
+      open={isAddProject}
+      onClose={handleAddTransactionClose}
+      isEdit={isEdit}
+      setIsEdit={setIsEdit}
+    />   
 
-  <Grid item xs={12} md={3} > 
-    <Paper className={classes.paperStyle} >
-      <Typography className={classes.sectionTitleStyle} >Ultimo Rolling Forecast: 5&7 2024</Typography>
-      {/* <Box style={{height:"5px"}}/> */}
-      <Paper>
-        <TableRollingForecast/>
-         <Box style={{height:"10px"}}/>
-        <ChartValuation />
-      </Paper>
-    </Paper>
-  </Grid>
-
-</Grid>
-</Grid> 
-<FormAddProject 
-    open={isAddProject}
-    onClose={handleAddTransactionClose}
-    isEdit={isEdit}
-    setIsEdit={setIsEdit}
-  />   
-    </>: null}
+  </>: null}
     
     <DialogModal open={isDialogOpen} onClose={handleDialogClose} severity={dialogOptions.severity} title={dialogOptions.title} buttons={dialogOptions.buttons} action={dialogOptions.action}>
       {dialogOptions.message}
     </DialogModal>
-    </>
+  </>
   )
 }
