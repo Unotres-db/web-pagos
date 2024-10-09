@@ -18,9 +18,9 @@ const useStyles = makeStyles((mainTheme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: '85vh', 
+    minHeight: '90vh', 
     [mainTheme.breakpoints.down('lg')]: {
-      minHeight:"85vh",
+      minHeight:"90vh",
     },
     marginTop: "64px",
     padding:"0px",
