@@ -331,6 +331,8 @@ export default function Home (){
               <Paper>
                 <TableRollingForecast/>
                 <Box style={{height:"10px"}}/>
+                <Typography align="center" style={{fontSize:13, color:"#344955"}}>Facturacion anual en USD (millones)</Typography>
+                <Box style={{height:"5px"}}/>
                 <ChartValuation />
               </Paper>
             </Paper>

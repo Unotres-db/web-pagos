@@ -11,7 +11,12 @@ export default function ChartValuation () {
   const options = {
     plugins: {
       legend: {
-        display: true, // Set display to false to hide the legend and the label
+        display: false, // Set display to false to hide the legend and the label
+        labels: {
+          fontColor: "blue",
+          backgroundColor:"green",
+          fontSize: 18
+      }
       },
     },
     scales: {
@@ -28,6 +33,10 @@ export default function ChartValuation () {
     },
   };
   const combinedFinancialData=[
+    {
+      year:2023,
+      cashFlow:1.879,
+    },
     {
       year:2024,
       cashFlow:4.635,
@@ -56,7 +65,8 @@ export default function ChartValuation () {
       }]}
 
   function defineChartColors (){
-    const arrayOfForecastedColors = Array.from({ length: 5 } , () => ("#344955"));
+    // const arrayOfForecastedColors = Array.from({ length: 6 } , () => ("#344955"));
+    const arrayOfForecastedColors = Array.from({ length: 6 }, (v, i) => (i === 0 ? "#3C6E76" : "#344955"));
     return arrayOfForecastedColors
   }
 
