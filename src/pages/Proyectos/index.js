@@ -115,6 +115,8 @@ export default function Proyectos (){
   const supplierObject = {id: "0", label: "Todos"}
   // const paymentObject = {id: "0", label: ""};
 
+
+
   function calculateSuppliersSubtotals(projectSuppliersList, transactions) {
     const suppliersSubtotals = projectSuppliersList.map((supplier) => ({
       id: supplier.id,
@@ -124,7 +126,7 @@ export default function Proyectos (){
     let supplierId = transactions.supplierId;
     transactions.forEach((transaction) => {
       supplierId = transaction.idProveedor;
-      if (supplierId && transaction.idTipoFlujo==="1") { // Check if supplierId is defined
+      if (supplierId && transaction.idTipoFlujo==="1" && transaction.idProveedor!=="265" && transaction.idProveedor!=="350") { // Check if supplierId is defined
         supplierId = supplierId.toString(); // Convert to string
         const supplierIndex = suppliersSubtotals.findIndex(
           (supplier) => supplier.id.toString() === supplierId
@@ -185,6 +187,38 @@ export default function Proyectos (){
       .sort((a, b) => a.label.localeCompare(b.label)),
   ]
   : [];
+
+  function calculateCategoriesSubtotals(projectCategoriesList, transactions) {
+    const categoriesSubtotals = projectCategoriesList.map((category) => ({
+      id: category.id,
+      label: category.label,
+      total: 0,
+    }));
+    let categoryId = transactions.idRubro;//
+    transactions.forEach((transaction) => {
+      categoryId = transaction.idRubro;
+      if (categoryId && transaction.idTipoFlujo==="1" && transaction.idRubro!=="25") { // Check if categoryId is defined
+        categoryId = categoryId.toString(); // Convert to string
+        const categoryIndex = categoriesSubtotals.findIndex(
+          (category) => category.id.toString() === categoryId
+        );
+        if (categoryIndex !== -1) {
+          const montoFactura = parseFloat(transaction.montoFactura); // Convert to number
+          const montoFacturaDivided = montoFactura / 1000000;
+          categoriesSubtotals[categoryIndex].total += montoFacturaDivided;
+          // suppliersSubtotals[supplierIndex].total += parseInt(transaction.montoFactura);
+
+        }
+      } else {
+        // Handle undefined categoryId (e.g., log an error)
+        console.error('Transaction with undefined supplierId:', transaction);
+      }
+    });
+    categoriesSubtotals.sort((a, b) => b.total - a.total);
+    return categoriesSubtotals;
+  }
+
+  const categoriesSubtotal=calculateCategoriesSubtotals(projectCategoriesList, transactions)
 
 
   const handleAddCategory=()=>{
@@ -449,8 +483,12 @@ export default function Proyectos (){
                         projectSuppliersList={projectTypesList}
                       /> */}
                       <Box style={{height:"10px"}}/>  
-                      <Typography align="center" style={{fontSize:13, color:"#344955"}}>Proveedores</Typography>
+                      <Typography align="center" style={{fontSize:13, color:"#344955"}}>Principales Proveedores</Typography>
                       <ChartSupplier suppliersSubtotal={suppliersSubtotal}/>
+
+                      <Box style={{height:"10px"}}/>  
+                      <Typography align="center" style={{fontSize:13, color:"#344955"}}>Principales Rubros</Typography>
+                      <ChartSupplier suppliersSubtotal={categoriesSubtotal}/>
                         
                       </Grid>
 

@@ -8,6 +8,15 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 export default function ChartSupplier ({suppliersSubtotal}) {
 
+
+  function trimString(string) {
+    if (string.length > 11) {
+      return string.substring(0, 11) + "...";
+    } else {
+      return string;
+    }
+  }
+
   const top5Suppliers = suppliersSubtotal.slice(0, 5);
   const otherSuppliersTotal = suppliersSubtotal.slice(5).reduce((total, supplier) => total + supplier.total, 0);
   const trimmedSuppliersSubtotals = [...top5Suppliers, { id: 'Otros', label: 'Otros', total: otherSuppliersTotal }];
@@ -29,19 +38,19 @@ export default function ChartSupplier ({suppliersSubtotal}) {
     scales: {
       x: {
         ticks: {
-          fontSize: "7px", // Set the font size for the x-axis ticks
+          fontSize: "5px", // Set the font size for the x-axis ticks
         },
       },
       y: {
         ticks: {
-          fontSize: 7, // Set the font size for the y-axis ticks
+          fontSize: 5, // Set the font size for the y-axis ticks
         },
       },
     },
   };
   const chartData = {
-        labels:trimmedSuppliersSubtotals.map((currElement)=>(currElement.label)),
-        datasets:[{label:"Subtotal por Proveedores", data:trimmedSuppliersSubtotals.map((currElement)=> (currElement.total)),
+        labels:trimmedSuppliersSubtotals.map((currElement)=>(trimString(currElement.label))),
+        datasets:[{label:"Subtotal", data:trimmedSuppliersSubtotals.map((currElement)=> (currElement.total)),
         backgroundColor:defineChartColors(),
       }]}
 

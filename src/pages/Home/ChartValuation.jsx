@@ -61,7 +61,7 @@ export default function ChartValuation () {
   ]
   const chartData = {
         labels:combinedFinancialData.map((currElement)=>(currElement.year)),
-        datasets:[{label:"Facturación Estimada USD (millones)", data:combinedFinancialData.map((currElement)=> (currElement.cashFlow)),
+        datasets:[{label:"Facturación en USD (millones)", data:combinedFinancialData.map((currElement)=> (currElement.cashFlow)),
         backgroundColor:defineChartColors(),
       }]}
 
