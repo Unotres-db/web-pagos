@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Bar } from "react-chartjs-2";
+// import { HorizontalBar } from "react-chartjs-2"; 
 import { Chart as ChartJS } from "chart.js/auto";
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -74,6 +75,8 @@ export default function ChartValuation () {
     <>
     {combinedFinancialData ? <>
       <Bar data = {chartData} options={options} />
+      {/* <HorizontalBar data = {chartData} options={options} /> */}
+
       </>  
     : null}
     </>

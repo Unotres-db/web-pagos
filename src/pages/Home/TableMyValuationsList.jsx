@@ -116,7 +116,7 @@ export default function TableMyValuationsList ({valuationsList}) {
   return (
     
     <>
-    { console.log(valuationsList)}
+    {/* { console.log(valuationsList)} */}
     <TableContainer component={Paper} >
       <Table className={classes.table} size="small" aria-label="stycky header" >
 

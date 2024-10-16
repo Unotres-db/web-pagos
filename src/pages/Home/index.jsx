@@ -326,12 +326,12 @@ export default function Home (){
 
           <Grid item xs={12} md={3} > 
             <Paper className={classes.paperStyle} >
-              <Typography className={classes.sectionTitleStyle} >Ultimo Rolling Forecast: 5&7 2024</Typography>
+              <Typography className={classes.sectionTitleStyle} >Ultimo Rolling Forecast: 9&3 2024</Typography>
               {/* <Box style={{height:"5px"}}/> */}
               <Paper>
                 <TableRollingForecast/>
                 <Box style={{height:"10px"}}/>
-                <Typography align="center" style={{fontSize:13, color:"#344955"}}>Facturacion anual en USD (millones)</Typography>
+                <Typography align="center" style={{fontSize:13, color:"#344955"}}>Facturación anual en USD (millones)</Typography>
                 <Box style={{height:"5px"}}/>
                 <ChartValuation />
               </Paper>

@@ -13,6 +13,7 @@ import useAxios from '../../hooks/useAxios';
 
 import Header from '../../components/Header';
 // CategoriesAutocomplete\
+import ChartSupplier from './ChartSupplier';
 import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
 import FormAddCategory from './FormAddCategory';
 import FormAddSupplier from './FormAddSupplier';
@@ -114,6 +115,36 @@ export default function Proyectos (){
   const supplierObject = {id: "0", label: "Todos"}
   // const paymentObject = {id: "0", label: ""};
 
+  function calculateSuppliersSubtotals(projectSuppliersList, transactions) {
+    const suppliersSubtotals = projectSuppliersList.map((supplier) => ({
+      id: supplier.id,
+      label: supplier.label,
+      total: 0,
+    }));
+    let supplierId = transactions.supplierId;
+    transactions.forEach((transaction) => {
+      supplierId = transaction.idProveedor;
+      if (supplierId && transaction.idTipoFlujo==="1") { // Check if supplierId is defined
+        supplierId = supplierId.toString(); // Convert to string
+        const supplierIndex = suppliersSubtotals.findIndex(
+          (supplier) => supplier.id.toString() === supplierId
+        );
+        if (supplierIndex !== -1) {
+          const montoFactura = parseFloat(transaction.montoFactura); // Convert to number
+          const montoFacturaDivided = montoFactura / 1000000;
+          suppliersSubtotals[supplierIndex].total += montoFacturaDivided;
+          // suppliersSubtotals[supplierIndex].total += parseInt(transaction.montoFactura);
+
+        }
+      } else {
+        // Handle undefined supplierId (e.g., log an error)
+        console.error('Transaction with undefined supplierId:', transaction);
+      }
+    });
+    suppliersSubtotals.sort((a, b) => b.total - a.total);
+    return suppliersSubtotals;
+  }
+
   const projectSuppliersList = transactions
   ? [
       { id: "0", label: "Todos" },
@@ -133,24 +164,7 @@ export default function Proyectos (){
     ]
   : [];
 
-  // const projectCategoriesList = transactions
-  // ? [
-  //     { id: "0", label: "Todos" },
-  //     ...transactions
-  //       .map(transaction => ({
-  //         id: transaction.idRubro,
-  //         label: transaction.rubro
-  //       }))
-  //       .reduce((acc, cur) => {
-  //         const existing = acc.find(item => item.id === cur.id);
-  //         if (!existing) {
-  //           acc.push(cur);
-  //         }
-  //         return acc;
-  //       }, [])
-  //       .sort((a, b) => a.label.localeCompare(b.label))
-  //   ]
-  // : [];
+  const suppliersSubtotal=calculateSuppliersSubtotals(projectSuppliersList, transactions)
 
   const projectCategoriesList = transactions
   ? [
@@ -227,11 +241,7 @@ export default function Proyectos (){
     setIsSnackbarOpen(false);
   }
 
-  // Si supplierId fue seleccionado (tiene un id)
-  //   si categoryid tb fue seleccionado (tiene un id) entonces
-//        filtra las trnsacciobes con 
   const filterFunction=(supplierId, categoryId)=>{
-
     // si hay un proveedor seleccionado....
     if (supplierId !=="" && supplierId!==undefined && supplierId!==null && supplierId!=="0" ){
 
@@ -251,33 +261,9 @@ export default function Proyectos (){
       } else{
         return transactions    
       }
-     }
+    }
   return transactions
   }
-
-  // const deleteTransactionSuccessCb=(apiData)=>{
-  //   if (apiData){
-  //     setSnackbarMessage("Transaccion eliminada con exito")
-  //     setIsSnackbarOpen(true)
-  //   }
-  //   alert("Continua em deleteTransactionSuccessCb apos snackbar")
-  //   setDeletionId("");
-  //   getProject({ axiosInstance: api, method: 'GET', url: `/transacciones/${id}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},getProjectSuccessCb, getProjectErrorCb);
-  //  }
-  
-  //  const deleteTransactionErrorCb=()=>{
-  //   setDeletionId("");
-  //   alert("Transaccion no pudo ser eliminada, favor intentar mas tarde")
-  //  }
-
-
-  // useEffect(() => {
-  //   if (isDelete){
-  //     setIsDelete(false);
-  //   }
-  //   delTransaction({ axiosInstance: api, method: 'DELETE', url: `/transacciones/${deletionId}`, requestConfig: { headers: {'Authorization': "martincsl@hotmail.com",},}},deleteTransactionSuccessCb, deleteTransactionErrorCb);
-    
-  // }, [isDelete]);
 
   useEffect(() => {
     
@@ -303,12 +289,7 @@ export default function Proyectos (){
     <>
     {/* {alert("index id: "+id)} */}
       { ! transactions ? 
-      
       <>
-      {/* {console.log(" proyectos-index transactions")}
-      {console.log(transactions)}
-      {console.log(" proyectos-index filteredTransactions")}
-      {console.log(filteredTransactions)} */}
       <div className={classes.root}>
       {/* <Header />   */}
       <Grid container> 
@@ -329,7 +310,12 @@ export default function Proyectos (){
 
     { transactions.length > 0? 
     <>
-   
+    {console.log("suppliersSubtotal")}
+    {console.log(suppliersSubtotal)}
+    {console.log(typeof(suppliersSubtotal))}
+    {console.log("projectSuppliersList")}
+    {console.log(projectSuppliersList)}
+    {console.log(typeof(projectSuppliersList))}
     <Grid container item direction="column" alignItems="center" style = {{minHeight: '80vh'}}  >
       
       {/* Grid para ocupar el heigth del app bar */}
@@ -462,6 +448,9 @@ export default function Proyectos (){
                         setterFunction={setSuppliersSearchId} 
                         projectSuppliersList={projectTypesList}
                       /> */}
+                      <Box style={{height:"10px"}}/>  
+                      <Typography align="center" style={{fontSize:13, color:"#344955"}}>Proveedores</Typography>
+                      <ChartSupplier suppliersSubtotal={suppliersSubtotal}/>
                         
                       </Grid>
 
