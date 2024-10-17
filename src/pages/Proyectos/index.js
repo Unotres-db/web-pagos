@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
-import { format, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
+import { format, startOfMonth, endOfMonth, isWithinInterval, parse, subMonths } from 'date-fns';
 
 import { Stack, Grid, Paper, Box, Button, TableContainer, Table, TableHead, TableBody, TableRow, TableCell,Snackbar, SnackbarContent, useTheme, useMediaQuery, Typography, CircularProgress } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,6 +14,7 @@ import useAxios from '../../hooks/useAxios';
 
 import Header from '../../components/Header';
 // CategoriesAutocomplete\
+import ChartDisbursementByMonth from './ChartDisbursementByMonth';
 import ChartSupplier from './ChartSupplier';
 import CategoriesAutocomplete from '../../components/CategoriesAutocomplete';
 import FormAddCategory from './FormAddCategory';
@@ -116,15 +117,25 @@ export default function Proyectos (){
   const supplierObject = {id: "0", label: "Todos"}
   // const paymentObject = {id: "0", label: ""};
 
-  function calculateTotalByMonth(transactions) {
+  // function calculateNet(revenueData, costData) {
+  //   let result = Array.from({ length: parseInt(revenueData.length) },() => ({ month: "", total:0 }));
 
+  //   const months = new Set([...revenueData.map(item => item.month), ...costData.map(item => item.month)]);
+  //   months.forEach(month => {
+  //     const revenue = revenueData.find(item => item.month === month)?.total || 0;
+  //     const cost = costData.find(item => item.month === month)?.total || 0;
+  //     // result[currElement].month = item.month;
+  //     // result[currElement].total = revenue-cost;
+  //   });
+  
+  //   return result;
+  // }
+
+  function calculateRevenueByMonth(transactions) {
     const groupedTransactions = transactions.reduce((acc, transaction) => {
-      const fechaFactura = new Date(transaction.fechafactura);
+      const fechaFactura=parse(transaction.fechafactura,'dd/MM/yyyy', new Date());
       const monthStart = startOfMonth(fechaFactura);
       const monthEnd = endOfMonth(fechaFactura);
-      alert(transactions.fechafactura)
-      // alert(fechaFactura)
-  
       const monthKey = format(monthStart, 'yyyy-MM');
   
       if (!acc[monthKey]) {
@@ -133,14 +144,96 @@ export default function Proyectos (){
           total: 0,
         };
       }
-  
-      acc[monthKey].total += parseFloat(transaction.montoFactura);
-  
+      if (transaction.idTipoFlujo==="0"){
+        acc[monthKey].total += parseFloat(transaction.montoFactura)/1000000;
+      }
       return acc;
+
     }, {});
+    const sortedTransactions = Object.values(groupedTransactions).sort((a, b) => {
+      const dateA = new Date(a.month + '-01'); 
+      const dateB = new Date(b.month + '-01');
   
-    return Object.values(groupedTransactions);
+      return dateA - dateB; 
+    });
+    return sortedTransactions
   }
+
+  function calculateDisbursementByMonth(transactions) {
+    const groupedTransactions = transactions.reduce((acc, transaction) => {
+      const fechaFactura=parse(transaction.fechafactura,'dd/MM/yyyy', new Date());
+      const monthStart = startOfMonth(fechaFactura);
+      const monthEnd = endOfMonth(fechaFactura);
+      const monthKey = format(monthStart, 'yyyy-MM');
+  
+      if (!acc[monthKey]) {
+        acc[monthKey] = {
+          month: monthKey,
+          total: 0,
+        };
+      }
+      if (transaction.idTipoFlujo==="1"){
+        acc[monthKey].total += parseFloat(transaction.montoFactura)/1000000;
+      }
+      return acc;
+
+    }, {});
+    const sortedTransactions = Object.values(groupedTransactions).sort((a, b) => {
+      const dateA = new Date(a.month + '-01'); 
+      const dateB = new Date(b.month + '-01');
+  
+      return dateA - dateB; 
+    });
+    return sortedTransactions
+  }
+
+  // function calculateCashFlowByMonth(transactions) {
+  //  let accumulatedcashFlow=0
+  //   const groupedTransactions = transactions.reduce((acc, transaction) => {
+  //     const fechaFactura=parse(transaction.fechafactura,'dd/MM/yyyy', new Date());
+  //     const monthStart = startOfMonth(fechaFactura);
+  //     const monthEnd = endOfMonth(fechaFactura);
+  //     const monthKey = format(monthStart, 'yyyy-MM');
+  
+  //     if (!acc[monthKey]) {
+  //       acc[monthKey] = {
+  //         month: monthKey,
+  //         total: 0,
+  //       };
+  //     }
+  //     if (transaction.idTipoFlujo==="1"){
+  //       acc[monthKey].total -= parseFloat(transaction.montoFactura)/1000000;
+  //     } else{
+  //       acc[monthKey].total += parseFloat(transaction.montoFactura)/1000000;
+  //     }
+
+  //     acc[monthKey].total += (transaction.idTipoFlujo === "1" ? -1 : 1) * parseFloat(transaction.montoFactura) / 1000000;
+
+  //     // Accumulate total from previous months
+  //     if (acc[monthKey].month !== '1970-01') {
+  //       const previousMonth = format(subMonths(monthStart, 1), 'yyyy-MM');
+  //       if (acc[previousMonth]) {
+  //         acc[monthKey].total += acc[previousMonth].total;
+  //       }
+  //     }
+
+  //     // acc[monthKey].total += (transaction.idTipoFlujo === "1" ? -1 : 1) * parseFloat(transaction.montoFactura) / 1000000;
+  //     // if (acc[monthKey].total !== 0) {
+  //     //   const previousMonth = format(subMonths(monthStart, 1), 'yyyy-MM');
+  //     //   if (acc[previousMonth]) {
+  //     //     acc[monthKey].total += acc[previousMonth].total;
+  //     //   }
+  //     // }
+  //     return acc ;
+  //   }, {});
+
+  //   const sortedTransactions = Object.values(groupedTransactions).sort((a, b) => {
+  //     const dateA = new Date(a.month + '-01'); 
+  //     const dateB = new Date(b.month + '-01');
+  //     return dateA - dateB; 
+  //   });
+  //   return sortedTransactions
+  // }
 
 
   function calculateSuppliersSubtotals(projectSuppliersList, transactions) {
@@ -245,7 +338,11 @@ export default function Proyectos (){
   }
 
   const categoriesSubtotal=calculateCategoriesSubtotals(projectCategoriesList, transactions)
-  // const totalbyMonth=transactions? calculateTotalByMonth(transactions):[]
+  const totalbyMonth=transactions? calculateDisbursementByMonth(transactions):[]
+  const RevenuebyMonth=transactions? calculateRevenueByMonth(transactions):[]
+  // const cashFlowByMonth=transactions? calculateCashFlowByMonth(transactions):[]
+  // calculateCashFlowByMonth
+  // const cashFlowByMonth= transactions? calculateNet(RevenuebyMonth, totalbyMonth):[]
 
 
   const handleAddCategory=()=>{
@@ -371,15 +468,20 @@ export default function Proyectos (){
 
     { transactions.length > 0? 
     <>
+    {/* {console.log("transactions")};
+    {console.log(transactions)}; */}
     {/* {console.log("suppliersSubtotal")}
     {console.log(suppliersSubtotal)}
     {console.log(typeof(suppliersSubtotal))}
     {console.log("projectSuppliersList")}
     {console.log(projectSuppliersList)}
     {console.log(typeof(projectSuppliersList))} */}
-
-    {/* {console.log("totalbyMonth")}    
+    {/* {console.log("RevenuebyMonth")}    
+    {console.log(RevenuebyMonth)}
+    {console.log("totalbyMonth")}    
     {console.log(totalbyMonth)} */}
+    {/* {console.log("cashFlowByMonth")}    
+    {console.log(cashFlowByMonth)}  */}
     <Grid container item direction="column" alignItems="center" style = {{minHeight: '80vh'}}  >
       
       {/* Grid para ocupar el heigth del app bar */}
@@ -519,6 +621,21 @@ export default function Proyectos (){
                       <Box style={{height:"10px"}}/>  
                       <Typography align="center" style={{fontSize:13, color:"#344955"}}>Principales Rubros</Typography>
                       <ChartSupplier suppliersSubtotal={categoriesSubtotal}/>
+
+                      <Box style={{height:"10px"}}/>  
+                      <Typography align="center" style={{fontSize:13, color:"#344955"}}>Desembolsos por Mes</Typography>
+                      
+                      <ChartDisbursementByMonth disbursementsByMonth={totalbyMonth}/>
+
+                      <Box style={{height:"10px"}}/>  
+                      <Typography align="center" style={{fontSize:13, color:"#344955"}}>Ingresos por Mes</Typography>
+                      
+                      <ChartDisbursementByMonth disbursementsByMonth={RevenuebyMonth}/>
+
+                      {/* <Box style={{height:"10px"}}/>  
+                      <Typography align="center" style={{fontSize:13, color:"#344955"}}>Flujo de Caja Acumulado por Mes</Typography>
+                      
+                      <ChartDisbursementByMonth disbursementsByMonth={cashFlowByMonth}/> */}
                         
                       </Grid>
 
