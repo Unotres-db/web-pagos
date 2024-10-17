@@ -245,7 +245,7 @@ export default function Proyectos (){
   }
 
   const categoriesSubtotal=calculateCategoriesSubtotals(projectCategoriesList, transactions)
-  const totalbyMonth=transactions? calculateTotalByMonth(transactions):[]
+  // const totalbyMonth=transactions? calculateTotalByMonth(transactions):[]
 
 
   const handleAddCategory=()=>{
@@ -378,8 +378,8 @@ export default function Proyectos (){
     {console.log(projectSuppliersList)}
     {console.log(typeof(projectSuppliersList))} */}
 
-    {console.log("totalbyMonth")}    
-    {console.log(totalbyMonth)}
+    {/* {console.log("totalbyMonth")}    
+    {console.log(totalbyMonth)} */}
     <Grid container item direction="column" alignItems="center" style = {{minHeight: '80vh'}}  >
       
       {/* Grid para ocupar el heigth del app bar */}
@@ -470,7 +470,7 @@ export default function Proyectos (){
                   <Typography style={{fontSize:"14px"}}>Proyecto: Edificio Tres Kandu</Typography>
                   <Typography style={{fontSize:"12px"}}>Construcción edificio en San Lorenzo</Typography>
                   {/* <Typography style={{fontSize:"12px"}}>2.400 metros cuadrados</Typography> */}
-                  <Typography style={{fontSize:"12px"}}>Monto Presupuestado Us$ 3.300.000</Typography>
+                  <Typography style={{fontSize:"12px"}}>Monto Presupuestado Us$ 3.300.000 / Gs. 23.925 mi</Typography>
                   <Box sx={{height:"5px"}}/>
                 </Box>
                 <Box sx={{height:"5px"}}/>

@@ -113,7 +113,7 @@ export default function Home (){
     projectId:"TSA",
     projectName:"Edificio Torre Solana",
     projectStatus:"En Ejecución",
-    projectBudget:3000000,
+    projectBudget:2708352,
     projectRevenue:0,
     projectCost:0,
     projectMargin:0,
