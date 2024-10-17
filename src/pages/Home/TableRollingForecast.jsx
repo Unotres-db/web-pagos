@@ -132,7 +132,7 @@ export default function TableRollingForecast (){
       dataField: "costOfRevenue"},  
 
     { id: 4,
-      rowText:"Deveng. Costo de Construcción",
+      rowText:"Dev. Costo de Construcción",
       rowMobileText:"Deveng. Costo de Construcción",
       grayBackground:false,
       showAsBlankIfZero:true,  
@@ -167,13 +167,13 @@ export default function TableRollingForecast (){
       showAsBlankIfZero:true,  
       style:"decimal",
       dataField: "investorShare"},
-    { id: 9,
-      rowText:"Depreciación",
-      rowMobileText:"Depreciación",
-      grayBackground:false,
-      showAsBlankIfZero:true,  
-      style:"decimal",
-      dataField: "depreciation"}, 
+    // { id: 9,
+    //   rowText:"Depreciación",
+    //   rowMobileText:"Depreciación",
+    //   grayBackground:false,
+    //   showAsBlankIfZero:true,  
+    //   style:"decimal",
+    //   dataField: "depreciation"}, 
     { id: 10,
       rowText:"Intereses Devengados",
       rowMobileText:"Intereses Devengados",
@@ -213,8 +213,8 @@ export default function TableRollingForecast (){
 
   useEffect(() => {
     setFinancialData([
-      {year:2024, period:1, salesRevenue: 4848856, reDevFees:0, totalRevenue: 4848856, costOfLand:0, constructionCost: 4161298 , costOfRevenue: 4161298, grossProfit: 687558, grossProfitPercent: 14.2, projectExpenses:0, operatingExpenses:197075 , investorShare:300000, depreciation: 0, interestExpense: 5069, other: 0, incomeBeforeTax: 785714, incomeTaxExpense: 78541, netIncome: 706862, netMarginPercent:14.6, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0},
-      {year:2025, period:2, salesRevenue:5478483, reDevFees:0, totalRevenue: 5478483, costOfLand:0, constructionCost:4880169, costOfRevenue: 4880169, grossProfit: 598314, grossProfitPercent: 10.9, projectExpenses:0, operatingExpenses:215124 , investorShare:0, depreciation: 0, interestExpense: 0, other:0, incomeBeforeTax: 383190, incomeTaxExpense: 38319, netIncome: 344871, netMarginPercent:6.3,ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0},
+      {year:2024, period:1, salesRevenue:  4093570, reDevFees:0, totalRevenue: 4093570, costOfLand:0, constructionCost: 3413625, costOfRevenue: 3413625, grossProfit: 679945, grossProfitPercent: 16.6, projectExpenses:0, operatingExpenses:300642 , investorShare:58074, depreciation: 0, interestExpense: 4807, other: 0, incomeBeforeTax: 432570, incomeTaxExpense: 43257, netIncome: 389313, netMarginPercent:9.5, ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0},
+      {year:2025, period:2, salesRevenue:6427085, reDevFees:0, totalRevenue: 6427085, costOfLand:0, constructionCost:5345454, costOfRevenue: 5345454, grossProfit: 1081631, grossProfitPercent: 16.8, projectExpenses:0, operatingExpenses:325277 , investorShare:170000, depreciation: 0, interestExpense: 6244, other:0, incomeBeforeTax: 920110, incomeTaxExpense: 92011, netIncome: 828099, netMarginPercent:12.9,ebit: 0, capitalExpenditures: 0, cash: 0, shortLongTermDebt:0, longTermDebt:0, workingCapitalChanges:0, cashFlow:0, discountedCashFlow:0},
     ])
   }, []);
   

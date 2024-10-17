@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
+import { format, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 
 import { Stack, Grid, Paper, Box, Button, TableContainer, Table, TableHead, TableBody, TableRow, TableCell,Snackbar, SnackbarContent, useTheme, useMediaQuery, Typography, CircularProgress } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
@@ -115,6 +116,31 @@ export default function Proyectos (){
   const supplierObject = {id: "0", label: "Todos"}
   // const paymentObject = {id: "0", label: ""};
 
+  function calculateTotalByMonth(transactions) {
+
+    const groupedTransactions = transactions.reduce((acc, transaction) => {
+      const fechaFactura = new Date(transaction.fechafactura);
+      const monthStart = startOfMonth(fechaFactura);
+      const monthEnd = endOfMonth(fechaFactura);
+      alert(transactions.fechafactura)
+      // alert(fechaFactura)
+  
+      const monthKey = format(monthStart, 'yyyy-MM');
+  
+      if (!acc[monthKey]) {
+        acc[monthKey] = {
+          month: monthKey,
+          total: 0,
+        };
+      }
+  
+      acc[monthKey].total += parseFloat(transaction.montoFactura);
+  
+      return acc;
+    }, {});
+  
+    return Object.values(groupedTransactions);
+  }
 
 
   function calculateSuppliersSubtotals(projectSuppliersList, transactions) {
@@ -172,7 +198,7 @@ export default function Proyectos (){
   ? [
     { id: "0", label: "Todos" },
     ...transactions
-      .filter(transaction => supplierSearchId.idProveedor === "0" || transaction.idProveedor === supplierSearchId.idProveedor)  // Filter by idProveedor
+      // .filter(transaction => supplierSearchId.idProveedor === "0" || transaction.idProveedor === supplierSearchId.idProveedor)  // Filter by idProveedor
       .map(transaction => ({
         id: transaction.idRubro,
         label: transaction.rubro,
@@ -219,6 +245,7 @@ export default function Proyectos (){
   }
 
   const categoriesSubtotal=calculateCategoriesSubtotals(projectCategoriesList, transactions)
+  const totalbyMonth=transactions? calculateTotalByMonth(transactions):[]
 
 
   const handleAddCategory=()=>{
@@ -344,12 +371,15 @@ export default function Proyectos (){
 
     { transactions.length > 0? 
     <>
-    {console.log("suppliersSubtotal")}
+    {/* {console.log("suppliersSubtotal")}
     {console.log(suppliersSubtotal)}
     {console.log(typeof(suppliersSubtotal))}
     {console.log("projectSuppliersList")}
     {console.log(projectSuppliersList)}
-    {console.log(typeof(projectSuppliersList))}
+    {console.log(typeof(projectSuppliersList))} */}
+
+    {console.log("totalbyMonth")}    
+    {console.log(totalbyMonth)}
     <Grid container item direction="column" alignItems="center" style = {{minHeight: '80vh'}}  >
       
       {/* Grid para ocupar el heigth del app bar */}

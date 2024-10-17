@@ -40,11 +40,11 @@ export default function ChartValuation () {
     },
     {
       year:2024,
-      cashFlow:4.635,
+      cashFlow:4.093,
     },
     {
       year:2025,
-      cashFlow:9.346,
+      cashFlow:6.427,
     },
     {
       year:2026,
