@@ -117,25 +117,12 @@ export default function Proyectos (){
   const supplierObject = {id: "0", label: "Todos"}
   // const paymentObject = {id: "0", label: ""};
 
-  // function calculateNet(revenueData, costData) {
-  //   let result = Array.from({ length: parseInt(revenueData.length) },() => ({ month: "", total:0 }));
-
-  //   const months = new Set([...revenueData.map(item => item.month), ...costData.map(item => item.month)]);
-  //   months.forEach(month => {
-  //     const revenue = revenueData.find(item => item.month === month)?.total || 0;
-  //     const cost = costData.find(item => item.month === month)?.total || 0;
-  //     // result[currElement].month = item.month;
-  //     // result[currElement].total = revenue-cost;
-  //   });
-  
-  //   return result;
-  // }
-
   function calculateRevenueByMonth(transactions) {
     const groupedTransactions = transactions.reduce((acc, transaction) => {
-      const fechaFactura=parse(transaction.fechafactura,'dd/MM/yyyy', new Date());
-      const monthStart = startOfMonth(fechaFactura);
-      const monthEnd = endOfMonth(fechaFactura);
+      // const fechaFactura=parse(transaction.fechafactura,'dd/MM/yyyy', new Date());
+      const fecha = transaction.fechafactura!==null  ? parse(transaction.fechafactura, 'dd/MM/yyyy', new Date()) : parse(transaction.fechapago, 'dd/MM/yyyy', new Date());
+      const monthStart = startOfMonth(fecha);
+      const monthEnd = endOfMonth(fecha);
       const monthKey = format(monthStart, 'yyyy-MM');
   
       if (!acc[monthKey]) {
@@ -160,10 +147,11 @@ export default function Proyectos (){
   }
 
   function calculateDisbursementByMonth(transactions) {
+
     const groupedTransactions = transactions.reduce((acc, transaction) => {
-      const fechaFactura=parse(transaction.fechafactura,'dd/MM/yyyy', new Date());
-      const monthStart = startOfMonth(fechaFactura);
-      const monthEnd = endOfMonth(fechaFactura);
+      const fecha = transaction.fechafactura!==null  ? parse(transaction.fechafactura, 'dd/MM/yyyy', new Date()) : parse(transaction.fechapago, 'dd/MM/yyyy', new Date());
+      const monthStart = startOfMonth(fecha);
+      const monthEnd = endOfMonth(fecha);
       const monthKey = format(monthStart, 'yyyy-MM');
   
       if (!acc[monthKey]) {
@@ -186,55 +174,6 @@ export default function Proyectos (){
     });
     return sortedTransactions
   }
-
-  // function calculateCashFlowByMonth(transactions) {
-  //  let accumulatedcashFlow=0
-  //   const groupedTransactions = transactions.reduce((acc, transaction) => {
-  //     const fechaFactura=parse(transaction.fechafactura,'dd/MM/yyyy', new Date());
-  //     const monthStart = startOfMonth(fechaFactura);
-  //     const monthEnd = endOfMonth(fechaFactura);
-  //     const monthKey = format(monthStart, 'yyyy-MM');
-  
-  //     if (!acc[monthKey]) {
-  //       acc[monthKey] = {
-  //         month: monthKey,
-  //         total: 0,
-  //       };
-  //     }
-  //     if (transaction.idTipoFlujo==="1"){
-  //       acc[monthKey].total -= parseFloat(transaction.montoFactura)/1000000;
-  //     } else{
-  //       acc[monthKey].total += parseFloat(transaction.montoFactura)/1000000;
-  //     }
-
-  //     acc[monthKey].total += (transaction.idTipoFlujo === "1" ? -1 : 1) * parseFloat(transaction.montoFactura) / 1000000;
-
-  //     // Accumulate total from previous months
-  //     if (acc[monthKey].month !== '1970-01') {
-  //       const previousMonth = format(subMonths(monthStart, 1), 'yyyy-MM');
-  //       if (acc[previousMonth]) {
-  //         acc[monthKey].total += acc[previousMonth].total;
-  //       }
-  //     }
-
-  //     // acc[monthKey].total += (transaction.idTipoFlujo === "1" ? -1 : 1) * parseFloat(transaction.montoFactura) / 1000000;
-  //     // if (acc[monthKey].total !== 0) {
-  //     //   const previousMonth = format(subMonths(monthStart, 1), 'yyyy-MM');
-  //     //   if (acc[previousMonth]) {
-  //     //     acc[monthKey].total += acc[previousMonth].total;
-  //     //   }
-  //     // }
-  //     return acc ;
-  //   }, {});
-
-  //   const sortedTransactions = Object.values(groupedTransactions).sort((a, b) => {
-  //     const dateA = new Date(a.month + '-01'); 
-  //     const dateB = new Date(b.month + '-01');
-  //     return dateA - dateB; 
-  //   });
-  //   return sortedTransactions
-  // }
-
 
   function calculateSuppliersSubtotals(projectSuppliersList, transactions) {
     const suppliersSubtotals = projectSuppliersList.map((supplier) => ({
